@@ -1,0 +1,19 @@
+{
+  "name": "Golang Dev Container",
+  "dockerComposeFile": "compose.yaml",
+  "service": "app",
+  "forwardPorts": [5432],
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go"
+      ]
+    }
+  },
+  "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:4": {}
+  }
+}
