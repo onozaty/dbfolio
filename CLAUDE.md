@@ -22,12 +22,18 @@ dbfolio は、tbls が出力する `schema.json` から、ブラウザーで閲�
 - リポジトリのドキュメントは `docs/`、開発者向けの設計資料は `docs/design/` に置く
 - concept.md には設計と判断のみを書き、計画と進捗は roadmap.md に一本化する (両方に同じ計画を書かない)
 - タスクを完了したら roadmap.md のチェックボックスと進捗サマリーを更新する
-- PoC や実装で決まった技術判断は concept.md に反映するか、`docs/design/adr/` に記録する
+- PoC や実装で決まった技術判断は concept.md に反映する。比較検討の経緯や計測結果など、concept.md に書くと長くなる内容があるときだけ `docs/design/adr/` を作って記録する
 
 ## 開発環境
 
 - Dev Container (Go 1.27) で開発する
 - PostgreSQL 18 が `localhost:5432` で利用できる (接続情報は `PG*` 環境変数に設定済み)。tbls でサンプルの `schema.json` を生成する用途に使う
+
+## ブランチ運用
+
+- コードの変更はブランチを切って PR を出す (例: `feat/cli-build`)
+- PoC は `poc/` ブランチで行い、main にはマージしない。結果は concept.md (必要なら ADR) に残す
+- ドキュメントのみの小さな修正 (roadmap の進捗更新など) は main に直接コミットしてよい
 
 ## コミット
 

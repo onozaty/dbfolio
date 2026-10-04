@@ -37,7 +37,7 @@ PoC のコードは捨てる前提で書いてよい。Phase 1 以降で構成�
 - [ ] go-graphviz で SVG を生成
 - [ ] HTML へ ER 図を表示
 
-確認事項 (結果は concept.md または ADR に記録する):
+確認事項 (結果は concept.md に反映する。比較の経緯や計測結果は必要に応じて ADR に記録する):
 
 - [ ] tbls JSON の扱いやすさ / Relation 情報の十分さ
 - [ ] DOT で期待する ER 図を表現できるか
@@ -148,7 +148,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 ## 未決事項
 
-PoC / 実装中に決める。決まったら concept.md を更新するか、`docs/design/adr/` に記録する。
+PoC / 実装中に決める。決まったら concept.md を更新する。比較検討の経緯や計測結果など、concept.md に書くと長くなる内容があるときだけ `docs/design/adr/` に記録する。
 
 - SVG の埋め込み方式 (inline / `<img>`)
 - テーブル名からのファイル名生成ルール
