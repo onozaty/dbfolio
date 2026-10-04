@@ -29,7 +29,7 @@ PoC のコードは捨てる前提で書いてよい。Phase 1 以降で構成�
 - [ ] Go module 初期化
 - [ ] tbls の sample `schema.json` を `testdata/` に追加
   - 複合 FK・Virtual Relation・コメント (日本語含む)・View を含むものにする
-  - 再生成できるよう、元の DDL と `.tbls.yml` も一緒に置く (SQLite などで tbls から生成する)
+  - 再生成できるよう、元の DDL と `.tbls.yml` も一緒に置く (Dev Container の PostgreSQL に DDL を流し、tbls で生成する)
 - [ ] tbls JSON を読み込む最小 parser を実装
 - [ ] 1 テーブルの HTML を生成
 - [ ] Relation を抽出 (Parents / Children)
