@@ -385,6 +385,25 @@ if err := g.Render(ctx, graph, graphviz.SVG, &buf); err != nil {
 }
 ```
 
+### PoC での確認結果 (2026-10-04)
+
+`poc/vertical-slice` ブランチで go-graphviz v0.2.10 (Graphviz 12.1.2 内包) を検証した。
+
+- `graphviz.New` の初期化: 約 2ms
+- 10 テーブル分のテーブル単位 ER 図 (distance=1) の SVG 生成: 合計約 23ms
+- バイナリサイズ: 16.7MB (`-ldflags="-s -w"` で 11.8MB)
+- PNG 出力 (Go 側のラスタライズ) は曲線が塗りつぶされ、日本語も描画されないため実用にならない。出力は SVG に限定する
+
+### DOT の表現方針 (PoC で確認済み)
+
+- テーブルは `shape=plaintext` + HTML ラベルの表形式で描き、`rankdir=LR` で子テーブルを左、親テーブルを右に配置する
+- カラム名セルに west 用、型セルに east 用の port を置き、Relation は `子:east -> 親:west` で接続する (1 つの port だと線が型セルの文字に重なる)
+- カーディナリティは crow's foot (`teetee` / `teeodot` / `crowodot` / `crowtee`) で、`dir=both` の両端に描く
+- Virtual Relation は破線にする
+- セルには背景色を指定する。背景のないセルはリンクのクリック対象にならず、文字の上でしか反応しない
+- WASM 版 Graphviz はフォントファイルを持たず、日本語の文字幅を小さく見積もる。日本語を含むセルは dbfolio 側で幅を見積もって `width` を指定し、左寄せにする
+- 複合 FK は先頭カラムの port にのみ接続している。構成カラムをどう表現するかは未決
+
 ### ライセンス注意
 
 - `go-graphviz` 本体: MIT
@@ -914,6 +933,7 @@ Phase 構成・最初の PoC・進捗は [roadmap.md](roadmap.md) で管理す�
 | 検索 | 生成時に `search-index.js` を出力し、ブラウザーで絞り込み |
 | ER 表現 | DOT |
 | ER renderer | **goccy/go-graphviz** |
+| ER 図の埋め込み | inline SVG |
 | Browser Graphviz | 使用しない |
 | Graphviz 外部インストール | 不要 |
 | tbls | DB schema extraction layer |
@@ -957,21 +977,26 @@ internal/input/
 - 記号
 - Unicode
 
+PostgreSQL では tbls のテーブル名が `public.users` のようにスキーマ名付きになる。
+
 ファイル名には安全な slug / encoded ID を使う。
 
 表示名と URL を分離する。
 
+### tbls schema.json の DB 依存の差異
+
+- PostgreSQL 18 では NOT NULL も制約 (`type: "n"`) として出力される。カラム表に Nullable を表示するため、Constraints の表示からは除外する
+
+DB ごとの差異は入力層 (`internal/input/tbls`) で吸収し、表示側に持ち込まない。
+
 ### SVG
 
-Graphviz の SVG をそのまま `<img>` として扱うか、inline SVG にするかは PoC で比較する。
+ER 図は **inline SVG** で HTML に埋め込む (PoC で確定)。
 
-inline SVG の方が:
-
-- Table node から HTML へリンク
-- hover
-- CSS customization
-
-を行いやすい可能性がある。
+- `<img>` で読み込んだ SVG は、仕様上リンクもツールチップも動作しない
+- inline SVG ではノードのリンクが `file://` でも動作することを確認した
+- 埋め込み時は Graphviz 出力の XML 宣言と DOCTYPE を取り除く
+- 単体で開ける `diagrams/*.svg` も出力する (リンクは単体表示でも動作する)
 
 ---
 

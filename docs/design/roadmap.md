@@ -9,7 +9,7 @@
 
 | Phase | 内容 | 状態 |
 |---|---|---|
-| 0 | 縦切り PoC | 未着手 |
+| 0 | 縦切り PoC | 完了 (2026-10-04) |
 | 1 | 最小 CLI | 未着手 |
 | 2 | Table documentation | 未着手 |
 | 3 | Relations | 未着手 |
@@ -25,26 +25,28 @@
 
 PoC のコードは捨てる前提で書いてよい。Phase 1 以降で構成を整え直す。
 
+コードは `poc/vertical-slice` ブランチに残している (main にはマージしない)。結果は concept.md に反映済み。
+
 - [x] リポジトリ作成
-- [ ] Go module 初期化
-- [ ] tbls の sample `schema.json` を `testdata/` に追加
+- [x] Go module 初期化
+- [x] tbls の sample `schema.json` を `testdata/` に追加
   - 複合 FK・Virtual Relation・コメント (日本語含む)・View を含むものにする
   - 再生成できるよう、元の DDL と `.tbls.yml` も一緒に置く (Dev Container の PostgreSQL に DDL を流し、tbls で生成する)
-- [ ] tbls JSON を読み込む最小 parser を実装
-- [ ] 1 テーブルの HTML を生成
-- [ ] Relation を抽出 (Parents / Children)
-- [ ] 対象テーブル中心 (distance=1) の DOT を生成
-- [ ] go-graphviz で SVG を生成
-- [ ] HTML へ ER 図を表示
+- [x] tbls JSON を読み込む最小 parser を実装
+- [x] 1 テーブルの HTML を生成
+- [x] Relation を抽出 (Parents / Children)
+- [x] 対象テーブル中心 (distance=1) の DOT を生成
+- [x] go-graphviz で SVG を生成
+- [x] HTML へ ER 図を表示
 
 確認事項 (結果は concept.md に反映する。比較の経緯や計測結果は必要に応じて ADR に記録する):
 
-- [ ] tbls JSON の扱いやすさ / Relation 情報の十分さ
-- [ ] DOT で期待する ER 図を表現できるか
-- [ ] go-graphviz の起動コスト / バイナリサイズ
-- [ ] SVG 内リンクが機能するか (`file://` でも)
-- [ ] inline SVG と `<img>` のどちらを採用するか
-- [ ] HTML の方向性
+- [x] tbls JSON の扱いやすさ / Relation 情報の十分さ
+- [x] DOT で期待する ER 図を表現できるか
+- [x] go-graphviz の起動コスト / バイナリサイズ
+- [x] SVG 内リンクが機能するか (`file://` でも)
+- [x] inline SVG と `<img>` のどちらを採用するか
+- [x] HTML の方向性
 
 完了条件: 上記確認事項に結論が出て、内部モデルと UI の方針が確定していること。
 
@@ -104,6 +106,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 - [ ] テーブル単位 ER 図 (distance=1)
 - [ ] 全体 ER 図
 - [ ] ER 図上のテーブル → テーブル詳細へのリンク
+- [ ] 複合 FK の図上の表現
 - [ ] 大規模スキーマでの生成時間・図の可読性の確認
 
 完了条件: 全体図とテーブル中心図が生成され、図からページへ遷移できること。
@@ -150,7 +153,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 PoC / 実装中に決める。決まったら concept.md を更新する。比較検討の経緯や計測結果など、concept.md に書くと長くなる内容があるときだけ `docs/design/adr/` に記録する。
 
-- SVG の埋め込み方式 (inline / `<img>`)
-- テーブル名からのファイル名生成ルール
+- テーブル名からのファイル名生成ルール (スキーマ名付きの名前を含む)
+- 複合 FK を ER 図でどう表現するか
 - 全体 ER 図が巨大な場合の扱い (分割 / オプション化)
 - CLI ライブラリの選定 (標準 `flag` / cobra 等)
