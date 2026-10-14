@@ -369,3 +369,66 @@ func TestPrepare_RejectsPathThatIsAFile(t *testing.T) {
 		t.Error("Prepare() error = nil, want error for a file path")
 	}
 }
+
+func TestCreateDir_CreatesMissingDirectory(t *testing.T) {
+	// Arrange
+	path := filepath.Join(t.TempDir(), "tables")
+
+	// Act
+	err := CreateDir(path)
+
+	// Assert
+	if err != nil {
+		t.Fatalf("CreateDir() error = %v", err)
+	}
+	if info, statErr := os.Stat(path); statErr != nil || !info.IsDir() {
+		t.Errorf("directory not created: %v", statErr)
+	}
+}
+
+func TestCreateDir_AcceptsExistingDirectory(t *testing.T) {
+	// Arrange
+	path := filepath.Join(t.TempDir(), "tables")
+	if err := os.Mkdir(path, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	// Act
+	err := CreateDir(path)
+
+	// Assert
+	if err != nil {
+		t.Errorf("CreateDir() error = %v", err)
+	}
+}
+
+func TestCreateDir_RejectsSymlinkToDirectory(t *testing.T) {
+	// Arrange
+	dir := t.TempDir()
+	path := filepath.Join(dir, "tables")
+	symlink(t, t.TempDir(), path)
+
+	// Act
+	err := CreateDir(path)
+
+	// Assert
+	if err == nil {
+		t.Error("CreateDir() error = nil, want error for symlink")
+	}
+}
+
+func TestCreateDir_RejectsFile(t *testing.T) {
+	// Arrange
+	path := filepath.Join(t.TempDir(), "tables")
+	if err := os.WriteFile(path, []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Act
+	err := CreateDir(path)
+
+	// Assert
+	if err == nil {
+		t.Error("CreateDir() error = nil, want error for file")
+	}
+}

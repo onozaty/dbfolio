@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 
@@ -32,8 +31,12 @@ func newBuildCmd() *cobra.Command {
 }
 
 func runBuild(cmd *cobra.Command, schemaPath, outDir string, force bool) error {
-	// Load before touching the output directory so that a bad input never cleans previous output.
+	// Load and plan before touching the output directory so that a bad input never cleans previous output.
 	s, err := tbls.Load(schemaPath)
+	if err != nil {
+		return err
+	}
+	site, err := render.Plan(s)
 	if err != nil {
 		return err
 	}
@@ -41,28 +44,10 @@ func runBuild(cmd *cobra.Command, schemaPath, outDir string, force bool) error {
 	if err := output.Prepare(outDir, force); err != nil {
 		return err
 	}
-
-	if err := writeIndex(filepath.Join(outDir, "index.html"), s); err != nil {
+	if err := site.Write(outDir); err != nil {
 		return err
 	}
 
 	_, err = fmt.Fprintf(cmd.OutOrStdout(), "Generated documentation for %d tables in %s\n", len(s.Tables), outDir)
 	return err
-}
-
-func writeIndex(path string, s *tbls.Schema) (err error) {
-	f, err := output.CreateFile(path)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if cerr := f.Close(); cerr != nil && err == nil {
-			err = fmt.Errorf("close %s: %w", path, cerr)
-		}
-	}()
-
-	if err := render.Index(f, s); err != nil {
-		return fmt.Errorf("render %s: %w", path, err)
-	}
-	return nil
 }

@@ -489,6 +489,13 @@
             "id"
           ]
         }
+      ],
+      "triggers": [
+        {
+          "name": "orders_check_ordered_at",
+          "def": "CREATE TRIGGER orders_check_ordered_at BEFORE INSERT OR UPDATE ON public.orders FOR EACH ROW EXECUTE FUNCTION reject_future_ordered_at()",
+          "comment": "未来日時の注文を拒否する"
+        }
       ]
     },
     {
@@ -671,6 +678,19 @@
           "referenced_table": "",
           "columns": [
             "order_id"
+          ]
+        },
+        {
+          "name": "shipments_order_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (order_id) REFERENCES orders(id)",
+          "table": "public.shipments",
+          "referenced_table": "public.orders",
+          "columns": [
+            "order_id"
+          ],
+          "referenced_columns": [
+            "id"
           ]
         },
         {
@@ -967,6 +987,19 @@
     {
       "table": "public.shipments",
       "columns": [
+        "order_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.orders",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (order_id) REFERENCES orders(id)"
+    },
+    {
+      "table": "public.shipments",
+      "columns": [
         "order_id",
         "line_no"
       ],
@@ -1005,6 +1038,14 @@
       "parent_cardinality": "zero_or_one",
       "def": "audit_logs.user_id -\u003e users.id (アプリケーション側で管理)",
       "virtual": true
+    }
+  ],
+  "functions": [
+    {
+      "name": "public.reject_future_ordered_at",
+      "return_type": "trigger",
+      "arguments": "",
+      "type": "FUNCTION"
     }
   ],
   "driver": {

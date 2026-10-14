@@ -159,6 +159,26 @@ func sameDir(a, b string) bool {
 	return os.SameFile(ai, bi)
 }
 
+// CreateDir creates a subdirectory for generated content. An existing symlink
+// (or other non-directory) is rejected so that files are never written outside
+// the output directory through it.
+func CreateDir(path string) error {
+	info, err := os.Lstat(path)
+	switch {
+	case errors.Is(err, os.ErrNotExist):
+		if err := os.Mkdir(path, 0o755); err != nil {
+			return fmt.Errorf("create %s: %w", path, err)
+		}
+		return nil
+	case err != nil:
+		return fmt.Errorf("check %s: %w", path, err)
+	case !info.IsDir():
+		return fmt.Errorf("%s exists and is not a directory", path)
+	default:
+		return nil
+	}
+}
+
 // CreateFile creates path for writing generated content. An existing entry is removed
 // first so that a symlink planted in the output directory is replaced, not followed.
 func CreateFile(path string) (*os.File, error) {
