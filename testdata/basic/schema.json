@@ -1,0 +1,1024 @@
+{
+  "name": "dbfolio",
+  "tables": [
+    {
+      "name": "public.regions",
+      "type": "BASE TABLE",
+      "comment": "地域マスタ",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "comment": "地域ID"
+        },
+        {
+          "name": "name",
+          "type": "varchar(100)",
+          "nullable": false,
+          "comment": "地域名"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "regions_pkey",
+          "def": "CREATE UNIQUE INDEX regions_pkey ON public.regions USING btree (id)",
+          "table": "public.regions",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "regions_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.regions",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "regions_name_not_null",
+          "type": "n",
+          "def": "NOT NULL name",
+          "table": "public.regions",
+          "referenced_table": "",
+          "columns": [
+            "name"
+          ]
+        },
+        {
+          "name": "regions_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.regions",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.users",
+      "type": "BASE TABLE",
+      "comment": "ユーザー情報",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('users_id_seq'::regclass)",
+          "comment": "ユーザーID"
+        },
+        {
+          "name": "name",
+          "type": "varchar(100)",
+          "nullable": false,
+          "comment": "氏名"
+        },
+        {
+          "name": "email",
+          "type": "varchar(255)",
+          "nullable": false,
+          "comment": "ログインに使用するメールアドレス"
+        },
+        {
+          "name": "region_id",
+          "type": "bigint",
+          "nullable": true,
+          "comment": "地域ID"
+        },
+        {
+          "name": "status",
+          "type": "varchar(20)",
+          "nullable": false,
+          "default": "'active'::character varying",
+          "comment": "状態"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": "登録日時"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "users_pkey",
+          "def": "CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id)",
+          "table": "public.users",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "users_email_key",
+          "def": "CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email)",
+          "table": "public.users",
+          "columns": [
+            "email"
+          ]
+        },
+        {
+          "name": "users_region_id_idx",
+          "def": "CREATE INDEX users_region_id_idx ON public.users USING btree (region_id)",
+          "table": "public.users",
+          "columns": [
+            "region_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "users_created_at_not_null",
+          "type": "n",
+          "def": "NOT NULL created_at",
+          "table": "public.users",
+          "referenced_table": "",
+          "columns": [
+            "created_at"
+          ]
+        },
+        {
+          "name": "users_email_not_null",
+          "type": "n",
+          "def": "NOT NULL email",
+          "table": "public.users",
+          "referenced_table": "",
+          "columns": [
+            "email"
+          ]
+        },
+        {
+          "name": "users_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.users",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "users_name_not_null",
+          "type": "n",
+          "def": "NOT NULL name",
+          "table": "public.users",
+          "referenced_table": "",
+          "columns": [
+            "name"
+          ]
+        },
+        {
+          "name": "users_status_check",
+          "type": "CHECK",
+          "def": "CHECK (((status)::text = ANY ((ARRAY['active'::character varying, 'suspended'::character varying, 'deleted'::character varying])::text[])))",
+          "table": "public.users",
+          "referenced_table": "",
+          "columns": [
+            "status"
+          ]
+        },
+        {
+          "name": "users_status_not_null",
+          "type": "n",
+          "def": "NOT NULL status",
+          "table": "public.users",
+          "referenced_table": "",
+          "columns": [
+            "status"
+          ]
+        },
+        {
+          "name": "users_region_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (region_id) REFERENCES regions(id)",
+          "table": "public.users",
+          "referenced_table": "public.regions",
+          "columns": [
+            "region_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "users_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.users",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "users_email_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (email)",
+          "table": "public.users",
+          "referenced_table": "",
+          "columns": [
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.roles",
+      "type": "BASE TABLE",
+      "comment": "ロール",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "varchar(50)",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "roles_pkey",
+          "def": "CREATE UNIQUE INDEX roles_pkey ON public.roles USING btree (id)",
+          "table": "public.roles",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "roles_name_key",
+          "def": "CREATE UNIQUE INDEX roles_name_key ON public.roles USING btree (name)",
+          "table": "public.roles",
+          "columns": [
+            "name"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "roles_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.roles",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "roles_name_not_null",
+          "type": "n",
+          "def": "NOT NULL name",
+          "table": "public.roles",
+          "referenced_table": "",
+          "columns": [
+            "name"
+          ]
+        },
+        {
+          "name": "roles_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.roles",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "roles_name_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (name)",
+          "table": "public.roles",
+          "referenced_table": "",
+          "columns": [
+            "name"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.user_roles",
+      "type": "BASE TABLE",
+      "comment": "ユーザーとロールの対応",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "role_id",
+          "type": "bigint",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "user_roles_pkey",
+          "def": "CREATE UNIQUE INDEX user_roles_pkey ON public.user_roles USING btree (user_id, role_id)",
+          "table": "public.user_roles",
+          "columns": [
+            "user_id",
+            "role_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "user_roles_role_id_not_null",
+          "type": "n",
+          "def": "NOT NULL role_id",
+          "table": "public.user_roles",
+          "referenced_table": "",
+          "columns": [
+            "role_id"
+          ]
+        },
+        {
+          "name": "user_roles_user_id_not_null",
+          "type": "n",
+          "def": "NOT NULL user_id",
+          "table": "public.user_roles",
+          "referenced_table": "",
+          "columns": [
+            "user_id"
+          ]
+        },
+        {
+          "name": "user_roles_user_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
+          "table": "public.user_roles",
+          "referenced_table": "public.users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "user_roles_role_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (role_id) REFERENCES roles(id)",
+          "table": "public.user_roles",
+          "referenced_table": "public.roles",
+          "columns": [
+            "role_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "user_roles_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (user_id, role_id)",
+          "table": "public.user_roles",
+          "referenced_table": "",
+          "columns": [
+            "user_id",
+            "role_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.orders",
+      "type": "BASE TABLE",
+      "comment": "注文",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('orders_id_seq'::regclass)"
+        },
+        {
+          "name": "user_id",
+          "type": "bigint",
+          "nullable": false,
+          "comment": "注文したユーザー"
+        },
+        {
+          "name": "ordered_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "orders_pkey",
+          "def": "CREATE UNIQUE INDEX orders_pkey ON public.orders USING btree (id)",
+          "table": "public.orders",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "orders_user_id_idx",
+          "def": "CREATE INDEX orders_user_id_idx ON public.orders USING btree (user_id)",
+          "table": "public.orders",
+          "columns": [
+            "user_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "orders_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "orders_ordered_at_not_null",
+          "type": "n",
+          "def": "NOT NULL ordered_at",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "ordered_at"
+          ]
+        },
+        {
+          "name": "orders_user_id_not_null",
+          "type": "n",
+          "def": "NOT NULL user_id",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "user_id"
+          ]
+        },
+        {
+          "name": "orders_user_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (user_id) REFERENCES users(id)",
+          "table": "public.orders",
+          "referenced_table": "public.users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "orders_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.order_items",
+      "type": "BASE TABLE",
+      "comment": "注文明細",
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "line_no",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "product",
+          "type": "varchar(200)",
+          "nullable": false
+        },
+        {
+          "name": "quantity",
+          "type": "integer",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "order_items_pkey",
+          "def": "CREATE UNIQUE INDEX order_items_pkey ON public.order_items USING btree (order_id, line_no)",
+          "table": "public.order_items",
+          "columns": [
+            "order_id",
+            "line_no"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "order_items_line_no_not_null",
+          "type": "n",
+          "def": "NOT NULL line_no",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "line_no"
+          ]
+        },
+        {
+          "name": "order_items_order_id_not_null",
+          "type": "n",
+          "def": "NOT NULL order_id",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "order_id"
+          ]
+        },
+        {
+          "name": "order_items_product_not_null",
+          "type": "n",
+          "def": "NOT NULL product",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "product"
+          ]
+        },
+        {
+          "name": "order_items_quantity_check",
+          "type": "CHECK",
+          "def": "CHECK ((quantity \u003e 0))",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "quantity"
+          ]
+        },
+        {
+          "name": "order_items_quantity_not_null",
+          "type": "n",
+          "def": "NOT NULL quantity",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "quantity"
+          ]
+        },
+        {
+          "name": "order_items_order_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE",
+          "table": "public.order_items",
+          "referenced_table": "public.orders",
+          "columns": [
+            "order_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "order_items_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (order_id, line_no)",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "order_id",
+            "line_no"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.shipments",
+      "type": "BASE TABLE",
+      "comment": "出荷 (注文明細単位)",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('shipments_id_seq'::regclass)"
+        },
+        {
+          "name": "order_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "line_no",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "shipped_at",
+          "type": "timestamp with time zone",
+          "nullable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "shipments_pkey",
+          "def": "CREATE UNIQUE INDEX shipments_pkey ON public.shipments USING btree (id)",
+          "table": "public.shipments",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "shipments_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.shipments",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "shipments_line_no_not_null",
+          "type": "n",
+          "def": "NOT NULL line_no",
+          "table": "public.shipments",
+          "referenced_table": "",
+          "columns": [
+            "line_no"
+          ]
+        },
+        {
+          "name": "shipments_order_id_not_null",
+          "type": "n",
+          "def": "NOT NULL order_id",
+          "table": "public.shipments",
+          "referenced_table": "",
+          "columns": [
+            "order_id"
+          ]
+        },
+        {
+          "name": "shipments_order_item_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)",
+          "table": "public.shipments",
+          "referenced_table": "public.order_items",
+          "columns": [
+            "order_id",
+            "line_no"
+          ],
+          "referenced_columns": [
+            "order_id",
+            "line_no"
+          ]
+        },
+        {
+          "name": "shipments_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.shipments",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.comments",
+      "type": "BASE TABLE",
+      "comment": "コメント",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('comments_id_seq'::regclass)"
+        },
+        {
+          "name": "user_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "body",
+          "type": "text",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "comments_pkey",
+          "def": "CREATE UNIQUE INDEX comments_pkey ON public.comments USING btree (id)",
+          "table": "public.comments",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "comments_body_not_null",
+          "type": "n",
+          "def": "NOT NULL body",
+          "table": "public.comments",
+          "referenced_table": "",
+          "columns": [
+            "body"
+          ]
+        },
+        {
+          "name": "comments_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.comments",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "comments_user_id_not_null",
+          "type": "n",
+          "def": "NOT NULL user_id",
+          "table": "public.comments",
+          "referenced_table": "",
+          "columns": [
+            "user_id"
+          ]
+        },
+        {
+          "name": "comments_user_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (user_id) REFERENCES users(id)",
+          "table": "public.comments",
+          "referenced_table": "public.users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "comments_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.comments",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.audit_logs",
+      "type": "BASE TABLE",
+      "comment": "監査ログ (コメントは .tbls.yml で付与)",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('audit_logs_id_seq'::regclass)"
+        },
+        {
+          "name": "user_id",
+          "type": "bigint",
+          "nullable": true,
+          "comment": "操作したユーザー"
+        },
+        {
+          "name": "action",
+          "type": "varchar(50)",
+          "nullable": false,
+          "comment": "操作種別"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "audit_logs_pkey",
+          "def": "CREATE UNIQUE INDEX audit_logs_pkey ON public.audit_logs USING btree (id)",
+          "table": "public.audit_logs",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "audit_logs_action_not_null",
+          "type": "n",
+          "def": "NOT NULL action",
+          "table": "public.audit_logs",
+          "referenced_table": "",
+          "columns": [
+            "action"
+          ]
+        },
+        {
+          "name": "audit_logs_created_at_not_null",
+          "type": "n",
+          "def": "NOT NULL created_at",
+          "table": "public.audit_logs",
+          "referenced_table": "",
+          "columns": [
+            "created_at"
+          ]
+        },
+        {
+          "name": "audit_logs_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.audit_logs",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "audit_logs_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.audit_logs",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.active_users",
+      "type": "VIEW",
+      "comment": "有効なユーザー",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": true
+        },
+        {
+          "name": "name",
+          "type": "varchar(100)",
+          "nullable": true
+        },
+        {
+          "name": "email",
+          "type": "varchar(255)",
+          "nullable": true
+        }
+      ],
+      "def": "CREATE VIEW active_users AS (\n SELECT id,\n    name,\n    email\n   FROM users\n  WHERE ((status)::text = 'active'::text)\n)",
+      "referenced_tables": [
+        "public.users"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "table": "public.users",
+      "columns": [
+        "region_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.regions",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "zero_or_one",
+      "def": "FOREIGN KEY (region_id) REFERENCES regions(id)"
+    },
+    {
+      "table": "public.user_roles",
+      "columns": [
+        "user_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.users",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"
+    },
+    {
+      "table": "public.user_roles",
+      "columns": [
+        "role_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.roles",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (role_id) REFERENCES roles(id)"
+    },
+    {
+      "table": "public.orders",
+      "columns": [
+        "user_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.users",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (user_id) REFERENCES users(id)"
+    },
+    {
+      "table": "public.order_items",
+      "columns": [
+        "order_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.orders",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE"
+    },
+    {
+      "table": "public.shipments",
+      "columns": [
+        "order_id",
+        "line_no"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.order_items",
+      "parent_columns": [
+        "order_id",
+        "line_no"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)"
+    },
+    {
+      "table": "public.comments",
+      "columns": [
+        "user_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.users",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (user_id) REFERENCES users(id)"
+    },
+    {
+      "table": "public.audit_logs",
+      "columns": [
+        "user_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.users",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "zero_or_one",
+      "def": "audit_logs.user_id -\u003e users.id (アプリケーション側で管理)",
+      "virtual": true
+    }
+  ],
+  "driver": {
+    "name": "postgres",
+    "database_version": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+    "meta": {
+      "current_schema": "public",
+      "search_paths": [
+        "postgres",
+        "public"
+      ],
+      "dict": {
+        "Functions": "Stored procedures and functions"
+      }
+    }
+  }
+}
