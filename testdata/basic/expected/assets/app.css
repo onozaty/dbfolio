@@ -1,0 +1,70 @@
+/* Minimal styles for readability. The full UX is designed in a later phase. */
+:root {
+  --fg: #1f2328;
+  --muted: #59636e;
+  --border: #d1d9e0;
+  --bg: #ffffff;
+  --bg-subtle: #f6f8fa;
+  --link: #0969da;
+  --pk: #9a6700;
+  --fk: #0969da;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e6edf3;
+    --muted: #9198a1;
+    --border: #3d444d;
+    --bg: #0d1117;
+    --bg-subtle: #151b23;
+    --link: #4493f8;
+    --pk: #d29922;
+    --fk: #4493f8;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--fg);
+  background: var(--bg);
+  font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9em; }
+
+.site-header, .site-footer, main { padding: 0 24px; }
+.site-header { border-bottom: 1px solid var(--border); padding-block: 12px; }
+.site-title { font-weight: 600; color: var(--fg); }
+main { max-width: 1200px; padding-block: 8px 32px; }
+.site-footer { border-top: 1px solid var(--border); padding-block: 12px; color: var(--muted); font-size: 0.85em; }
+
+h1 { font-size: 1.6em; margin: 16px 0 4px; overflow-wrap: anywhere; }
+h2 { font-size: 1.2em; margin: 28px 0 8px; }
+
+.table-type { margin: 0; color: var(--muted); }
+.comment { white-space: pre-wrap; }
+
+.stats { display: flex; flex-wrap: wrap; gap: 12px; margin: 0; }
+.stats div { border: 1px solid var(--border); border-radius: 6px; padding: 8px 16px; min-width: 110px; }
+.stats dt { color: var(--muted); font-size: 0.85em; }
+.stats dd { margin: 0; font-size: 1.4em; font-weight: 600; }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: var(--bg-subtle); white-space: nowrap; }
+td code { overflow-wrap: anywhere; }
+.num { text-align: right; }
+
+.key { font-size: 0.8em; font-weight: 600; }
+.key-PK { color: var(--pk); }
+.key-FK { color: var(--fk); }
+
+pre { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 6px; padding: 12px; overflow-x: auto; white-space: pre-wrap; }

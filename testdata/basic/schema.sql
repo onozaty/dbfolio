@@ -53,6 +53,21 @@ CREATE INDEX orders_user_id_idx ON orders (user_id);
 COMMENT ON TABLE orders IS '注文';
 COMMENT ON COLUMN orders.user_id IS '注文したユーザー';
 
+-- トリガー
+CREATE FUNCTION reject_future_ordered_at() RETURNS trigger AS $$
+BEGIN
+  IF NEW.ordered_at > now() THEN
+    RAISE EXCEPTION 'ordered_at must not be in the future';
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER orders_check_ordered_at
+  BEFORE INSERT OR UPDATE ON orders
+  FOR EACH ROW EXECUTE FUNCTION reject_future_ordered_at();
+COMMENT ON TRIGGER orders_check_ordered_at ON orders IS '未来日時の注文を拒否する';
+
 -- 複合主キー
 CREATE TABLE order_items (
   order_id   bigint NOT NULL REFERENCES orders (id) ON DELETE CASCADE,
@@ -69,6 +84,8 @@ CREATE TABLE shipments (
   order_id bigint NOT NULL,
   line_no  integer NOT NULL,
   shipped_at timestamptz,
+  -- order_id は単独の FK と複合 FK の両方に含まれる
+  CONSTRAINT shipments_order_fkey FOREIGN KEY (order_id) REFERENCES orders (id),
   CONSTRAINT shipments_order_item_fkey FOREIGN KEY (order_id, line_no)
     REFERENCES order_items (order_id, line_no)
 );

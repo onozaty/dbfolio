@@ -1,0 +1,26 @@
+{{define "content"}}<h1>{{.DBName}}</h1>
+{{with .Desc}}<p class="comment">{{.}}</p>
+{{end}}
+<section>
+<h2>Overview</h2>
+<dl class="stats">
+<div><dt>Tables</dt><dd>{{.Stats.Tables}}</dd></div>
+<div><dt>Views</dt><dd>{{.Stats.Views}}</dd></div>
+<div><dt>Columns</dt><dd>{{.Stats.Columns}}</dd></div>
+<div><dt>Relations</dt><dd>{{.Stats.Relations}}</dd></div>
+<div><dt>Indexes</dt><dd>{{.Stats.Indexes}}</dd></div>
+</dl>
+</section>
+
+<section>
+<h2>Tables</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th class="num">Columns</th><th>Comment</th></tr></thead>
+<tbody>
+{{range .Tables}}<tr><td><a href="{{.Href}}">{{.Name}}</a></td><td>{{.Type}}</td><td class="num">{{.Columns}}</td><td class="comment">{{.Comment}}</td></tr>
+{{end}}</tbody>
+</table>
+</div>
+</section>
+{{end}}

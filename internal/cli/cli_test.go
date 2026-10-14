@@ -47,6 +47,48 @@ func TestBuild_GeneratesIndexAndMarker(t *testing.T) {
 	}
 }
 
+func TestBuild_GeneratesTablePagesAndAssets(t *testing.T) {
+	// Arrange
+	outDir := filepath.Join(t.TempDir(), "docs")
+
+	// Act
+	_, err := execute(t, "", "build", sampleSchema, "-o", outDir)
+
+	// Assert
+	if err != nil {
+		t.Fatalf("build error = %v", err)
+	}
+	for _, name := range []string{"tables/public.users.html", "tables/public.active_users.html", "assets/app.css"} {
+		if _, err := os.Stat(filepath.Join(outDir, name)); err != nil {
+			t.Errorf("%s not generated: %v", name, err)
+		}
+	}
+}
+
+func TestBuild_KeepsPreviousOutputWhenFileNamesCollide(t *testing.T) {
+	// Arrange
+	outDir := t.TempDir()
+	if _, err := execute(t, "", "build", sampleSchema, "-o", outDir); err != nil {
+		t.Fatal(err)
+	}
+	colliding := filepath.Join(t.TempDir(), "colliding.json")
+	content := `{"tables": [{"name": "Users"}, {"name": "` + output.FileName("Users") + `"}]}`
+	if err := os.WriteFile(colliding, []byte(content), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Act
+	_, err := execute(t, "", "build", colliding, "-o", outDir)
+
+	// Assert
+	if err == nil {
+		t.Fatal("build error = nil, want file name collision error")
+	}
+	if _, statErr := os.Stat(filepath.Join(outDir, "tables", "public.users.html")); statErr != nil {
+		t.Errorf("previous output was removed: %v", statErr)
+	}
+}
+
 func TestBuild_AcceptsOutputFlagBeforeSchemaPath(t *testing.T) {
 	// Arrange
 	outDir := filepath.Join(t.TempDir(), "docs")
