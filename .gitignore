@@ -1,0 +1,7 @@
+# Generated documentation
+/dbfolio-docs/
+/out/
+
+# Build artifacts
+/dbfolio
+/dist/
