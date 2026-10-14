@@ -104,8 +104,7 @@ tbls out -t json -o schema.json
 
 ```text
 dbfolio-docs/
-├── index.html
-├── tables.html
+├── index.html            ← Overview + テーブル一覧
 ├── relationships.html
 ├── tables/
 │   ├── users.html
@@ -121,6 +120,8 @@ dbfolio-docs/
 ```
 
 Web サーバーや JavaScript フレームワークを必須にせず、基本は静的ファイルだけで閲覧できる形を目指す。
+
+テーブル一覧は Overview (`index.html`) に含め、独立した `tables.html` は作らない (Phase 2 で決定)。ページ間のリンクは相対パスにする (`file://` で開けるようにするため)。
 
 ---
 
@@ -572,8 +573,8 @@ dbfolio/
 │   │   ├── renderer.go      ← //go:embed を置く
 │   │   ├── viewmodel.go
 │   │   ├── templates/
+│   │   │   ├── layout.html
 │   │   │   ├── index.html
-│   │   │   ├── tables.html
 │   │   │   ├── table.html
 │   │   │   └── relationships.html
 │   │   └── assets/
@@ -617,30 +618,35 @@ dbfolio 内部モデルへ変換する層を設ける。
 - 将来 tbls 以外の入力形式を追加可能
 - テストしやすい
 
-概念モデル:
+内部モデルは `internal/schema/model.go` に定義する (Phase 2 で実装)。主な判断:
+
+- テーブル種別は DB ごとに値が異なる (`BASE TABLE` / `table` / `FOREIGN TABLE` など) ため、元の文字列 (`Type`) と View かどうか (`View`、種別に `VIEW` を含むか) を分けて持つ
+- 制約は `Kind` (PRIMARY KEY / FOREIGN KEY / UNIQUE / CHECK / OTHER) で分類し、元の種別文字列も保持する。カラム属性と重複する制約 (PostgreSQL 18 の NOT NULL 制約) は入力層で除外する
+- PK / FK は Column にフラグとして持たせない。1 カラムが複数の FK や複合 FK に属しうるため、制約を正として持ち、カラム表の Key 表示は ViewModel で制約から逆引きする
+- `Def` は入力が提供する場合のみ持つ (View の定義、MySQL では CREATE TABLE 文)
 
 ```go
-type Schema struct {
-    Name      string
-    Tables    []Table
-    Relations []Relation
-}
-
 type Table struct {
     Name        string
+    Type        string
+    View        bool
     Comment     string
-    Columns     []Column
-    Indexes     []Index
-    Constraints []Constraint
+    Columns     []*Column
+    Indexes     []*Index
+    Constraints []*Constraint
+    Triggers    []*Trigger
+    Def         string
 }
 
-type Relation struct {
-    Table             string
+type Constraint struct {
+    Name              string
+    Kind              ConstraintKind
+    Type              string
+    Def               string
     Columns           []string
-    ParentTable       string
-    ParentColumns     []string
-    Cardinality       string
-    ParentCardinality string
+    ReferencedTable   string   // FK のみ
+    ReferencedColumns []string // FK のみ。ReferencedColumns[i] は Columns[i] が参照する
+    Comment           string
 }
 ```
 
@@ -654,6 +660,8 @@ type TablePage struct {
     Diagram   string
 }
 ```
+
+描画は Plan (ページのファイル名の決定と重複検出) と Write (ファイルの書き出し) に分ける。入力に起因するエラーはすべて Plan までに検出し、出力先ディレクトリを削除・変更する前に失敗させる (不正な入力で前回の出力を消さないため)。
 
 ---
 
@@ -890,12 +898,14 @@ ER 図の Graphviz 計算をブラウザー側では行わない。
 
 HTML や DOT の生成結果には Golden Test が有効。
 
+HTML は生成サイト全体を `testdata/<case>/expected/` と比較する。期待値は `go test ./internal/render -update` で更新する。
+
 ```text
 testdata/
 ├── basic/
 │   ├── schema.json
-│   ├── expected.dot
-│   └── expected.html
+│   ├── expected/        ← 生成サイト全体 (index.html, tables/, assets/)
+│   └── expected.dot
 ├── composite-fk/
 └── virtual-relation/
 ```

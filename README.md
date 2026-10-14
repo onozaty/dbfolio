@@ -3,7 +3,7 @@
 Generate static HTML database documentation and ER diagrams from tbls schema.json.
 
 > [!NOTE]
-> dbfolio is under development. Currently only an overview page is generated.
+> dbfolio is under development. Currently an overview page and table detail pages are generated.
 
 ## Usage
 

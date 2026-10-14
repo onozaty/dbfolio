@@ -1,6 +1,6 @@
 # dbfolio ロードマップ
 
-更新日: 2026-10-04
+更新日: 2026-10-14
 
 設計方針・技術判断は [concept.md](concept.md) を参照。本ファイルは「何をどの順で進めるか」と進捗を管理する。
 細かいタスクは GitHub Issues で管理し、ここには Phase 単位の計画と完了条件のみを書く。
@@ -11,7 +11,7 @@
 |---|---|---|
 | 0 | 縦切り PoC | 完了 (2026-10-04) |
 | 1 | 最小 CLI | 完了 (2026-10-04) |
-| 2 | Table documentation | 未着手 |
+| 2 | Table documentation | 完了 (2026-10-14) |
 | 3 | Relations | 未着手 |
 | 4 | ER diagram | 未着手 |
 | 5 | UX | 未着手 |
@@ -76,15 +76,17 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 ## Phase 2: Table documentation
 
-- [ ] 内部モデル (`internal/schema`) と tbls 入力層 (`internal/input/tbls`) の分離
-- [ ] Overview (DB 名、テーブル / View / カラム / Relation / Index 数)
-- [ ] テーブル一覧
-- [ ] テーブル詳細: Columns / Comments / Indexes / Constraints / Triggers
-- [ ] PK / FK の表示
-- [ ] テンプレート・Asset の `embed`
-- [ ] Golden Test (HTML)
+- [x] 内部モデル (`internal/schema`) と tbls 入力層 (`internal/input/tbls`) の分離
+- [x] Overview (DB 名、テーブル / View / カラム / Relation / Index 数)
+- [x] テーブル一覧
+- [x] テーブル詳細: Columns / Comments / Indexes / Constraints / Triggers
+- [x] PK / FK の表示
+- [x] テンプレート・Asset の `embed`
+- [x] Golden Test (HTML)
 
 完了条件: 全テーブルの詳細ページが生成され、コメントを含めて仕様書として読めること。
+
+テーブル一覧は Overview (`index.html`) に含めた。Key 列の FK 表示は FK 制約のみが対象で、Virtual Relation は Phase 3 で扱う。
 
 ---
 
@@ -96,6 +98,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 - [ ] 複合 FK
 - [ ] Virtual Relation の表示 (通常の FK と区別できる表示)
 - [ ] Relationships 一覧ページ
+- [ ] Relation の両端テーブルが存在しない場合の扱い (`.tbls.yml` の Virtual Relation の typo など)。出力先に触れる前に検出する
 
 完了条件: テーブル間をリンクだけでたどれること。
 
