@@ -7,7 +7,8 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "golang.go"
+        "golang.go",
+        "peakchen90.open-html-in-browser"
       ]
     }
   },
