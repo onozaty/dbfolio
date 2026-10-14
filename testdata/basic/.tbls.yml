@@ -1,0 +1,17 @@
+dsn: postgres://postgres:postgres@localhost:5432/dbfolio?sslmode=disable
+
+relations:
+  - table: audit_logs
+    columns:
+      - user_id
+    parentTable: users
+    parentColumns:
+      - id
+    def: audit_logs.user_id -> users.id (アプリケーション側で管理)
+
+comments:
+  - table: audit_logs
+    tableComment: 監査ログ (コメントは .tbls.yml で付与)
+    columnComments:
+      user_id: 操作したユーザー
+      action: 操作種別

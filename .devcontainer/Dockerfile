@@ -8,3 +8,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /home/vscode/.claude /home/vscode/.config/gh && chown -R vscode:vscode /home/vscode/.claude /home/vscode/.config/gh
+
+# tbls generates schema.json, the input of dbfolio (used for test data)
+RUN GOBIN=/usr/local/bin GOPATH=/tmp/gopath go install github.com/k1LoW/tbls@v1.96.1 \
+    && rm -rf /tmp/gopath /root/.cache/go-build

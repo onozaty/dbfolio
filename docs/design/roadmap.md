@@ -10,7 +10,7 @@
 | Phase | 内容 | 状態 |
 |---|---|---|
 | 0 | 縦切り PoC | 完了 (2026-10-04) |
-| 1 | 最小 CLI | 未着手 |
+| 1 | 最小 CLI | 完了 (2026-10-04) |
 | 2 | Table documentation | 未着手 |
 | 3 | Relations | 未着手 |
 | 4 | ER diagram | 未着手 |
@@ -58,17 +58,19 @@ PoC のコードは捨てる前提で書いてよい。Phase 1 以降で構成�
 dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 ```
 
-- [ ] CLI の骨格 (`build` サブコマンド、`version`)
-- [ ] `schema.json` の読み込みとエラーハンドリング (ファイルなし / 不正 JSON / 未知フィールド許容)
-- [ ] 動作確認する tbls のバージョンを決め、README に明記
-- [ ] 出力ディレクトリ処理
-  - [ ] 既定値 `./dbfolio-docs`
-  - [ ] マーカーファイル `.dbfolio` による上書き判定
-  - [ ] マーカーのない非空ディレクトリはエラー、`--force` で上書き
-- [ ] テーブル名から安全なファイル名 (slug / encoded ID) を生成
-- [ ] CI (go test / go vet / lint) の最小構成
+- [x] CLI の骨格 (`build` サブコマンド、`version`)
+- [x] `schema.json` の読み込みとエラーハンドリング (ファイルなし / 不正 JSON / 未知フィールド許容)
+- [x] 動作確認する tbls のバージョンを決め、README に明記
+- [x] 出力ディレクトリ処理
+  - [x] 既定値 `./dbfolio-docs`
+  - [x] マーカーファイル `.dbfolio` による上書き判定
+  - [x] マーカーのない非空ディレクトリはエラー、`--force` で上書き
+- [x] テーブル名から安全なファイル名 (slug / encoded ID) を生成
+- [x] CI (go test / go vet / lint) の最小構成
 
 完了条件: 任意の `schema.json` を渡して出力ディレクトリが安全に生成されること。
+
+出力は Overview の仮ページ (`index.html`、テーブル一覧のみ) とマーカーのみ。テンプレートの `embed` とテーブル詳細ページは Phase 2 で行う。
 
 ---
 
@@ -153,7 +155,5 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 PoC / 実装中に決める。決まったら concept.md を更新する。比較検討の経緯や計測結果など、concept.md に書くと長くなる内容があるときだけ `docs/design/adr/` に記録する。
 
-- テーブル名からのファイル名生成ルール (スキーマ名付きの名前を含む)
 - 複合 FK を ER 図でどう表現するか
 - 全体 ER 図が巨大な場合の扱い (分割 / オプション化)
-- CLI ライブラリの選定 (標準 `flag` / cobra 等)
