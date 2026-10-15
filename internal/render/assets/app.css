@@ -44,6 +44,28 @@ code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospac
 .site-title { font-weight: 600; color: var(--fg); }
 .site-nav { display: flex; flex-wrap: wrap; gap: 16px; }
 .site-nav a[aria-current="page"] { color: var(--fg); font-weight: 600; }
+
+/* Search (search.js). Shown only when JavaScript runs. */
+.search { position: relative; margin-left: auto; width: min(360px, 100%); }
+.search input { width: 100%; padding: 5px 10px; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; }
+.search input { padding-right: 28px; }
+.search input:focus { outline: 2px solid var(--link); outline-offset: -1px; }
+/* Shortcut hint, as on GitHub; hidden while typing. */
+.search-key { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); padding: 0 5px; font: 0.8em/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; pointer-events: none; }
+.search input:focus ~ .search-key, .search input:not(:placeholder-shown) ~ .search-key { display: none; }
+#search-results { position: absolute; right: 0; z-index: 10; width: min(560px, 90vw); max-height: 60vh; overflow: auto; margin: 4px 0 0; padding: 4px 0; list-style: none; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); }
+#search-results a { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding: 6px 12px; color: var(--fg); text-decoration: none; }
+#search-results li.active a { background: var(--bg-subtle); }
+.search-name { font-weight: 600; overflow-wrap: anywhere; }
+.search-type { color: var(--muted); font-size: 0.85em; }
+.search-comment { flex-basis: 100%; color: var(--muted); font-size: 0.85em; }
+/* The result count is for screen readers; "No matches" is also shown below the box. */
+.search-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.search-status.search-empty { position: absolute; right: 0; z-index: 10; width: auto; height: auto; clip: auto; margin-top: 4px; padding: 6px 12px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; }
+
+/* A column reached from search. */
+tr:target td { background: var(--bg-subtle); }
+tr:target td:first-child { box-shadow: inset 3px 0 0 var(--link); }
 /* No width limit: wide tables and diagrams use the whole window. */
 main { padding-block: 8px 32px; }
 .site-footer { border-top: 1px solid var(--border); padding-block: 12px; color: var(--muted); font-size: 0.85em; }

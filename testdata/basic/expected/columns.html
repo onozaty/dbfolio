@@ -1,11 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-root="">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Columns - dbfolio</title>
 <link rel="stylesheet" href="assets/app.css">
 <script src="assets/app.js" defer></script>
+<script src="assets/search-index.js" defer></script>
+<script src="assets/search.js" defer></script>
 </head>
 <body>
 <header class="site-header">
@@ -16,6 +18,12 @@
 <a href="constraints.html">Constraints</a>
 <a href="relationships.html">Relationships</a>
 </nav>
+<div class="search" role="search" hidden>
+<input type="search" id="search-input" placeholder="Search tables and columns" autocomplete="off" spellcheck="false" aria-label="Search tables and columns" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
+<kbd class="search-key" aria-hidden="true">/</kbd>
+<ul id="search-results" role="listbox" aria-label="Search results" hidden></ul>
+<div id="search-status" class="search-status" aria-live="polite"></div>
+</div>
 </header>
 <main>
 <h1>Columns<span class="count">34 columns</span></h1>

@@ -1,11 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-root="../">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>public.order_items - dbfolio</title>
 <link rel="stylesheet" href="../assets/app.css">
 <script src="../assets/app.js" defer></script>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/search.js" defer></script>
 </head>
 <body>
 <header class="site-header">
@@ -16,6 +18,12 @@
 <a href="../constraints.html">Constraints</a>
 <a href="../relationships.html">Relationships</a>
 </nav>
+<div class="search" role="search" hidden>
+<input type="search" id="search-input" placeholder="Search tables and columns" autocomplete="off" spellcheck="false" aria-label="Search tables and columns" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
+<kbd class="search-key" aria-hidden="true">/</kbd>
+<ul id="search-results" role="listbox" aria-label="Search results" hidden></ul>
+<div id="search-status" class="search-status" aria-live="polite"></div>
+</div>
 </header>
 <main>
 <h1>public.order_items</h1>
@@ -28,10 +36,10 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr><td>order_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="../tables/public.orders.html" title="References public.orders id">FK</a></td><td class="comment"></td></tr>
-<tr><td>line_no</td><td><code>integer</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
-<tr><td>product</td><td><code>varchar(200)</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
-<tr><td>quantity</td><td><code>integer</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
+<tr id="column-0"><td>order_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="../tables/public.orders.html" title="References public.orders id">FK</a></td><td class="comment"></td></tr>
+<tr id="column-1"><td>line_no</td><td><code>integer</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr id="column-2"><td>product</td><td><code>varchar(200)</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
+<tr id="column-3"><td>quantity</td><td><code>integer</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>

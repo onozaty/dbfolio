@@ -1,11 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-root="../">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>public.orders - dbfolio</title>
 <link rel="stylesheet" href="../assets/app.css">
 <script src="../assets/app.js" defer></script>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/search.js" defer></script>
 </head>
 <body>
 <header class="site-header">
@@ -16,6 +18,12 @@
 <a href="../constraints.html">Constraints</a>
 <a href="../relationships.html">Relationships</a>
 </nav>
+<div class="search" role="search" hidden>
+<input type="search" id="search-input" placeholder="Search tables and columns" autocomplete="off" spellcheck="false" aria-label="Search tables and columns" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
+<kbd class="search-key" aria-hidden="true">/</kbd>
+<ul id="search-results" role="listbox" aria-label="Search results" hidden></ul>
+<div id="search-status" class="search-status" aria-live="polite"></div>
+</div>
 </header>
 <main>
 <h1>public.orders</h1>
@@ -28,9 +36,9 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;orders_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
-<tr><td>user_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><a class="key key-FK" href="../tables/public.users.html" title="References public.users id">FK</a></td><td class="comment">注文したユーザー</td></tr>
-<tr><td>ordered_at</td><td><code>timestamp with time zone</code></td><td>NO</td><td><code>now()</code></td><td></td><td class="comment"></td></tr>
+<tr id="column-0"><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;orders_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr id="column-1"><td>user_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><a class="key key-FK" href="../tables/public.users.html" title="References public.users id">FK</a></td><td class="comment">注文したユーザー</td></tr>
+<tr id="column-2"><td>ordered_at</td><td><code>timestamp with time zone</code></td><td>NO</td><td><code>now()</code></td><td></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>
