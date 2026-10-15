@@ -22,12 +22,13 @@ const (
 )
 
 var (
-	indexTmpl = parsePage("templates/index.html")
-	tableTmpl = parsePage("templates/table.html")
+	indexTmpl     = parsePage("templates/index.html")
+	tableTmpl     = parsePage("templates/table.html")
+	relationsTmpl = parsePage("templates/relationships.html")
 )
 
 func parsePage(name string) *template.Template {
-	return template.Must(template.ParseFS(content, "templates/layout.html", name))
+	return template.Must(template.ParseFS(content, "templates/layout.html", "templates/relations.html", name))
 }
 
 // Site is a planned documentation site. Planning is separated from writing so
@@ -35,7 +36,8 @@ func parsePage(name string) *template.Template {
 type Site struct {
 	schema *schema.Schema
 	// files maps each table to its page file name under tablesDir.
-	files map[*schema.Table]string
+	files     map[*schema.Table]string
+	relations *schema.RelationIndex
 }
 
 // Plan decides the page file names, failing if two tables map to the same file.
@@ -50,7 +52,17 @@ func Plan(s *schema.Schema) (*Site, error) {
 		owners[name] = t.Name
 		files[t] = name
 	}
-	return &Site{schema: s, files: files}, nil
+	// The input layer already guarantees this; checking again keeps Write from
+	// failing (after the output directory is cleaned) for a Schema built elsewhere.
+	for i, r := range s.Relations {
+		if _, ok := files[r.Table]; !ok {
+			return nil, fmt.Errorf("relations[%d]: child table is not in the schema", i)
+		}
+		if _, ok := files[r.ParentTable]; !ok {
+			return nil, fmt.Errorf("relations[%d]: parent table is not in the schema", i)
+		}
+	}
+	return &Site{schema: s, files: files, relations: schema.NewRelationIndex(s)}, nil
 }
 
 // Write writes all pages and assets into dir, which must already be prepared.
@@ -58,7 +70,10 @@ func (site *Site) Write(dir string) error {
 	if err := writeAssets(dir); err != nil {
 		return err
 	}
-	if err := writePage(filepath.Join(dir, "index.html"), indexTmpl, newIndexPage(site.schema, site.files)); err != nil {
+	if err := writePage(filepath.Join(dir, "index.html"), indexTmpl, site.newIndexPage()); err != nil {
+		return err
+	}
+	if err := writePage(filepath.Join(dir, "relationships.html"), relationsTmpl, site.newRelationsPage()); err != nil {
 		return err
 	}
 	tables := filepath.Join(dir, tablesDir)
@@ -66,7 +81,7 @@ func (site *Site) Write(dir string) error {
 		return err
 	}
 	for _, t := range site.schema.Tables {
-		if err := writePage(filepath.Join(tables, site.files[t]), tableTmpl, newTablePage(site.schema, t)); err != nil {
+		if err := writePage(filepath.Join(tables, site.files[t]), tableTmpl, site.newTablePage(t)); err != nil {
 			return err
 		}
 	}

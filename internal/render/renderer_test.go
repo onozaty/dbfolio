@@ -28,6 +28,30 @@ func TestPlan_RejectsTablesMappedToSameFileName(t *testing.T) {
 	}
 }
 
+func TestPlan_RejectsRelationsToTablesOutsideSchema(t *testing.T) {
+	users := &schema.Table{Name: "users"}
+	outside := &schema.Table{Name: "outside"}
+	tests := map[string]*schema.Relation{
+		"child outside":  {Table: outside, ParentTable: users},
+		"parent outside": {Table: users, ParentTable: outside},
+		"nil parent":     {Table: users},
+	}
+	for name, r := range tests {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			s := &schema.Schema{Tables: []*schema.Table{users}, Relations: []*schema.Relation{r}}
+
+			// Act
+			_, err := Plan(s)
+
+			// Assert
+			if err == nil || !strings.Contains(err.Error(), "not in the schema") {
+				t.Errorf("Plan() error = %v, want not in the schema error", err)
+			}
+		})
+	}
+}
+
 func TestPlan_AcceptsNamesDifferingOnlyByCase(t *testing.T) {
 	// Arrange
 	s := &schema.Schema{Tables: []*schema.Table{{Name: "users"}, {Name: "Users"}}}

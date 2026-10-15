@@ -102,7 +102,7 @@ func Load(path string) (*schema.Schema, error) {
 }
 
 func validate(s *tblsSchema) error {
-	names := make(map[string]bool, len(s.Tables))
+	tables := make(map[string]*tblsTable, len(s.Tables))
 	for i, t := range s.Tables {
 		if t == nil {
 			return fmt.Errorf("tables[%d] is null", i)
@@ -111,10 +111,10 @@ func validate(s *tblsSchema) error {
 			return fmt.Errorf("tables[%d] has no name", i)
 		}
 		// Table names identify pages and relation endpoints.
-		if names[t.Name] {
+		if _, ok := tables[t.Name]; ok {
 			return fmt.Errorf("duplicate table name %s", t.Name)
 		}
-		names[t.Name] = true
+		tables[t.Name] = t
 		for j, c := range t.Columns {
 			if c == nil {
 				return fmt.Errorf("table %s: columns[%d] is null", t.Name, j)
@@ -140,6 +140,50 @@ func validate(s *tblsSchema) error {
 		if r == nil {
 			return fmt.Errorf("relations[%d] is null", i)
 		}
+		if err := validateRelation(r, tables); err != nil {
+			return fmt.Errorf("relations[%d] (%s -> %s): %w", i, r.Table, r.ParentTable, err)
+		}
+	}
+	return nil
+}
+
+// validateRelation rejects relations that cannot be linked. tbls itself checks
+// these when it builds relations (including virtual ones from .tbls.yml), so a
+// failure here means the file was edited or is inconsistent; skipping silently
+// would produce misleading documentation.
+func validateRelation(r *tblsRelation, tables map[string]*tblsTable) error {
+	child, ok := tables[r.Table]
+	if !ok {
+		return fmt.Errorf("table %q not found", r.Table)
+	}
+	parent, ok := tables[r.ParentTable]
+	if !ok {
+		return fmt.Errorf("parent table %q not found", r.ParentTable)
+	}
+	if len(r.Columns) == 0 {
+		return errors.New("no columns")
+	}
+	if len(r.Columns) != len(r.ParentColumns) {
+		return fmt.Errorf("%d columns but %d parent columns", len(r.Columns), len(r.ParentColumns))
+	}
+	if err := checkColumns(child, r.Columns); err != nil {
+		return err
+	}
+	return checkColumns(parent, r.ParentColumns)
+}
+
+func checkColumns(t *tblsTable, names []string) error {
+	for _, n := range names {
+		found := false
+		for _, c := range t.Columns {
+			if c.Name == n {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return fmt.Errorf("column %q not found in table %s", n, t.Name)
+		}
 	}
 	return nil
 }
@@ -154,17 +198,21 @@ func convert(s *tblsSchema) *schema.Schema {
 		Tables:    make([]*schema.Table, 0, len(s.Tables)),
 		Relations: make([]*schema.Relation, 0, len(s.Relations)),
 	}
+	byName := make(map[string]*schema.Table, len(s.Tables))
 	for _, t := range s.Tables {
-		out.Tables = append(out.Tables, convertTable(t))
+		ct := convertTable(t)
+		out.Tables = append(out.Tables, ct)
+		byName[t.Name] = ct
 	}
+	// validate has ensured that both endpoints exist.
 	for _, r := range s.Relations {
 		out.Relations = append(out.Relations, &schema.Relation{
-			Table:             r.Table,
+			Table:             byName[r.Table],
 			Columns:           r.Columns,
-			Cardinality:       r.Cardinality,
-			ParentTable:       r.ParentTable,
+			Cardinality:       schema.Cardinality(r.Cardinality),
+			ParentTable:       byName[r.ParentTable],
 			ParentColumns:     r.ParentColumns,
-			ParentCardinality: r.ParentCardinality,
+			ParentCardinality: schema.Cardinality(r.ParentCardinality),
 			Def:               r.Def,
 			Virtual:           r.Virtual,
 		})

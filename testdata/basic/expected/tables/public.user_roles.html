@@ -9,6 +9,7 @@
 <body>
 <header class="site-header">
 <a class="site-title" href="../index.html">dbfolio</a>
+<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a></nav>
 </header>
 <main>
 <h1>public.user_roles</h1>
@@ -21,8 +22,21 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr><td>user_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK">PK</span> <span class="key key-FK">FK</span></td><td class="comment"></td></tr>
-<tr><td>role_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK">PK</span> <span class="key key-FK">FK</span></td><td class="comment"></td></tr>
+<tr><td>user_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="../tables/public.users.html" title="References public.users id">FK</a></td><td class="comment"></td></tr>
+<tr><td>role_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="../tables/public.roles.html" title="References public.roles id">FK</a></td><td class="comment"></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Parents</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Parent</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td><a href="../tables/public.users.html">public.users</a></td><td><code>user_id → id</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE</code></td></tr>
+<tr><td><a href="../tables/public.roles.html">public.roles</a></td><td><code>role_id → id</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (role_id) REFERENCES roles(id)</code></td></tr>
 </tbody>
 </table>
 </div>

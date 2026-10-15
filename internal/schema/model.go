@@ -88,13 +88,24 @@ type Trigger struct {
 
 // Relation is a parent-child relation between tables, either from a foreign
 // key or defined virtually (e.g. in .tbls.yml) without a DB constraint.
+//
+// Table and ParentTable always point to tables of the same Schema, and every
+// column exists in its table; the input layer rejects relations that do not.
+// They can be the same table (self reference).
 type Relation struct {
-	Table             string
+	Table *Table
+	// Columns[i] references ParentColumns[i]; composite relations have several.
 	Columns           []string
-	Cardinality       string
-	ParentTable       string
+	Cardinality       Cardinality
+	ParentTable       *Table
 	ParentColumns     []string
-	ParentCardinality string
+	ParentCardinality Cardinality
 	Def               string
-	Virtual           bool
+	// Virtual is true for relations without a DB constraint.
+	Virtual bool
 }
+
+// Cardinality is the number of rows on one side of a relation, using tbls'
+// values ("zero_or_one", "exactly_one", "zero_or_more", "one_or_more").
+// Other values are kept as given.
+type Cardinality string

@@ -8,12 +8,22 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th>{{if .ShowExtra}}<th>Extra</th>{{end}}<th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-{{range .Columns}}<tr><td>{{.Name}}</td><td><code>{{.Type}}</code></td><td>{{if .Nullable}}YES{{else}}NO{{end}}</td><td>{{with .Default}}<code>{{.}}</code>{{end}}</td>{{if $.ShowExtra}}<td>{{with .ExtraDef}}<code>{{.}}</code>{{end}}</td>{{end}}<td>{{range $i, $k := .Keys}}{{if $i}} {{end}}<span class="key key-{{$k}}">{{$k}}</span>{{end}}</td><td class="comment">{{.Comment}}</td></tr>
+{{range .Columns}}<tr><td>{{.Name}}</td><td><code>{{.Type}}</code></td><td>{{if .Nullable}}YES{{else}}NO{{end}}</td><td>{{with .Default}}<code>{{.}}</code>{{end}}</td>{{if $.ShowExtra}}<td>{{with .ExtraDef}}<code>{{.}}</code>{{end}}</td>{{end}}<td>{{range $i, $k := .Keys}}{{if $i}} {{end}}{{template "key" $k}}{{end}}</td><td class="comment">{{.Comment}}</td></tr>
 {{end}}</tbody>
 </table>
 </div>
 </section>
-{{with .Table.Indexes}}
+{{if .Parents.Rows}}
+<section>
+<h2>Parents</h2>
+{{template "relations" .Parents}}
+</section>
+{{end}}{{if .Children.Rows}}
+<section>
+<h2>Children</h2>
+{{template "relations" .Children}}
+</section>
+{{end}}{{with .Table.Indexes}}
 <section>
 <h2>Indexes</h2>
 <div class="table-wrap">
@@ -55,3 +65,5 @@
 <pre><code>{{.}}</code></pre>
 </section>
 {{end}}{{end}}
+
+{{define "key"}}{{if .Href}}<a class="key key-{{.Label}}{{if .Virtual}} key-virtual{{end}}" href="{{.Href}}" title="{{.Title}}">{{.Label}}{{if .Virtual}}<span class="visually-hidden"> (virtual)</span>{{end}}</a>{{else}}<span class="key key-{{.Label}}" title="{{.Title}}">{{.Label}}</span>{{end}}{{end}}
