@@ -104,9 +104,10 @@ tbls out -t json -o schema.json
 
 ```text
 dbfolio-docs/
-├── index.html            ← Overview + テーブル一覧
-├── relationships.html
-├── diagram.html          ← 全体 ER 図 (inline SVG)
+├── index.html            ← Tables (テーブル一覧)
+├── columns.html
+├── constraints.html
+├── relationships.html    ← 全体 ER 図 (inline SVG) + 関係の一覧
 ├── tables/
 │   ├── users.html        ← テーブル単位 ER 図 (inline SVG) を含む
 │   ├── orders.html
@@ -118,7 +119,7 @@ dbfolio-docs/
 
 Web サーバーや JavaScript フレームワークを必須にせず、基本は静的ファイルだけで閲覧できる形を目指す。
 
-テーブル一覧は Overview (`index.html`) に含め、独立した `tables.html` は作らない (Phase 2 で決定)。ページ間のリンクは相対パスにする (`file://` で開けるようにするため)。
+テーブル一覧はトップページ (`index.html`) とし、独立した `tables.html` は作らない。ページ間のリンクは相対パスにする (`file://` で開けるようにするため)。
 
 ---
 
@@ -239,30 +240,22 @@ dbfolio ではコメントを重要情報として扱う。
 
 ## 8. HTML の基本 UX
 
-### Overview
+### ページ構成
 
-最初のページで DB 全体を把握できるようにする。
+メニューは Tables / Columns / Constraints / Relationships とする (Phase 5 で決定。SchemaSpy のメニュー構成を参考にした)。
 
-例:
+| メニュー | ページ | 内容 |
+|---|---|---|
+| Tables | `index.html` | DB の説明 (あれば) とテーブル一覧 (名前 / 種別 / カラム数 / コメント) |
+| Columns | `columns.html` | 全テーブルのカラム (テーブル / 名前 / 型 / Nullable / Default / Key / コメント)。テーブルを横断してカラムを探す・比べる |
+| Constraints | `constraints.html` | DB に定義されている制約 (PK / FK / UNIQUE / CHECK など) |
+| Relationships | `relationships.html` | テーブル間の関係。全体 ER 図 (キーカラムのみ / 全カラム) と一覧をタブで切り替える |
 
-```text
-Database: example
-
-Tables       42
-Views         5
-Columns     386
-Relations    67
-Indexes      81
-```
-
-加えて以下を表示する。
-
-- テーブル一覧
-- コメント
-- カラム数
-- Relation 数
-- Schema 単位の分類
-- 全体 ER 図へのリンク
+- 当初の Overview ページは Tables ページにまとめた。最初にしたいのは目的のテーブルを探すことで、件数はその補足になるため
+- 件数のサマリー (カード) は置かず、各ページの見出しの横に件数を添える (例: `Tables 9 tables, 1 view`、`Columns 34 columns`)。サマリーは下の一覧やメニューと重複し、場所を取るため
+- 関係の一覧は Relationships に置く。テーブル間の関係は図で把握するのが自然で、一覧は図の補助になるため
+- Virtual Relation は DB に存在しない関係で制約ではないため、Constraints には含めず Relationships に置く。テーブル詳細も同じく、Constraints セクションは DB の制約のみ、Parents / Children は Virtual Relation を含む
+- 現在のページはメニューに `aria-current="page"` で示す
 
 ### Table detail
 
@@ -771,7 +764,6 @@ MVP では distance=1 を基本とし、将来的に設定可能にする。
 ### 必須
 
 - `schema.json` 読み込み
-- Overview
 - テーブル一覧
 - テーブル詳細
 - カラム一覧
@@ -906,7 +898,7 @@ ER 図の Graphviz 計算をブラウザー側では行わない。
 
 Phase 4 での計測 (合成スキーマ。各テーブル 4〜15 カラム、0〜3 個の FK。全体 ER 図はキーカラムのみ / 全カラムの 2 種類を生成):
 
-| テーブル数 | Relation 数 | 生成時間 | diagram.html | 出力合計 | 全体 ER 図 (キーのみ) | 全体 ER 図 (全カラム) |
+| テーブル数 | Relation 数 | 生成時間 | 全体 ER 図のページ | 出力合計 | 全体 ER 図 (キーのみ) | 全体 ER 図 (全カラム) |
 |---|---|---|---|---|---|---|
 | 100 | 136 | 0.8 秒 | 1.2MB | 4.6MB | 1576 × 4092pt | 1895 × 8679pt |
 | 300 | 426 | 2.6 秒 | 3.8MB | 15MB | 2220 × 11484pt | 2671 × 27344pt |
@@ -1060,7 +1052,7 @@ ER 図は **inline SVG** で HTML に埋め込む (PoC で確定)。
 - `<img>` で読み込んだ SVG は、仕様上リンクもツールチップも動作しない
 - inline SVG ではノードのリンクが `file://` でも動作することを確認した
 - 埋め込み時は Graphviz 出力の XML 宣言と DOCTYPE を取り除く
-- 図は原寸で表示し、枠からはみ出す部分はスクロールで見る。全体 ER 図のページはページ自体をスクロールさせず、図の枠が画面の残りの高さに収まるようにする (スクロールバーが二重にならないように)。テーブル詳細の ER 図は長いページの途中にあるため、枠の高さを画面の 80% までにする。本文の幅は制限せず、どのページも画面幅いっぱいに使う (横に長い表や図を広い画面で見やすくするため)
+- 図は原寸で表示し、枠からはみ出す部分はスクロールで見る。Relationships ページはページ自体をスクロールさせず、図の枠が画面の残りの高さに収まるようにする (スクロールバーが二重にならないように)。テーブル詳細の ER 図は長いページの途中にあるため、枠の高さを画面の 80% までにする。本文の幅は制限せず、どのページも画面幅いっぱいに使う (横に長い表や図を広い画面で見やすくするため)
 - マウスのドラッグで図を移動 (パン) できるようにする (`assets/app.js`、依存ライブラリなし)。動かしたドラッグの直後のクリックは無視し、単純なクリックでのリンク遷移と両立させる
 - 図の中のリンクにはホバー時の下線を付けない (ノード内の文字すべてに下線が付くため)
 - 単体の SVG ファイル (`diagrams/*.svg`) は出力しない (Phase 4 で決定)。単体ファイルと埋め込みとでリンクの相対パスが異なり、全体図は 2 回レンダリングが必要になるため。用途が出てきたら再検討する
