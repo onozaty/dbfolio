@@ -71,5 +71,3 @@
 <pre><code>{{.}}</code></pre>
 </section>
 {{end}}{{end}}
-
-{{define "key"}}{{if .Href}}<a class="key key-{{.Label}}{{if .Virtual}} key-virtual{{end}}" href="{{.Href}}" title="{{.Title}}">{{.Label}}{{if .Virtual}}<span class="visually-hidden"> (virtual)</span>{{end}}</a>{{else}}<span class="key key-{{.Label}}" title="{{.Title}}">{{.Label}}</span>{{end}}{{end}}

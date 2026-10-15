@@ -14,7 +14,7 @@
 | 2 | Table documentation | 完了 (2026-10-14) |
 | 3 | Relations | 完了 (2026-10-14) |
 | 4 | ER diagram | 完了 (2026-10-15) |
-| 5 | UX | 未着手 |
+| 5 | UX | 進行中 |
 | 6 | Release | 未着手 |
 
 ---
@@ -118,13 +118,13 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 完了条件: 全体図とテーブル中心図が生成され、図からページへ遷移できること。
 
-全体 ER 図は `diagram.html`、テーブル単位 ER 図は各テーブル詳細に inline SVG で埋め込む。単体の SVG ファイルは出力しない。計測結果は concept.md §21。
+全体 ER 図は `diagram.html` (Phase 5 で `relationships.html` に統合)、テーブル単位 ER 図は各テーブル詳細に inline SVG で埋め込む。単体の SVG ファイルは出力しない。計測結果は concept.md §21。
 
 ---
 
 ## Phase 5: UX
 
-- [ ] 共通ナビゲーション
+- [x] 共通ナビゲーション (Tables / Columns / Constraints / Relationships、現在のページの表示)
 - [ ] テーブル検索 (`assets/search-index.js` + 軽量 JS、`file://` で動作すること)
 - [ ] Responsive layout
 - [ ] Dark mode (必要なら)

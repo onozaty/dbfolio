@@ -27,17 +27,18 @@ const (
 )
 
 var (
-	indexTmpl     = parsePage("templates/index.html")
-	tableTmpl     = parsePage("templates/table.html")
-	relationsTmpl = parsePage("templates/relationships.html")
-	diagramTmpl   = parsePage("templates/diagram.html")
+	tablesTmpl        = parsePage("templates/index.html")
+	columnsTmpl       = parsePage("templates/columns.html")
+	constraintsTmpl   = parsePage("templates/constraints.html")
+	relationshipsTmpl = parsePage("templates/relationships.html")
+	tableTmpl         = parsePage("templates/table.html")
 )
 
 // tableDiagramDistance is how far table-centered diagrams reach.
 const tableDiagramDistance = 1
 
 func parsePage(name string) *template.Template {
-	return template.Must(template.ParseFS(content, "templates/layout.html", "templates/relations.html", name))
+	return template.Must(template.ParseFS(content, "templates/layout.html", "templates/partials.html", name))
 }
 
 // Site is a planned documentation site. Planning is separated from writing so
@@ -155,14 +156,19 @@ func (site *Site) Write(dir string) error {
 	if err := writeAssets(dir); err != nil {
 		return err
 	}
-	if err := writePage(filepath.Join(dir, "index.html"), indexTmpl, site.newIndexPage()); err != nil {
-		return err
-	}
-	if err := writePage(filepath.Join(dir, "relationships.html"), relationsTmpl, site.newRelationsPage()); err != nil {
-		return err
-	}
-	if err := writePage(filepath.Join(dir, "diagram.html"), diagramTmpl, site.newDiagramPage()); err != nil {
-		return err
+	for _, p := range []struct {
+		file string
+		tmpl *template.Template
+		data any
+	}{
+		{"index.html", tablesTmpl, site.newTablesPage()},
+		{"columns.html", columnsTmpl, site.newColumnsPage()},
+		{"constraints.html", constraintsTmpl, site.newConstraintsPage()},
+		{"relationships.html", relationshipsTmpl, site.newRelationshipsPage()},
+	} {
+		if err := writePage(filepath.Join(dir, p.file), p.tmpl, p.data); err != nil {
+			return err
+		}
 	}
 	tables := filepath.Join(dir, tablesDir)
 	if err := output.CreateDir(tables); err != nil {

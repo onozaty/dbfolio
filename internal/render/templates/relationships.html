@@ -1,3 +1,15 @@
-{{define "content"}}<h1>Relationships</h1>
-{{if .Relations.Rows}}{{template "relations" .Relations}}{{else}}<p>No relationships.</p>
+{{define "content"}}<h1>Relationships<span class="count">{{.Count}}</span></h1>
+{{if .Keys}}<div class="views">
+<input type="radio" name="view" id="view-keys" checked><label for="view-keys">Keys only</label>
+<input type="radio" name="view" id="view-all"><label for="view-all">All columns</label>
+<input type="radio" name="view" id="view-list"><label for="view-list">List</label>
+<div class="view view-keys diagram">
+{{.Keys}}</div>
+<div class="view view-all diagram">
+{{.All}}</div>
+<div class="view view-list">
+{{if .Relations.Rows}}{{template "relations" .Relations}}{{else}}<p>No relationships.</p>{{end}}
+</div>
+</div>
+{{else}}<p>No tables.</p>
 {{end}}{{end}}

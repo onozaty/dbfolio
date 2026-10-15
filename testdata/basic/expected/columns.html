@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Columns - dbfolio</title>
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+<a class="site-title" href="index.html">dbfolio</a>
+<nav class="site-nav">
+<a href="index.html">Tables</a>
+<a href="columns.html" aria-current="page">Columns</a>
+<a href="constraints.html">Constraints</a>
+<a href="relationships.html">Relationships</a>
+</nav>
+</header>
+<main>
+<h1>Columns<span class="count">34 columns</span></h1>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Table</th><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
+<tbody>
+<tr><td><a href="tables/public.regions.html">public.regions</a></td><td>id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment">地域ID</td></tr>
+<tr><td><a href="tables/public.regions.html">public.regions</a></td><td>name</td><td><code>varchar(100)</code></td><td>NO</td><td></td><td></td><td class="comment">地域名</td></tr>
+<tr><td><a href="tables/public.users.html">public.users</a></td><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;users_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment">ユーザーID</td></tr>
+<tr><td><a href="tables/public.users.html">public.users</a></td><td>name</td><td><code>varchar(100)</code></td><td>NO</td><td></td><td></td><td class="comment">氏名</td></tr>
+<tr><td><a href="tables/public.users.html">public.users</a></td><td>email</td><td><code>varchar(255)</code></td><td>NO</td><td></td><td></td><td class="comment">ログインに使用するメールアドレス</td></tr>
+<tr><td><a href="tables/public.users.html">public.users</a></td><td>region_id</td><td><code>bigint</code></td><td>YES</td><td></td><td><a class="key key-FK" href="tables/public.regions.html" title="References public.regions id">FK</a></td><td class="comment">地域ID</td></tr>
+<tr><td><a href="tables/public.users.html">public.users</a></td><td>status</td><td><code>varchar(20)</code></td><td>NO</td><td><code>&#39;active&#39;::character varying</code></td><td></td><td class="comment">状態</td></tr>
+<tr><td><a href="tables/public.users.html">public.users</a></td><td>created_at</td><td><code>timestamp with time zone</code></td><td>NO</td><td><code>now()</code></td><td></td><td class="comment">登録日時</td></tr>
+<tr><td><a href="tables/public.roles.html">public.roles</a></td><td>id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.roles.html">public.roles</a></td><td>name</td><td><code>varchar(50)</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.user_roles.html">public.user_roles</a></td><td>user_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="tables/public.users.html" title="References public.users id">FK</a></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.user_roles.html">public.user_roles</a></td><td>role_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="tables/public.roles.html" title="References public.roles id">FK</a></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.orders.html">public.orders</a></td><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;orders_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.orders.html">public.orders</a></td><td>user_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><a class="key key-FK" href="tables/public.users.html" title="References public.users id">FK</a></td><td class="comment">注文したユーザー</td></tr>
+<tr><td><a href="tables/public.orders.html">public.orders</a></td><td>ordered_at</td><td><code>timestamp with time zone</code></td><td>NO</td><td><code>now()</code></td><td></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.order_items.html">public.order_items</a></td><td>order_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="tables/public.orders.html" title="References public.orders id">FK</a></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.order_items.html">public.order_items</a></td><td>line_no</td><td><code>integer</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.order_items.html">public.order_items</a></td><td>product</td><td><code>varchar(200)</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.order_items.html">public.order_items</a></td><td>quantity</td><td><code>integer</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.shipments.html">public.shipments</a></td><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;shipments_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.shipments.html">public.shipments</a></td><td>order_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><a class="key key-FK" href="tables/public.orders.html" title="References public.orders id">FK</a> <a class="key key-FK" href="tables/public.order_items.html" title="References public.order_items (order_id, line_no)">FK</a></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.shipments.html">public.shipments</a></td><td>line_no</td><td><code>integer</code></td><td>NO</td><td></td><td><a class="key key-FK" href="tables/public.order_items.html" title="References public.order_items (order_id, line_no)">FK</a></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.shipments.html">public.shipments</a></td><td>shipped_at</td><td><code>timestamp with time zone</code></td><td>YES</td><td></td><td></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.comments.html">public.comments</a></td><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;comments_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.comments.html">public.comments</a></td><td>user_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><a class="key key-FK" href="tables/public.users.html" title="References public.users id">FK</a></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.comments.html">public.comments</a></td><td>parent_id</td><td><code>bigint</code></td><td>YES</td><td></td><td><a class="key key-FK" href="tables/public.comments.html" title="References public.comments id">FK</a></td><td class="comment">返信先のコメント</td></tr>
+<tr><td><a href="tables/public.comments.html">public.comments</a></td><td>body</td><td><code>text</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.audit_logs.html">public.audit_logs</a></td><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;audit_logs_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.audit_logs.html">public.audit_logs</a></td><td>user_id</td><td><code>bigint</code></td><td>YES</td><td></td><td><a class="key key-FK key-virtual" href="tables/public.users.html" title="Virtual relation: References public.users id">FK<span class="visually-hidden"> (virtual)</span></a></td><td class="comment">操作したユーザー</td></tr>
+<tr><td><a href="tables/public.audit_logs.html">public.audit_logs</a></td><td>action</td><td><code>varchar(50)</code></td><td>NO</td><td></td><td></td><td class="comment">操作種別</td></tr>
+<tr><td><a href="tables/public.audit_logs.html">public.audit_logs</a></td><td>created_at</td><td><code>timestamp with time zone</code></td><td>NO</td><td><code>now()</code></td><td></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.active_users.html">public.active_users</a></td><td>id</td><td><code>bigint</code></td><td>YES</td><td></td><td></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.active_users.html">public.active_users</a></td><td>name</td><td><code>varchar(100)</code></td><td>YES</td><td></td><td></td><td class="comment"></td></tr>
+<tr><td><a href="tables/public.active_users.html">public.active_users</a></td><td>email</td><td><code>varchar(255)</code></td><td>YES</td><td></td><td></td><td class="comment"></td></tr>
+</tbody>
+</table>
+</div>
+
+</main>
+<footer class="site-footer">Generated by <a href="https://github.com/onozaty/dbfolio">dbfolio</a></footer>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{{define "content"}}<h1>Constraints<span class="count">{{.Count}}</span></h1>
+{{if .Constraints}}<div class="table-wrap">
+<table>
+<thead><tr><th>Table</th><th>Name</th><th>Type</th><th>Definition</th><th>Comment</th></tr></thead>
+<tbody>
+{{range .Constraints}}<tr><td><a href="{{.TableHref}}">{{.Table}}</a></td><td>{{.Name}}</td><td>{{.Type}}</td><td><code>{{.Def}}</code></td><td class="comment">{{.Comment}}</td></tr>
+{{end}}</tbody>
+</table>
+</div>
+{{else}}<p>No constraints.</p>
+{{end}}{{end}}
