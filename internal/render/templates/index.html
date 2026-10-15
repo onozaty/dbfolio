@@ -1,21 +1,6 @@
-{{define "content"}}<h1>{{.DBName}}</h1>
+{{define "content"}}<h1>Tables<span class="count">{{.Count}}</span></h1>
 {{with .Desc}}<p class="comment">{{.}}</p>
-{{end}}
-<section>
-<h2>Overview</h2>
-<dl class="stats">
-<div><dt>Tables</dt><dd>{{.Stats.Tables}}</dd></div>
-<div><dt>Views</dt><dd>{{.Stats.Views}}</dd></div>
-<div><dt>Columns</dt><dd>{{.Stats.Columns}}</dd></div>
-<div><dt>Relations</dt><dd><a href="relationships.html">{{.Stats.Relations}}</a></dd></div>
-<div><dt>Indexes</dt><dd>{{.Stats.Indexes}}</dd></div>
-</dl>
-<p><a href="diagram.html">View the ER diagram</a></p>
-</section>
-
-<section>
-<h2>Tables</h2>
-<div class="table-wrap">
+{{end}}{{if .Tables}}<div class="table-wrap">
 <table>
 <thead><tr><th>Name</th><th>Type</th><th class="num">Columns</th><th>Comment</th></tr></thead>
 <tbody>
@@ -23,5 +8,5 @@
 {{end}}</tbody>
 </table>
 </div>
-</section>
-{{end}}
+{{else}}<p>No tables.</p>
+{{end}}{{end}}

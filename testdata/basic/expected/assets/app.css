@@ -42,7 +42,8 @@ code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospac
 .site-header, .site-footer, main { padding: 0 24px; }
 .site-header { border-bottom: 1px solid var(--border); padding-block: 12px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 24px; }
 .site-title { font-weight: 600; color: var(--fg); }
-.site-nav { display: flex; gap: 16px; }
+.site-nav { display: flex; flex-wrap: wrap; gap: 16px; }
+.site-nav a[aria-current="page"] { color: var(--fg); font-weight: 600; }
 /* No width limit: wide tables and diagrams use the whole window. */
 main { padding-block: 8px 32px; }
 .site-footer { border-top: 1px solid var(--border); padding-block: 12px; color: var(--muted); font-size: 0.85em; }
@@ -53,10 +54,7 @@ h2 { font-size: 1.2em; margin: 28px 0 8px; }
 .table-type { margin: 0; color: var(--muted); }
 .comment { white-space: pre-wrap; }
 
-.stats { display: flex; flex-wrap: wrap; gap: 12px; margin: 0; }
-.stats div { border: 1px solid var(--border); border-radius: 6px; padding: 8px 16px; min-width: 110px; }
-.stats dt { color: var(--muted); font-size: 0.85em; }
-.stats dd { margin: 0; font-size: 1.4em; font-weight: 600; }
+.count { margin-left: 12px; color: var(--muted); font-size: 0.55em; font-weight: normal; }
 
 .table-wrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; }
@@ -87,23 +85,25 @@ pre { background: var(--bg-subtle); border: 1px solid var(--border); border-radi
 /* The site-wide hover underline would underline every text in a table node. */
 .diagram a:hover { text-decoration: none; }
 
-/* Whole-schema diagram: switch between key columns only and all columns.
-   Radio buttons + CSS, so it works without JavaScript. */
-.diagram-views > input { position: absolute; opacity: 0; }
-.diagram-views > label { display: inline-block; padding: 4px 12px; margin: 0 4px 8px 0; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
-.diagram-views > input:checked + label { background: var(--bg-subtle); border-color: var(--link); color: var(--link); font-weight: 600; }
-.diagram-views > input:focus-visible + label { outline: 2px solid var(--link); outline-offset: 2px; }
-.diagram-views > .diagram-all { display: none; }
-/* Tabs on the first row, the selected diagram below them (inputs are out of flow). */
-.diagram-views { display: grid; grid-template-columns: max-content max-content 1fr; grid-template-rows: auto minmax(0, 1fr); }
-.diagram-views > .diagram { grid-row: 2; grid-column: 1 / -1; }
+/* Relationships page: switch between the diagrams (key columns only / all
+   columns) and the list. Radio buttons + CSS, so it works without JavaScript. */
+.views > input { position: absolute; opacity: 0; }
+.views > label { display: inline-block; padding: 4px 12px; margin: 0 4px 8px 0; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+.views > input:checked + label { background: var(--bg-subtle); border-color: var(--link); color: var(--link); font-weight: 600; }
+.views > input:focus-visible + label { outline: 2px solid var(--link); outline-offset: 2px; }
+/* Tabs on the first row, the selected view below them (inputs are out of flow). */
+.views { display: grid; grid-template-columns: max-content max-content max-content 1fr; grid-template-rows: auto minmax(0, 1fr); }
+.views > .view { display: none; grid-row: 2; grid-column: 1 / -1; }
+#view-keys:checked ~ .view-keys, #view-all:checked ~ .view-all, #view-list:checked ~ .view-list { display: block; }
+.view-list { overflow: auto; }
+/* The list frame scrolls both ways; a nested horizontal scroller would put its
+   scrollbar at the end of a long table, out of view. */
+.view-list .table-wrap { overflow: visible; }
 
-/* Pages with .fill (the ER diagram page) fit the window: the page itself does
+/* Pages with .fill (the relationships page) fit the window: the page itself does
    not scroll and the diagram frame takes the remaining height, so there is only
    one scrollbar (the frame's). */
 body.fill { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
 body.fill main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-body.fill .diagram-views { flex: 1; min-height: 0; }
+body.fill .views { flex: 1; min-height: 0; }
 body.fill .diagram { max-height: none; }
-#view-all:checked ~ .diagram-all { display: block; }
-#view-all:checked ~ .diagram-keys { display: none; }

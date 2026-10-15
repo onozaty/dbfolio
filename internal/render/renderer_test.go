@@ -118,6 +118,60 @@ func TestRenderDiagrams_PrefixesOnlyGraphvizIDs(t *testing.T) {
 	}
 }
 
+func TestWrite_RendersEmptyStates(t *testing.T) {
+	tests := map[string]struct {
+		schema *schema.Schema
+		want   map[string]string
+	}{
+		"no tables": {
+			&schema.Schema{},
+			map[string]string{
+				"index.html":         "<p>No tables.</p>",
+				"columns.html":       "<p>No columns.</p>",
+				"constraints.html":   "<p>No constraints.</p>",
+				"relationships.html": "<p>No tables.</p>",
+			},
+		},
+		"no relations": {
+			&schema.Schema{Tables: []*schema.Table{{Name: "t", Columns: []*schema.Column{{Name: "c"}}}}},
+			map[string]string{
+				"constraints.html":   "<p>No constraints.</p>",
+				"relationships.html": "<p>No relationships.</p>",
+			},
+		},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			site, err := Plan(tt.schema)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := site.RenderDiagrams(context.Background()); err != nil {
+				t.Fatal(err)
+			}
+			dir := t.TempDir()
+
+			// Act
+			err = site.Write(dir)
+
+			// Assert
+			if err != nil {
+				t.Fatalf("Write() error = %v", err)
+			}
+			for file, want := range tt.want {
+				b, err := os.ReadFile(filepath.Join(dir, file))
+				if err != nil {
+					t.Fatal(err)
+				}
+				if !strings.Contains(string(b), want) {
+					t.Errorf("%s does not contain %q", file, want)
+				}
+			}
+		})
+	}
+}
+
 func TestWrite_RequiresRenderDiagrams(t *testing.T) {
 	// Arrange
 	site, err := Plan(&schema.Schema{Tables: []*schema.Table{{Name: "t"}}})

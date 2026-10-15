@@ -1,0 +1,11 @@
+{{define "content"}}<h1>Columns<span class="count">{{.Count}}</span></h1>
+{{if .Columns}}<div class="table-wrap">
+<table>
+<thead><tr><th>Table</th><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th>{{if .ShowExtra}}<th>Extra</th>{{end}}<th>Key</th><th>Comment</th></tr></thead>
+<tbody>
+{{range .Columns}}<tr><td><a href="{{.TableHref}}">{{.Table}}</a></td><td>{{.Name}}</td><td><code>{{.Type}}</code></td><td>{{if .Nullable}}YES{{else}}NO{{end}}</td><td>{{with .Default}}<code>{{.}}</code>{{end}}</td>{{if $.ShowExtra}}<td>{{with .ExtraDef}}<code>{{.}}</code>{{end}}</td>{{end}}<td>{{range $i, $k := .Keys}}{{if $i}} {{end}}{{template "key" $k}}{{end}}</td><td class="comment">{{.Comment}}</td></tr>
+{{end}}</tbody>
+</table>
+</div>
+{{else}}<p>No columns.</p>
+{{end}}{{end}}

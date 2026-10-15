@@ -244,7 +244,7 @@ func TestNewTablePage_ShowsExtraColumnOnlyWhenUsed(t *testing.T) {
 	}
 }
 
-func TestNewRelationsPage_ListsAllRelationsWithBothEnds(t *testing.T) {
+func TestNewRelationshipsPage_ListsAllRelationsWithBothEnds(t *testing.T) {
 	// Arrange
 	users := &schema.Table{Name: "users"}
 	items := &schema.Table{Name: "order_items"}
@@ -259,7 +259,7 @@ func TestNewRelationsPage_ListsAllRelationsWithBothEnds(t *testing.T) {
 	site := plan(t, s)
 
 	// Act
-	p := site.newRelationsPage()
+	p := site.newRelationshipsPage()
 
 	// Assert
 	want := relationTable{
@@ -302,7 +302,7 @@ func TestCardinalityPair(t *testing.T) {
 	}
 }
 
-func TestNewIndexPage_CountsTablesAndViewsSeparately(t *testing.T) {
+func TestNewTablesPage_CountsTablesAndViewsSeparately(t *testing.T) {
 	// Arrange
 	users := &schema.Table{Name: "users", Columns: []*schema.Column{{Name: "id"}, {Name: "name"}}, Indexes: []*schema.Index{{Name: "pk"}}}
 	active := &schema.Table{Name: "active_users", View: true, Columns: []*schema.Column{{Name: "id"}}}
@@ -310,27 +310,130 @@ func TestNewIndexPage_CountsTablesAndViewsSeparately(t *testing.T) {
 	site := plan(t, s)
 
 	// Act
-	p := site.newIndexPage()
+	p := site.newTablesPage()
 
 	// Assert
-	want := stats{Tables: 1, Views: 1, Columns: 3, Relations: 1, Indexes: 1}
-	if p.Stats != want {
-		t.Errorf("Stats = %+v, want %+v", p.Stats, want)
+	if p.Count != "1 table, 1 view" {
+		t.Errorf("Count = %q, want %q", p.Count, "1 table, 1 view")
 	}
 	if p.Tables[1].Href != "tables/active_users.html" {
 		t.Errorf("Href = %q, want %q", p.Tables[1].Href, "tables/active_users.html")
 	}
 }
 
-func TestNewIndexPage_FallsBackWhenDatabaseNameIsEmpty(t *testing.T) {
+func TestNewTablesPage_FallsBackWhenDatabaseNameIsEmpty(t *testing.T) {
 	// Arrange
 	site := plan(t, &schema.Schema{})
 
 	// Act
-	p := site.newIndexPage()
+	p := site.newTablesPage()
 
 	// Assert
 	if p.DBName != "Database" {
 		t.Errorf("DBName = %q, want %q", p.DBName, "Database")
+	}
+}
+
+func TestNewColumnsPage_ListsColumnsOfAllTablesWithKeys(t *testing.T) {
+	// Arrange
+	users := &schema.Table{
+		Name:        "users",
+		Columns:     []*schema.Column{{Name: "id"}},
+		Constraints: []*schema.Constraint{{Kind: schema.ConstraintPrimaryKey, Columns: []string{"id"}}},
+	}
+	orders := &schema.Table{Name: "orders", Columns: []*schema.Column{{Name: "user_id", ExtraDef: "x"}}}
+	r := &schema.Relation{Table: orders, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"id"}}
+	site := plan(t, &schema.Schema{Tables: []*schema.Table{users, orders}, Relations: []*schema.Relation{r}})
+
+	// Act
+	p := site.newColumnsPage()
+
+	// Assert
+	if len(p.Columns) != 2 {
+		t.Fatalf("len(Columns) = %d, want 2", len(p.Columns))
+	}
+	idRow, fkRow := p.Columns[0], p.Columns[1]
+	if idRow.Table != "users" || idRow.TableHref != "tables/users.html" || idRow.Name != "id" || idRow.Keys[0].Label != "PK" {
+		t.Errorf("first row = %+v", idRow)
+	}
+	// Links are relative to the root, not to a table page.
+	if fkRow.Table != "orders" || len(fkRow.Keys) != 1 || fkRow.Keys[0].Href != "tables/users.html" {
+		t.Errorf("second row = %+v", fkRow)
+	}
+	if !p.ShowExtra || p.Current != menuColumns {
+		t.Errorf("ShowExtra = %v, Current = %q", p.ShowExtra, p.Current)
+	}
+}
+
+func TestNewConstraintsPage_ListsDatabaseConstraintsOnly(t *testing.T) {
+	// Arrange: the virtual relation is not a constraint.
+	users := &schema.Table{Name: "users", Columns: []*schema.Column{{Name: "id"}},
+		Constraints: []*schema.Constraint{{Name: "users_pkey", Kind: schema.ConstraintPrimaryKey, Columns: []string{"id"}}}}
+	logs := &schema.Table{Name: "logs", Columns: []*schema.Column{{Name: "user_id"}},
+		Constraints: []*schema.Constraint{{Name: "logs_check", Kind: schema.ConstraintCheck}}}
+	virtual := &schema.Relation{Table: logs, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"id"}, Virtual: true}
+	site := plan(t, &schema.Schema{Tables: []*schema.Table{users, logs}, Relations: []*schema.Relation{virtual}})
+
+	// Act
+	p := site.newConstraintsPage()
+
+	// Assert
+	var got []string
+	for _, c := range p.Constraints {
+		got = append(got, c.Table+"/"+c.Name+"@"+c.TableHref)
+	}
+	want := []string{"users/users_pkey@tables/users.html", "logs/logs_check@tables/logs.html"}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("constraints = %v, want %v", got, want)
+	}
+}
+
+func TestPages_MarkCurrentMenu(t *testing.T) {
+	// Arrange
+	table := &schema.Table{Name: "t"}
+	site := plan(t, &schema.Schema{Tables: []*schema.Table{table}})
+
+	// Act
+	got := map[string]string{
+		"tables":        site.newTablesPage().Current,
+		"columns":       site.newColumnsPage().Current,
+		"constraints":   site.newConstraintsPage().Current,
+		"relationships": site.newRelationshipsPage().Current,
+		"table page":    site.newTablePage(table).Current,
+	}
+
+	// Assert
+	want := map[string]string{
+		"tables":        menuTables,
+		"columns":       menuColumns,
+		"constraints":   menuConstraints,
+		"relationships": menuRelationships,
+		"table page":    "",
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("Current = %v, want %v", got, want)
+	}
+}
+
+func TestPages_ShowCounts(t *testing.T) {
+	// Arrange
+	users := &schema.Table{Name: "users", Columns: []*schema.Column{{Name: "id"}, {Name: "name"}},
+		Constraints: []*schema.Constraint{{Name: "pk", Kind: schema.ConstraintPrimaryKey, Columns: []string{"id"}}}}
+	orders := &schema.Table{Name: "orders", Columns: []*schema.Column{{Name: "user_id"}}}
+	r := &schema.Relation{Table: orders, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"id"}}
+	site := plan(t, &schema.Schema{Tables: []*schema.Table{users, orders}, Relations: []*schema.Relation{r}})
+
+	// Act
+	got := []string{
+		site.newTablesPage().Count,
+		site.newColumnsPage().Count,
+		site.newConstraintsPage().Count,
+		site.newRelationshipsPage().Count,
+	}
+
+	// Assert: no views, so the tables count does not mention them.
+	want := []string{"2 tables", "3 columns", "1 constraint", "1 relationship"}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("counts = %v, want %v", got, want)
 	}
 }
