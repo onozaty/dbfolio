@@ -125,7 +125,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 ## Phase 5: UX
 
 - [x] 共通ナビゲーション (Tables / Columns / Constraints / Relationships、現在のページの表示)
-- [ ] テーブル検索 (`assets/search-index.js` + 軽量 JS、`file://` で動作すること)
+- [x] テーブル検索 (`assets/search-index.js` + 軽量 JS、`file://` で動作すること)
 - [ ] Responsive layout
 - [ ] Dark mode (必要なら)
 - [ ] 大規模 DB 向け表示改善 (Schema 単位の分類など)
