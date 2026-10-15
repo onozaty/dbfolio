@@ -437,3 +437,48 @@ func TestPages_ShowCounts(t *testing.T) {
 		t.Errorf("counts = %v, want %v", got, want)
 	}
 }
+
+func TestNewTablePage_ShowsCommentColumnsOnlyWhenUsed(t *testing.T) {
+	// Arrange
+	table := &schema.Table{
+		Name:        "t",
+		Indexes:     []*schema.Index{{Name: "i1"}, {Name: "i2", Comment: "lookup"}},
+		Constraints: []*schema.Constraint{{Name: "c1"}},
+		Triggers:    []*schema.Trigger{{Name: "tr", Comment: ""}},
+	}
+	site := plan(t, &schema.Schema{Tables: []*schema.Table{table}})
+
+	// Act
+	p := site.newTablePage(table)
+
+	// Assert
+	if !p.IndexComments || p.ConstraintComments || p.TriggerComments {
+		t.Errorf("comment columns = index %v, constraint %v, trigger %v; want true, false, false",
+			p.IndexComments, p.ConstraintComments, p.TriggerComments)
+	}
+}
+
+func TestNewConstraintsPage_ShowsCommentColumnOnlyWhenUsed(t *testing.T) {
+	tests := map[string]struct {
+		comment string
+		want    bool
+	}{
+		"no comments": {"", false},
+		"a comment":   {"note", true},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			table := &schema.Table{Name: "t", Constraints: []*schema.Constraint{{Name: "a"}, {Name: "b", Comment: tt.comment}}}
+			site := plan(t, &schema.Schema{Tables: []*schema.Table{table}})
+
+			// Act
+			p := site.newConstraintsPage()
+
+			// Assert
+			if p.ShowComment != tt.want {
+				t.Errorf("ShowComment = %v, want %v", p.ShowComment, tt.want)
+			}
+		})
+	}
+}

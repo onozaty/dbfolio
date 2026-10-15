@@ -34,18 +34,56 @@
 <h2>Columns</h2>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
+<thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Nullable</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr id="column-0"><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;orders_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
-<tr id="column-1"><td>user_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><a class="key key-FK" href="../tables/public.users.html" title="References public.users id">FK</a></td><td class="comment">注文したユーザー</td></tr>
-<tr id="column-2"><td>ordered_at</td><td><code>timestamp with time zone</code></td><td>NO</td><td><code>now()</code></td><td></td><td class="comment"></td></tr>
+<tr id="column-0"><td>id</td><td><code>bigint</code></td><td><code>nextval(&#39;orders_id_seq&#39;::regclass)</code></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr id="column-1"><td>user_id</td><td><code>bigint</code></td><td></td><td>NO</td><td><a class="key key-FK" href="../tables/public.users.html" title="References public.users id">FK</a></td><td class="comment">注文したユーザー</td></tr>
+<tr id="column-2"><td>ordered_at</td><td><code>timestamp with time zone</code></td><td><code>now()</code></td><td>NO</td><td></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>
 </section>
 
 <section>
-<h2>ER Diagram</h2>
+<h2>Constraints</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>orders_user_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (user_id) REFERENCES users(id)</code></td></tr>
+<tr><td>orders_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Indexes</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>orders_pkey</td><td><code>CREATE UNIQUE INDEX orders_pkey ON public.orders USING btree (id)</code></td></tr>
+<tr><td>orders_user_id_ordered_at_idx</td><td><code>CREATE INDEX orders_user_id_ordered_at_idx ON public.orders USING btree (user_id, ordered_at)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Triggers</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Definition</th><th>Comment</th></tr></thead>
+<tbody>
+<tr><td>orders_check_ordered_at</td><td><code>CREATE TRIGGER orders_check_ordered_at BEFORE INSERT OR UPDATE ON public.orders FOR EACH ROW EXECUTE FUNCTION reject_future_ordered_at()</code></td><td class="comment">未来日時の注文を拒否する</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Relationships</h2>
 <div class="diagram">
 <svg width="1122pt" height="261pt"
  viewBox="0.00 0.00 1121.80 260.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -279,10 +317,7 @@
 </g>
 </svg>
 </div>
-</section>
-
-<section>
-<h2>Parents</h2>
+<h3>Parents</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Parent</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
@@ -291,54 +326,13 @@
 </tbody>
 </table>
 </div>
-</section>
-
-<section>
-<h2>Children</h2>
+<h3>Children</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Child</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
 <tbody>
 <tr><td><a href="../tables/public.order_items.html">public.order_items</a></td><td><code>order_id → id</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE</code></td></tr>
 <tr><td><a href="../tables/public.shipments.html">public.shipments</a></td><td><code>order_id → id</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (order_id) REFERENCES orders(id)</code></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Indexes</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>orders_pkey</td><td><code>CREATE UNIQUE INDEX orders_pkey ON public.orders USING btree (id)</code></td><td class="comment"></td></tr>
-<tr><td>orders_user_id_ordered_at_idx</td><td><code>CREATE INDEX orders_user_id_ordered_at_idx ON public.orders USING btree (user_id, ordered_at)</code></td><td class="comment"></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Constraints</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Type</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>orders_user_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (user_id) REFERENCES users(id)</code></td><td class="comment"></td></tr>
-<tr><td>orders_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td><td class="comment"></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Triggers</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>orders_check_ordered_at</td><td><code>CREATE TRIGGER orders_check_ordered_at BEFORE INSERT OR UPDATE ON public.orders FOR EACH ROW EXECUTE FUNCTION reject_future_ordered_at()</code></td><td class="comment">未来日時の注文を拒否する</td></tr>
 </tbody>
 </table>
 </div>

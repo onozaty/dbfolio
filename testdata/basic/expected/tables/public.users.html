@@ -34,21 +34,50 @@
 <h2>Columns</h2>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
+<thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Nullable</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr id="column-0"><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;users_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment">ユーザーID</td></tr>
-<tr id="column-1"><td>name</td><td><code>varchar(100)</code></td><td>NO</td><td></td><td></td><td class="comment">氏名</td></tr>
-<tr id="column-2"><td>email</td><td><code>varchar(255)</code></td><td>NO</td><td></td><td></td><td class="comment">ログインに使用するメールアドレス</td></tr>
-<tr id="column-3"><td>region_id</td><td><code>bigint</code></td><td>YES</td><td></td><td><a class="key key-FK" href="../tables/public.regions.html" title="References public.regions id">FK</a></td><td class="comment">地域ID</td></tr>
-<tr id="column-4"><td>status</td><td><code>varchar(20)</code></td><td>NO</td><td><code>&#39;active&#39;::character varying</code></td><td></td><td class="comment">状態</td></tr>
-<tr id="column-5"><td>created_at</td><td><code>timestamp with time zone</code></td><td>NO</td><td><code>now()</code></td><td></td><td class="comment">登録日時</td></tr>
+<tr id="column-0"><td>id</td><td><code>bigint</code></td><td><code>nextval(&#39;users_id_seq&#39;::regclass)</code></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment">ユーザーID</td></tr>
+<tr id="column-1"><td>name</td><td><code>varchar(100)</code></td><td></td><td>NO</td><td></td><td class="comment">氏名</td></tr>
+<tr id="column-2"><td>email</td><td><code>varchar(255)</code></td><td></td><td>NO</td><td></td><td class="comment">ログインに使用するメールアドレス</td></tr>
+<tr id="column-3"><td>region_id</td><td><code>bigint</code></td><td></td><td>YES</td><td><a class="key key-FK" href="../tables/public.regions.html" title="References public.regions id">FK</a></td><td class="comment">地域ID</td></tr>
+<tr id="column-4"><td>status</td><td><code>varchar(20)</code></td><td><code>&#39;active&#39;::character varying</code></td><td>NO</td><td></td><td class="comment">状態</td></tr>
+<tr id="column-5"><td>created_at</td><td><code>timestamp with time zone</code></td><td><code>now()</code></td><td>NO</td><td></td><td class="comment">登録日時</td></tr>
 </tbody>
 </table>
 </div>
 </section>
 
 <section>
-<h2>ER Diagram</h2>
+<h2>Constraints</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>users_status_check</td><td>CHECK</td><td><code>CHECK (((status)::text = ANY ((ARRAY[&#39;active&#39;::character varying, &#39;suspended&#39;::character varying, &#39;deleted&#39;::character varying])::text[])))</code></td></tr>
+<tr><td>users_region_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (region_id) REFERENCES regions(id)</code></td></tr>
+<tr><td>users_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td></tr>
+<tr><td>users_email_key</td><td>UNIQUE</td><td><code>UNIQUE (email)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Indexes</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>users_pkey</td><td><code>CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id)</code></td></tr>
+<tr><td>users_email_key</td><td><code>CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email)</code></td></tr>
+<tr><td>users_region_id_idx</td><td><code>CREATE INDEX users_region_id_idx ON public.users USING btree (region_id)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Relationships</h2>
 <div class="diagram">
 <svg width="800pt" height="571pt"
  viewBox="0.00 0.00 799.80 570.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -357,10 +386,7 @@
 </g>
 </svg>
 </div>
-</section>
-
-<section>
-<h2>Parents</h2>
+<h3>Parents</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Parent</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
@@ -369,10 +395,7 @@
 </tbody>
 </table>
 </div>
-</section>
-
-<section>
-<h2>Children</h2>
+<h3>Children</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Child</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
@@ -381,35 +404,6 @@
 <tr><td><a href="../tables/public.orders.html">public.orders</a></td><td><code>user_id → id</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (user_id) REFERENCES users(id)</code></td></tr>
 <tr><td><a href="../tables/public.comments.html">public.comments</a></td><td><code>user_id → id</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (user_id) REFERENCES users(id)</code></td></tr>
 <tr><td><a href="../tables/public.audit_logs.html">public.audit_logs</a></td><td><code>user_id → id</code></td><td>0..* : 0..1</td><td><span class="relation-virtual">Virtual</span></td><td><code>audit_logs.user_id -&gt; users.id (アプリケーション側で管理)</code></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Indexes</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>users_pkey</td><td><code>CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id)</code></td><td class="comment"></td></tr>
-<tr><td>users_email_key</td><td><code>CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email)</code></td><td class="comment"></td></tr>
-<tr><td>users_region_id_idx</td><td><code>CREATE INDEX users_region_id_idx ON public.users USING btree (region_id)</code></td><td class="comment"></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Constraints</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Type</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>users_status_check</td><td>CHECK</td><td><code>CHECK (((status)::text = ANY ((ARRAY[&#39;active&#39;::character varying, &#39;suspended&#39;::character varying, &#39;deleted&#39;::character varying])::text[])))</code></td><td class="comment"></td></tr>
-<tr><td>users_region_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (region_id) REFERENCES regions(id)</code></td><td class="comment"></td></tr>
-<tr><td>users_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td><td class="comment"></td></tr>
-<tr><td>users_email_key</td><td>UNIQUE</td><td><code>UNIQUE (email)</code></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>

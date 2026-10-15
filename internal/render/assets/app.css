@@ -74,6 +74,7 @@ main { padding-block: 8px 32px; }
 
 h1 { font-size: 1.6em; margin: 16px 0 4px; overflow-wrap: anywhere; }
 h2 { font-size: 1.2em; margin: 28px 0 8px; }
+h3 { font-size: 1em; margin: 20px 0 8px; }
 
 .table-type { margin: 0; color: var(--muted); }
 .comment { white-space: pre-wrap; }
@@ -95,6 +96,9 @@ td code { overflow-wrap: anywhere; }
 .relation-virtual { font-size: 0.9em; border: 1px dashed var(--muted); border-radius: 4px; padding: 0 4px; color: var(--muted); }
 th small { font-weight: normal; color: var(--muted); }
 
+.definition { margin: 12px 0; }
+.definition summary { cursor: pointer; color: var(--muted); }
+.definition pre { margin: 8px 0 0; }
 pre { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 6px; padding: 12px; overflow-x: auto; white-space: pre-wrap; }
 
 /* Text for screen readers where the meaning is otherwise shown only visually. */

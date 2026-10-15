@@ -34,19 +34,47 @@
 <h2>Columns</h2>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
+<thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Nullable</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr id="column-0"><td>order_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="../tables/public.orders.html" title="References public.orders id">FK</a></td><td class="comment"></td></tr>
-<tr id="column-1"><td>line_no</td><td><code>integer</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
-<tr id="column-2"><td>product</td><td><code>varchar(200)</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
-<tr id="column-3"><td>quantity</td><td><code>integer</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
+<tr id="column-0"><td>order_id</td><td><code>bigint</code></td><td></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="../tables/public.orders.html" title="References public.orders id">FK</a></td><td class="comment"></td></tr>
+<tr id="column-1"><td>line_no</td><td><code>integer</code></td><td></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr id="column-2"><td>product</td><td><code>varchar(200)</code></td><td></td><td>NO</td><td></td><td class="comment"></td></tr>
+<tr id="column-3"><td>quantity</td><td><code>integer</code></td><td></td><td>NO</td><td></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>
 </section>
 
 <section>
-<h2>ER Diagram</h2>
+<h2>Constraints</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>order_items_quantity_check</td><td>CHECK</td><td><code>CHECK ((quantity &gt; 0))</code></td></tr>
+<tr><td>order_items_order_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE</code></td></tr>
+<tr><td>order_items_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (order_id, line_no)</code></td></tr>
+<tr><td>order_items_order_product_key</td><td>UNIQUE</td><td><code>UNIQUE (order_id, product)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Indexes</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>order_items_pkey</td><td><code>CREATE UNIQUE INDEX order_items_pkey ON public.order_items USING btree (order_id, line_no)</code></td></tr>
+<tr><td>order_items_order_product_key</td><td><code>CREATE UNIQUE INDEX order_items_order_product_key ON public.order_items USING btree (order_id, product)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Relationships</h2>
 <div class="diagram">
 <svg width="815pt" height="225pt"
  viewBox="0.00 0.00 814.80 224.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -210,10 +238,7 @@
 </g>
 </svg>
 </div>
-</section>
-
-<section>
-<h2>Parents</h2>
+<h3>Parents</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Parent</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
@@ -222,43 +247,12 @@
 </tbody>
 </table>
 </div>
-</section>
-
-<section>
-<h2>Children</h2>
+<h3>Children</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Child</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
 <tbody>
 <tr><td><a href="../tables/public.shipments.html">public.shipments</a></td><td><code>(order_id, line_no) → (order_id, line_no)</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)</code></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Indexes</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>order_items_pkey</td><td><code>CREATE UNIQUE INDEX order_items_pkey ON public.order_items USING btree (order_id, line_no)</code></td><td class="comment"></td></tr>
-<tr><td>order_items_order_product_key</td><td><code>CREATE UNIQUE INDEX order_items_order_product_key ON public.order_items USING btree (order_id, product)</code></td><td class="comment"></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Constraints</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Type</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>order_items_quantity_check</td><td>CHECK</td><td><code>CHECK ((quantity &gt; 0))</code></td><td class="comment"></td></tr>
-<tr><td>order_items_order_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE</code></td><td class="comment"></td></tr>
-<tr><td>order_items_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (order_id, line_no)</code></td><td class="comment"></td></tr>
-<tr><td>order_items_order_product_key</td><td>UNIQUE</td><td><code>UNIQUE (order_id, product)</code></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>

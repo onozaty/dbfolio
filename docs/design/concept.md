@@ -259,38 +259,32 @@ dbfolio ではコメントを重要情報として扱う。
 
 ### Table detail
 
-テーブル単位で詳細を確認できるページを中心にする。
-
-例:
+テーブル単位で詳細を確認できるページを中心にする。セクションの順と表の列は tbls が生成する Markdown に寄せる (Phase 5 で見直し)。
 
 ```text
 users
-
-Description
-  ユーザー情報
+  BASE TABLE
+  ユーザー情報                      ← テーブルコメント
+  ▶ Definition                     ← ビューの定義など (折りたたみ。入力にある場合のみ)
 
 Columns
-────────────────────────────────────────────
-Name       Type          Nullable   Key   Comment
-id         bigint        NO         PK    ユーザーID
-name       varchar(100)  NO               氏名
-email      varchar(255)  NO               メールアドレス
-region_id  bigint        YES        FK    地域ID
+  Name       Type          Default  Nullable  Key  Comment
+  id         bigint        nextval  NO        PK   ユーザーID
+  region_id  bigint                 YES       FK   地域ID
 
-Indexes
-...
+Constraints  (Name / Type / Definition / Comment)
+Indexes      (Name / Definition / Comment)
+Triggers     (Name / Definition / Comment)
 
-Constraints
-...
-
-Parents
-  regions
-
-Children
-  orders
-  comments
-  user_roles
+Relationships                      ← メニューの Relationships ページと同じく図 + 一覧
+  (テーブル単位 ER 図)
+  Parents / Children               ← Virtual Relation を含む関係
 ```
+
+- Nullable は YES / NO で表記する (SQL 標準の information_schema や MySQL と同じ。tbls の true / false は JSON の真偽値をそのまま出したもので、仕様書として読む人には DB 側の表記が自然なため)
+- Indexes / Constraints / Triggers の Comment 列は、コメントが 1 つもなければ出さない (tbls と同様)。コメントは DB (PostgreSQL の `COMMENT ON INDEX` / `COMMENT ON CONSTRAINT` / `COMMENT ON TRIGGER`、MySQL のインデックスの `COMMENT`) や `.tbls.yml` の `indexComments` / `constraintComments` / `triggerComments` で付けられるが、付けている DB は少ない。Constraints ページも同様
+- 関係は Relationships セクションにまとめ、ER 図で全体像を見せてから Parents / Children の一覧を続ける (tbls は末尾に ER 図だけを「Relations」として置くが、サイトのメニュー名と構成にそろえる)。Relation のないテーブルではセクションを出さない
+- 親子関係は tbls のようにカラムごとの Children / Parents 列にはせず、Key 列の FK バッジと Parents / Children セクションで示す (子テーブルが多いと列が横に長くなるため)
 
 ### リンク
 

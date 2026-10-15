@@ -34,19 +34,43 @@
 <h2>Columns</h2>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
+<thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Nullable</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr id="column-0"><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;audit_logs_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
-<tr id="column-1"><td>user_id</td><td><code>bigint</code></td><td>YES</td><td></td><td><a class="key key-FK key-virtual" href="../tables/public.users.html" title="Virtual relation: References public.users id">FK<span class="visually-hidden"> (virtual)</span></a></td><td class="comment">操作したユーザー</td></tr>
-<tr id="column-2"><td>action</td><td><code>varchar(50)</code></td><td>NO</td><td></td><td></td><td class="comment">操作種別</td></tr>
-<tr id="column-3"><td>created_at</td><td><code>timestamp with time zone</code></td><td>NO</td><td><code>now()</code></td><td></td><td class="comment"></td></tr>
+<tr id="column-0"><td>id</td><td><code>bigint</code></td><td><code>nextval(&#39;audit_logs_id_seq&#39;::regclass)</code></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr id="column-1"><td>user_id</td><td><code>bigint</code></td><td></td><td>YES</td><td><a class="key key-FK key-virtual" href="../tables/public.users.html" title="Virtual relation: References public.users id">FK<span class="visually-hidden"> (virtual)</span></a></td><td class="comment">操作したユーザー</td></tr>
+<tr id="column-2"><td>action</td><td><code>varchar(50)</code></td><td></td><td>NO</td><td></td><td class="comment">操作種別</td></tr>
+<tr id="column-3"><td>created_at</td><td><code>timestamp with time zone</code></td><td><code>now()</code></td><td>NO</td><td></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>
 </section>
 
 <section>
-<h2>ER Diagram</h2>
+<h2>Constraints</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>audit_logs_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Indexes</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>audit_logs_pkey</td><td><code>CREATE UNIQUE INDEX audit_logs_pkey ON public.audit_logs USING btree (id)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Relationships</h2>
 <div class="diagram">
 <svg width="585pt" height="237pt"
  viewBox="0.00 0.00 584.80 236.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -169,39 +193,12 @@
 </g>
 </svg>
 </div>
-</section>
-
-<section>
-<h2>Parents</h2>
+<h3>Parents</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Parent</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
 <tbody>
 <tr><td><a href="../tables/public.users.html">public.users</a></td><td><code>user_id → id</code></td><td>0..* : 0..1</td><td><span class="relation-virtual">Virtual</span></td><td><code>audit_logs.user_id -&gt; users.id (アプリケーション側で管理)</code></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Indexes</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>audit_logs_pkey</td><td><code>CREATE UNIQUE INDEX audit_logs_pkey ON public.audit_logs USING btree (id)</code></td><td class="comment"></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Constraints</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Type</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>audit_logs_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>
