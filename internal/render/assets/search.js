@@ -83,8 +83,10 @@
   var results = [];
   var active = -1;
 
-  // Without JavaScript the box would do nothing, so it is shown only now.
-  box.hidden = false;
+  // Without JavaScript the box would do nothing, so it is shown only now. It
+  // already takes its space (visibility, not display), so the header does not
+  // change height when it appears.
+  box.classList.add("ready");
 
   // close hides the list without removing its items: it also runs while a
   // clicked result is following its link, which a removed link would not.
