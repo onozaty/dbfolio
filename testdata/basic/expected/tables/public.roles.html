@@ -34,17 +34,43 @@
 <h2>Columns</h2>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
+<thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Nullable</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr id="column-0"><td>id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
-<tr id="column-1"><td>name</td><td><code>varchar(50)</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
+<tr id="column-0"><td>id</td><td><code>bigint</code></td><td></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr id="column-1"><td>name</td><td><code>varchar(50)</code></td><td></td><td>NO</td><td></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>
 </section>
 
 <section>
-<h2>ER Diagram</h2>
+<h2>Constraints</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>roles_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td></tr>
+<tr><td>roles_name_key</td><td>UNIQUE</td><td><code>UNIQUE (name)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Indexes</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>roles_pkey</td><td><code>CREATE UNIQUE INDEX roles_pkey ON public.roles USING btree (id)</code></td></tr>
+<tr><td>roles_name_key</td><td><code>CREATE UNIQUE INDEX roles_name_key ON public.roles USING btree (name)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Relationships</h2>
 <div class="diagram">
 <svg width="374pt" height="137pt"
  viewBox="0.00 0.00 373.80 136.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -118,41 +144,12 @@
 </g>
 </svg>
 </div>
-</section>
-
-<section>
-<h2>Children</h2>
+<h3>Children</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Child</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
 <tbody>
 <tr><td><a href="../tables/public.user_roles.html">public.user_roles</a></td><td><code>role_id → id</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (role_id) REFERENCES roles(id)</code></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Indexes</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>roles_pkey</td><td><code>CREATE UNIQUE INDEX roles_pkey ON public.roles USING btree (id)</code></td><td class="comment"></td></tr>
-<tr><td>roles_name_key</td><td><code>CREATE UNIQUE INDEX roles_name_key ON public.roles USING btree (name)</code></td><td class="comment"></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Constraints</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Type</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>roles_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td><td class="comment"></td></tr>
-<tr><td>roles_name_key</td><td>UNIQUE</td><td><code>UNIQUE (name)</code></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>

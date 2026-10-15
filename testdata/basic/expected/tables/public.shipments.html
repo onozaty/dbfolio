@@ -34,19 +34,45 @@
 <h2>Columns</h2>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
+<thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Nullable</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr id="column-0"><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;shipments_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
-<tr id="column-1"><td>order_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><a class="key key-FK" href="../tables/public.orders.html" title="References public.orders id">FK</a> <a class="key key-FK" href="../tables/public.order_items.html" title="References public.order_items (order_id, line_no)">FK</a></td><td class="comment"></td></tr>
-<tr id="column-2"><td>line_no</td><td><code>integer</code></td><td>NO</td><td></td><td><a class="key key-FK" href="../tables/public.order_items.html" title="References public.order_items (order_id, line_no)">FK</a></td><td class="comment"></td></tr>
-<tr id="column-3"><td>shipped_at</td><td><code>timestamp with time zone</code></td><td>YES</td><td></td><td></td><td class="comment"></td></tr>
+<tr id="column-0"><td>id</td><td><code>bigint</code></td><td><code>nextval(&#39;shipments_id_seq&#39;::regclass)</code></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr id="column-1"><td>order_id</td><td><code>bigint</code></td><td></td><td>NO</td><td><a class="key key-FK" href="../tables/public.orders.html" title="References public.orders id">FK</a> <a class="key key-FK" href="../tables/public.order_items.html" title="References public.order_items (order_id, line_no)">FK</a></td><td class="comment"></td></tr>
+<tr id="column-2"><td>line_no</td><td><code>integer</code></td><td></td><td>NO</td><td><a class="key key-FK" href="../tables/public.order_items.html" title="References public.order_items (order_id, line_no)">FK</a></td><td class="comment"></td></tr>
+<tr id="column-3"><td>shipped_at</td><td><code>timestamp with time zone</code></td><td></td><td>YES</td><td></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>
 </section>
 
 <section>
-<h2>ER Diagram</h2>
+<h2>Constraints</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>shipments_order_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (order_id) REFERENCES orders(id)</code></td></tr>
+<tr><td>shipments_order_item_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)</code></td></tr>
+<tr><td>shipments_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Indexes</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>shipments_pkey</td><td><code>CREATE UNIQUE INDEX shipments_pkey ON public.shipments USING btree (id)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Relationships</h2>
 <div class="diagram">
 <svg width="815pt" height="225pt"
  viewBox="0.00 0.00 814.80 224.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -210,42 +236,13 @@
 </g>
 </svg>
 </div>
-</section>
-
-<section>
-<h2>Parents</h2>
+<h3>Parents</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Parent</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
 <tbody>
 <tr><td><a href="../tables/public.orders.html">public.orders</a></td><td><code>order_id → id</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (order_id) REFERENCES orders(id)</code></td></tr>
 <tr><td><a href="../tables/public.order_items.html">public.order_items</a></td><td><code>(order_id, line_no) → (order_id, line_no)</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)</code></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Indexes</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>shipments_pkey</td><td><code>CREATE UNIQUE INDEX shipments_pkey ON public.shipments USING btree (id)</code></td><td class="comment"></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Constraints</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Type</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-<tr><td>shipments_order_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (order_id) REFERENCES orders(id)</code></td><td class="comment"></td></tr>
-<tr><td>shipments_order_item_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)</code></td><td class="comment"></td></tr>
-<tr><td>shipments_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td><td class="comment"></td></tr>
 </tbody>
 </table>
 </div>

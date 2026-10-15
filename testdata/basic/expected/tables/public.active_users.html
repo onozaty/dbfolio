@@ -29,23 +29,8 @@
 <h1>public.active_users</h1>
 <p class="table-type">VIEW</p>
 <p class="comment">有効なユーザー</p>
-
-<section>
-<h2>Columns</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
-<tbody>
-<tr id="column-0"><td>id</td><td><code>bigint</code></td><td>YES</td><td></td><td></td><td class="comment"></td></tr>
-<tr id="column-1"><td>name</td><td><code>varchar(100)</code></td><td>YES</td><td></td><td></td><td class="comment"></td></tr>
-<tr id="column-2"><td>email</td><td><code>varchar(255)</code></td><td>YES</td><td></td><td></td><td class="comment"></td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section>
-<h2>Definition</h2>
+<details class="definition">
+<summary>Definition</summary>
 <pre><code>CREATE VIEW active_users AS (
  SELECT id,
     name,
@@ -53,6 +38,20 @@
    FROM users
   WHERE ((status)::text = &#39;active&#39;::text)
 )</code></pre>
+</details>
+
+<section>
+<h2>Columns</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Nullable</th><th>Key</th><th>Comment</th></tr></thead>
+<tbody>
+<tr id="column-0"><td>id</td><td><code>bigint</code></td><td></td><td>YES</td><td></td><td class="comment"></td></tr>
+<tr id="column-1"><td>name</td><td><code>varchar(100)</code></td><td></td><td>YES</td><td></td><td class="comment"></td></tr>
+<tr id="column-2"><td>email</td><td><code>varchar(255)</code></td><td></td><td>YES</td><td></td><td class="comment"></td></tr>
+</tbody>
+</table>
+</div>
 </section>
 
 </main>

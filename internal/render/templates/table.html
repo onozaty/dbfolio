@@ -1,54 +1,42 @@
 {{define "content"}}{{with .Table}}<h1>{{.Name}}</h1>
 {{with .Type}}<p class="table-type">{{.}}</p>
 {{end}}{{with .Comment}}<p class="comment">{{.}}</p>
+{{end}}{{with .Def}}<details class="definition">
+<summary>Definition</summary>
+<pre><code>{{.}}</code></pre>
+</details>
 {{end}}{{end}}
 <section>
 <h2>Columns</h2>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th>{{if .ShowExtra}}<th>Extra</th>{{end}}<th>Key</th><th>Comment</th></tr></thead>
+<thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Nullable</th>{{if .ShowExtra}}<th>Extra</th>{{end}}<th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-{{range $pos, $_ := .Columns}}<tr id="{{columnAnchor $pos}}"><td>{{.Name}}</td><td><code>{{.Type}}</code></td><td>{{if .Nullable}}YES{{else}}NO{{end}}</td><td>{{with .Default}}<code>{{.}}</code>{{end}}</td>{{if $.ShowExtra}}<td>{{with .ExtraDef}}<code>{{.}}</code>{{end}}</td>{{end}}<td>{{range $i, $k := .Keys}}{{if $i}} {{end}}{{template "key" $k}}{{end}}</td><td class="comment">{{.Comment}}</td></tr>
+{{range $pos, $_ := .Columns}}<tr id="{{columnAnchor $pos}}"><td>{{.Name}}</td><td><code>{{.Type}}</code></td><td>{{with .Default}}<code>{{.}}</code>{{end}}</td><td>{{if .Nullable}}YES{{else}}NO{{end}}</td>{{if $.ShowExtra}}<td>{{with .ExtraDef}}<code>{{.}}</code>{{end}}</td>{{end}}<td>{{range $i, $k := .Keys}}{{if $i}} {{end}}{{template "key" $k}}{{end}}</td><td class="comment">{{.Comment}}</td></tr>
 {{end}}</tbody>
 </table>
 </div>
 </section>
-{{if .Diagram}}
+{{with .Constraints}}
 <section>
-<h2>ER Diagram</h2>
-<div class="diagram">
-{{.Diagram}}</div>
-</section>
-{{end}}{{if .Parents.Rows}}
-<section>
-<h2>Parents</h2>
-{{template "relations" .Parents}}
-</section>
-{{end}}{{if .Children.Rows}}
-<section>
-<h2>Children</h2>
-{{template "relations" .Children}}
+<h2>Constraints</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th>Definition</th>{{if $.ConstraintComments}}<th>Comment</th>{{end}}</tr></thead>
+<tbody>
+{{range .}}<tr><td>{{.Name}}</td><td>{{.Type}}</td><td><code>{{.Def}}</code></td>{{if $.ConstraintComments}}<td class="comment">{{.Comment}}</td>{{end}}</tr>
+{{end}}</tbody>
+</table>
+</div>
 </section>
 {{end}}{{with .Table.Indexes}}
 <section>
 <h2>Indexes</h2>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Name</th><th>Definition</th><th>Comment</th></tr></thead>
+<thead><tr><th>Name</th><th>Definition</th>{{if $.IndexComments}}<th>Comment</th>{{end}}</tr></thead>
 <tbody>
-{{range .}}<tr><td>{{.Name}}</td><td><code>{{.Def}}</code></td><td class="comment">{{.Comment}}</td></tr>
-{{end}}</tbody>
-</table>
-</div>
-</section>
-{{end}}{{with .Constraints}}
-<section>
-<h2>Constraints</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Type</th><th>Definition</th><th>Comment</th></tr></thead>
-<tbody>
-{{range .}}<tr><td>{{.Name}}</td><td>{{.Type}}</td><td><code>{{.Def}}</code></td><td class="comment">{{.Comment}}</td></tr>
+{{range .}}<tr><td>{{.Name}}</td><td><code>{{.Def}}</code></td>{{if $.IndexComments}}<td class="comment">{{.Comment}}</td>{{end}}</tr>
 {{end}}</tbody>
 </table>
 </div>
@@ -58,16 +46,21 @@
 <h2>Triggers</h2>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Name</th><th>Definition</th><th>Comment</th></tr></thead>
+<thead><tr><th>Name</th><th>Definition</th>{{if $.TriggerComments}}<th>Comment</th>{{end}}</tr></thead>
 <tbody>
-{{range .}}<tr><td>{{.Name}}</td><td><code>{{.Def}}</code></td><td class="comment">{{.Comment}}</td></tr>
+{{range .}}<tr><td>{{.Name}}</td><td><code>{{.Def}}</code></td>{{if $.TriggerComments}}<td class="comment">{{.Comment}}</td>{{end}}</tr>
 {{end}}</tbody>
 </table>
 </div>
 </section>
-{{end}}{{with .Table.Def}}
+{{end}}{{if or .Diagram .Parents.Rows .Children.Rows}}
 <section>
-<h2>Definition</h2>
-<pre><code>{{.}}</code></pre>
-</section>
+<h2>Relationships</h2>
+{{if .Diagram}}<div class="diagram">
+{{.Diagram}}</div>
+{{end}}{{if .Parents.Rows}}<h3>Parents</h3>
+{{template "relations" .Parents}}
+{{end}}{{if .Children.Rows}}<h3>Children</h3>
+{{template "relations" .Children}}
+{{end}}</section>
 {{end}}{{end}}
