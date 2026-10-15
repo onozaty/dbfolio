@@ -45,8 +45,10 @@ code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospac
 .site-nav { display: flex; flex-wrap: wrap; gap: 16px; }
 .site-nav a[aria-current="page"] { color: var(--fg); font-weight: 600; }
 
-/* Search (search.js). Shown only when JavaScript runs. */
+/* Search (search.js). Shown only when JavaScript runs, but laid out from the
+   start so that the header does not change height when it appears. */
 .search { position: relative; margin-left: auto; width: min(360px, 100%); }
+.search:not(.ready) { visibility: hidden; }
 .search input { width: 100%; padding: 5px 10px; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; }
 .search input { padding-right: 28px; }
 .search input:focus { outline: 2px solid var(--link); outline-offset: -1px; }
