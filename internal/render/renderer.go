@@ -38,7 +38,8 @@ var (
 const tableDiagramDistance = 1
 
 func parsePage(name string) *template.Template {
-	return template.Must(template.ParseFS(content, "templates/layout.html", "templates/partials.html", name))
+	return template.Must(template.New("").Funcs(template.FuncMap{"columnAnchor": columnAnchor}).
+		ParseFS(content, "templates/layout.html", "templates/partials.html", name))
 }
 
 // Site is a planned documentation site. Planning is separated from writing so
@@ -154,6 +155,9 @@ func (site *Site) Write(dir string) error {
 		return errors.New("render: RenderDiagrams must be called before Write")
 	}
 	if err := writeAssets(dir); err != nil {
+		return err
+	}
+	if err := writeFile(filepath.Join(dir, assetsDir, searchIndexFile), site.writeSearchIndex); err != nil {
 		return err
 	}
 	for _, p := range []struct {

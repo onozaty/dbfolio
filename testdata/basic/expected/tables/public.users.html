@@ -1,11 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-root="../">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>public.users - dbfolio</title>
 <link rel="stylesheet" href="../assets/app.css">
 <script src="../assets/app.js" defer></script>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/search.js" defer></script>
 </head>
 <body>
 <header class="site-header">
@@ -16,6 +18,12 @@
 <a href="../constraints.html">Constraints</a>
 <a href="../relationships.html">Relationships</a>
 </nav>
+<div class="search" role="search" hidden>
+<input type="search" id="search-input" placeholder="Search tables and columns" autocomplete="off" spellcheck="false" aria-label="Search tables and columns" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
+<kbd class="search-key" aria-hidden="true">/</kbd>
+<ul id="search-results" role="listbox" aria-label="Search results" hidden></ul>
+<div id="search-status" class="search-status" aria-live="polite"></div>
+</div>
 </header>
 <main>
 <h1>public.users</h1>
@@ -28,12 +36,12 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;users_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment">ユーザーID</td></tr>
-<tr><td>name</td><td><code>varchar(100)</code></td><td>NO</td><td></td><td></td><td class="comment">氏名</td></tr>
-<tr><td>email</td><td><code>varchar(255)</code></td><td>NO</td><td></td><td></td><td class="comment">ログインに使用するメールアドレス</td></tr>
-<tr><td>region_id</td><td><code>bigint</code></td><td>YES</td><td></td><td><a class="key key-FK" href="../tables/public.regions.html" title="References public.regions id">FK</a></td><td class="comment">地域ID</td></tr>
-<tr><td>status</td><td><code>varchar(20)</code></td><td>NO</td><td><code>&#39;active&#39;::character varying</code></td><td></td><td class="comment">状態</td></tr>
-<tr><td>created_at</td><td><code>timestamp with time zone</code></td><td>NO</td><td><code>now()</code></td><td></td><td class="comment">登録日時</td></tr>
+<tr id="column-0"><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;users_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment">ユーザーID</td></tr>
+<tr id="column-1"><td>name</td><td><code>varchar(100)</code></td><td>NO</td><td></td><td></td><td class="comment">氏名</td></tr>
+<tr id="column-2"><td>email</td><td><code>varchar(255)</code></td><td>NO</td><td></td><td></td><td class="comment">ログインに使用するメールアドレス</td></tr>
+<tr id="column-3"><td>region_id</td><td><code>bigint</code></td><td>YES</td><td></td><td><a class="key key-FK" href="../tables/public.regions.html" title="References public.regions id">FK</a></td><td class="comment">地域ID</td></tr>
+<tr id="column-4"><td>status</td><td><code>varchar(20)</code></td><td>NO</td><td><code>&#39;active&#39;::character varying</code></td><td></td><td class="comment">状態</td></tr>
+<tr id="column-5"><td>created_at</td><td><code>timestamp with time zone</code></td><td>NO</td><td><code>now()</code></td><td></td><td class="comment">登録日時</td></tr>
 </tbody>
 </table>
 </div>
