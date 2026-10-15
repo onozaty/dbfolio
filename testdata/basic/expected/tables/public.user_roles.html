@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>public.user_roles - dbfolio</title>
 <link rel="stylesheet" href="../assets/app.css">
+<script src="../assets/app.js" defer></script>
 </head>
 <body>
 <header class="site-header">
 <a class="site-title" href="../index.html">dbfolio</a>
-<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a></nav>
+<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a> <a href="../diagram.html">ER Diagram</a></nav>
 </header>
 <main>
 <h1>public.user_roles</h1>
@@ -26,6 +27,153 @@
 <tr><td>role_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="../tables/public.roles.html" title="References public.roles id">FK</a></td><td class="comment"></td></tr>
 </tbody>
 </table>
+</div>
+</section>
+
+<section>
+<h2>ER Diagram</h2>
+<div class="diagram">
+<svg width="471pt" height="317pt"
+ viewBox="0.00 0.00 470.80 316.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(14.4 302.4)">
+<polygon fill="white" stroke="none" points="-14.4,14.4 -14.4,-302.4 456.4,-302.4 456.4,14.4 -14.4,14.4"/>
+<!-- t0 -->
+<g id="node1" class="node">
+<title>t0</title>
+<g id="a_node1"><a xlink:href="../tables/public.users.html" xlink:title="public.users&#10;ユーザー情報">
+<polygon fill="#e8eef7" stroke="none" points="201,-259 201,-284 434,-284 434,-259 201,-259"/>
+<polygon fill="none" stroke="black" points="201,-259 201,-284 434,-284 434,-259 201,-259"/>
+<text text-anchor="start" x="207" y="-269.1" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00">public.users</text>
+<polygon fill="white" stroke="none" points="201,-234 201,-259 266,-259 266,-234 201,-234"/>
+<polygon fill="none" stroke="black" points="201,-234 201,-259 266,-259 266,-234 201,-234"/>
+<text text-anchor="start" x="207" y="-243.1" font-family="Helvetica,sans-Serif" font-size="11.00">id</text>
+<polygon fill="white" stroke="none" points="266,-234 266,-259 408,-259 408,-234 266,-234"/>
+<polygon fill="none" stroke="black" points="266,-234 266,-259 408,-259 408,-234 266,-234"/>
+<text text-anchor="start" x="272" y="-243.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="408,-234 408,-259 434,-259 434,-234 408,-234"/>
+<polygon fill="none" stroke="black" points="408,-234 408,-259 434,-259 434,-234 408,-234"/>
+<text text-anchor="start" x="415" y="-243.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="201,-209 201,-234 266,-234 266,-209 201,-209"/>
+<polygon fill="none" stroke="black" points="201,-209 201,-234 266,-234 266,-209 201,-209"/>
+<text text-anchor="start" x="207" y="-218.1" font-family="Helvetica,sans-Serif" font-size="11.00">name</text>
+<polygon fill="white" stroke="none" points="266,-209 266,-234 408,-234 408,-209 266,-209"/>
+<polygon fill="none" stroke="black" points="266,-209 266,-234 408,-234 408,-209 266,-209"/>
+<text text-anchor="start" x="272" y="-218.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">varchar(100)</text>
+<polygon fill="white" stroke="none" points="408,-209 408,-234 434,-234 434,-209 408,-209"/>
+<polygon fill="none" stroke="black" points="408,-209 408,-234 434,-234 434,-209 408,-209"/>
+<polygon fill="white" stroke="none" points="201,-184 201,-209 266,-209 266,-184 201,-184"/>
+<polygon fill="none" stroke="black" points="201,-184 201,-209 266,-209 266,-184 201,-184"/>
+<text text-anchor="start" x="207" y="-193.1" font-family="Helvetica,sans-Serif" font-size="11.00">email</text>
+<polygon fill="white" stroke="none" points="266,-184 266,-209 408,-209 408,-184 266,-184"/>
+<polygon fill="none" stroke="black" points="266,-184 266,-209 408,-209 408,-184 266,-184"/>
+<text text-anchor="start" x="272" y="-193.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">varchar(255)</text>
+<polygon fill="white" stroke="none" points="408,-184 408,-209 434,-209 434,-184 408,-184"/>
+<polygon fill="none" stroke="black" points="408,-184 408,-209 434,-209 434,-184 408,-184"/>
+<polygon fill="white" stroke="none" points="201,-159 201,-184 266,-184 266,-159 201,-159"/>
+<polygon fill="none" stroke="black" points="201,-159 201,-184 266,-184 266,-159 201,-159"/>
+<text text-anchor="start" x="207" y="-168.1" font-family="Helvetica,sans-Serif" font-size="11.00">region_id</text>
+<polygon fill="white" stroke="none" points="266,-159 266,-184 408,-184 408,-159 266,-159"/>
+<polygon fill="none" stroke="black" points="266,-159 266,-184 408,-184 408,-159 266,-159"/>
+<text text-anchor="start" x="272" y="-168.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="408,-159 408,-184 434,-184 434,-159 408,-159"/>
+<polygon fill="none" stroke="black" points="408,-159 408,-184 434,-184 434,-159 408,-159"/>
+<text text-anchor="start" x="415.25" y="-168.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">FK</text>
+<polygon fill="white" stroke="none" points="201,-134 201,-159 266,-159 266,-134 201,-134"/>
+<polygon fill="none" stroke="black" points="201,-134 201,-159 266,-159 266,-134 201,-134"/>
+<text text-anchor="start" x="207" y="-143.1" font-family="Helvetica,sans-Serif" font-size="11.00">status</text>
+<polygon fill="white" stroke="none" points="266,-134 266,-159 408,-159 408,-134 266,-134"/>
+<polygon fill="none" stroke="black" points="266,-134 266,-159 408,-159 408,-134 266,-134"/>
+<text text-anchor="start" x="272" y="-143.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">varchar(20)</text>
+<polygon fill="white" stroke="none" points="408,-134 408,-159 434,-159 434,-134 408,-134"/>
+<polygon fill="none" stroke="black" points="408,-134 408,-159 434,-159 434,-134 408,-134"/>
+<polygon fill="white" stroke="none" points="201,-109 201,-134 266,-134 266,-109 201,-109"/>
+<polygon fill="none" stroke="black" points="201,-109 201,-134 266,-134 266,-109 201,-109"/>
+<text text-anchor="start" x="207" y="-118.1" font-family="Helvetica,sans-Serif" font-size="11.00">created_at</text>
+<polygon fill="white" stroke="none" points="266,-109 266,-134 408,-134 408,-109 266,-109"/>
+<polygon fill="none" stroke="black" points="266,-109 266,-134 408,-134 408,-109 266,-109"/>
+<text text-anchor="start" x="272" y="-118.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">timestamp with time zone</text>
+<polygon fill="white" stroke="none" points="408,-109 408,-134 434,-134 434,-109 408,-109"/>
+<polygon fill="none" stroke="black" points="408,-109 408,-134 434,-134 434,-109 408,-109"/>
+</a>
+</g>
+</g>
+<!-- t1 -->
+<g id="node2" class="node">
+<title>t1</title>
+<g id="a_node2"><a xlink:href="../tables/public.roles.html" xlink:title="public.roles&#10;ロール">
+<polygon fill="#e8eef7" stroke="none" points="249.5,-54 249.5,-79 385.5,-79 385.5,-54 249.5,-54"/>
+<polygon fill="none" stroke="black" points="249.5,-54 249.5,-79 385.5,-79 385.5,-54 249.5,-54"/>
+<text text-anchor="start" x="255.5" y="-64.1" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00">public.roles</text>
+<polygon fill="white" stroke="none" points="249.5,-29 249.5,-54 288.5,-54 288.5,-29 249.5,-29"/>
+<polygon fill="none" stroke="black" points="249.5,-29 249.5,-54 288.5,-54 288.5,-29 249.5,-29"/>
+<text text-anchor="start" x="255.5" y="-38.1" font-family="Helvetica,sans-Serif" font-size="11.00">id</text>
+<polygon fill="white" stroke="none" points="288.5,-29 288.5,-54 359.5,-54 359.5,-29 288.5,-29"/>
+<polygon fill="none" stroke="black" points="288.5,-29 288.5,-54 359.5,-54 359.5,-29 288.5,-29"/>
+<text text-anchor="start" x="294.5" y="-38.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="359.5,-29 359.5,-54 385.5,-54 385.5,-29 359.5,-29"/>
+<polygon fill="none" stroke="black" points="359.5,-29 359.5,-54 385.5,-54 385.5,-29 359.5,-29"/>
+<text text-anchor="start" x="366.5" y="-38.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="249.5,-4 249.5,-29 288.5,-29 288.5,-4 249.5,-4"/>
+<polygon fill="none" stroke="black" points="249.5,-4 249.5,-29 288.5,-29 288.5,-4 249.5,-4"/>
+<text text-anchor="start" x="255.24" y="-13.1" font-family="Helvetica,sans-Serif" font-size="11.00">name</text>
+<polygon fill="white" stroke="none" points="288.5,-4 288.5,-29 359.5,-29 359.5,-4 288.5,-4"/>
+<polygon fill="none" stroke="black" points="288.5,-4 288.5,-29 359.5,-29 359.5,-4 288.5,-4"/>
+<text text-anchor="start" x="294.5" y="-13.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">varchar(50)</text>
+<polygon fill="white" stroke="none" points="359.5,-4 359.5,-29 385.5,-29 385.5,-4 359.5,-4"/>
+<polygon fill="none" stroke="black" points="359.5,-4 359.5,-29 385.5,-29 385.5,-4 359.5,-4"/>
+</a>
+</g>
+</g>
+<!-- t2 -->
+<g id="node3" class="node">
+<title>t2</title>
+<g id="a_node3"><a xlink:href="../tables/public.user_roles.html" xlink:title="public.user_roles&#10;ユーザーとロールの対応">
+<polygon fill="#ffe9b3" stroke="none" points="8,-169 8,-194 127,-194 127,-169 8,-169"/>
+<polygon fill="none" stroke="black" points="8,-169 8,-194 127,-194 127,-169 8,-169"/>
+<text text-anchor="start" x="14" y="-179.1" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00">public.user_roles</text>
+<polygon fill="white" stroke="none" points="8,-144 8,-169 58,-169 58,-144 8,-144"/>
+<polygon fill="none" stroke="black" points="8,-144 8,-169 58,-169 58,-144 8,-144"/>
+<text text-anchor="start" x="14" y="-153.1" font-family="Helvetica,sans-Serif" font-size="11.00">user_id</text>
+<polygon fill="white" stroke="none" points="58,-144 58,-169 101,-169 101,-144 58,-144"/>
+<polygon fill="none" stroke="black" points="58,-144 58,-169 101,-169 101,-144 58,-144"/>
+<text text-anchor="start" x="64" y="-153.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="101,-144 101,-169 127,-169 127,-144 101,-144"/>
+<polygon fill="none" stroke="black" points="101,-144 101,-169 127,-169 127,-144 101,-144"/>
+<text text-anchor="start" x="108" y="-153.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="8,-119 8,-144 58,-144 58,-119 8,-119"/>
+<polygon fill="none" stroke="black" points="8,-119 8,-144 58,-144 58,-119 8,-119"/>
+<text text-anchor="start" x="14" y="-128.1" font-family="Helvetica,sans-Serif" font-size="11.00">role_id</text>
+<polygon fill="white" stroke="none" points="58,-119 58,-144 101,-144 101,-119 58,-119"/>
+<polygon fill="none" stroke="black" points="58,-119 58,-144 101,-144 101,-119 58,-119"/>
+<text text-anchor="start" x="64" y="-128.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="101,-119 101,-144 127,-144 127,-119 101,-119"/>
+<polygon fill="none" stroke="black" points="101,-119 101,-144 127,-144 127,-119 101,-119"/>
+<text text-anchor="start" x="108" y="-128.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+</a>
+</g>
+</g>
+<!-- t2&#45;&gt;t0 -->
+<g id="edge1" class="edge">
+<title>t2:e&#45;&gt;t0:w</title>
+<g id="a_edge1"><a xlink:title="public.user_roles user_id → public.users id&#10;FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE">
+<path fill="none" stroke="#666666" d="M146.3,-162.13C171.84,-181.83 156.58,-246.5 200,-246.5"/>
+<polygon fill="#666666" stroke="#666666" points="137.88,-159.54 129.64,-152.3 132.78,-157.97 128.64,-156.7 128.64,-156.7 128.64,-156.7 132.78,-157.97 127,-160.9 137.88,-159.54"/>
+<ellipse fill="none" stroke="#666666" cx="143.34" cy="-161.22" rx="4" ry="4"/>
+</a>
+</g>
+</g>
+<!-- t2&#45;&gt;t1 -->
+<g id="edge2" class="edge">
+<title>t2:e&#45;&gt;t1:w</title>
+<g id="a_edge2"><a xlink:title="public.user_roles role_id → public.roles id&#10;FOREIGN KEY (role_id) REFERENCES roles(id)">
+<path fill="none" stroke="#666666" d="M146.97,-128.61C192.93,-113.2 188.84,-41.5 248.5,-41.5"/>
+<polygon fill="#666666" stroke="#666666" points="138.22,-129.94 127.65,-127 132.94,-130.75 128.66,-131.4 128.66,-131.4 128.66,-131.4 132.94,-130.75 129.01,-135.9 138.22,-129.94"/>
+<ellipse fill="none" stroke="#666666" cx="143.87" cy="-129.08" rx="4" ry="4"/>
+</a>
+</g>
+</g>
+</g>
+</svg>
 </div>
 </section>
 

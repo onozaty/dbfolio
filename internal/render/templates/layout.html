@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{.Title}}</title>
 <link rel="stylesheet" href="{{.Root}}assets/app.css">
+<script src="{{.Root}}assets/app.js" defer></script>
 </head>
-<body>
+<body{{if .Fill}} class="fill"{{end}}>
 <header class="site-header">
 <a class="site-title" href="{{.Root}}index.html">{{.DBName}}</a>
-<nav class="site-nav"><a href="{{.Root}}index.html">Overview</a> <a href="{{.Root}}relationships.html">Relationships</a></nav>
+<nav class="site-nav"><a href="{{.Root}}index.html">Overview</a> <a href="{{.Root}}relationships.html">Relationships</a> <a href="{{.Root}}diagram.html">ER Diagram</a></nav>
 </header>
 <main>
 {{template "content" .}}

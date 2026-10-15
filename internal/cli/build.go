@@ -40,6 +40,9 @@ func runBuild(cmd *cobra.Command, schemaPath, outDir string, force bool) error {
 	if err != nil {
 		return err
 	}
+	if err := site.RenderDiagrams(cmd.Context()); err != nil {
+		return err
+	}
 
 	if err := output.Prepare(outDir, force); err != nil {
 		return err

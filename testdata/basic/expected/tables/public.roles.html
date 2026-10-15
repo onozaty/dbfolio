@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>public.roles - dbfolio</title>
 <link rel="stylesheet" href="../assets/app.css">
+<script src="../assets/app.js" defer></script>
 </head>
 <body>
 <header class="site-header">
 <a class="site-title" href="../index.html">dbfolio</a>
-<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a></nav>
+<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a> <a href="../diagram.html">ER Diagram</a></nav>
 </header>
 <main>
 <h1>public.roles</h1>
@@ -26,6 +27,83 @@
 <tr><td>name</td><td><code>varchar(50)</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
 </tbody>
 </table>
+</div>
+</section>
+
+<section>
+<h2>ER Diagram</h2>
+<div class="diagram">
+<svg width="374pt" height="137pt"
+ viewBox="0.00 0.00 373.80 136.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(14.4 122.4)">
+<polygon fill="white" stroke="none" points="-14.4,14.4 -14.4,-122.4 359.4,-122.4 359.4,14.4 -14.4,14.4"/>
+<!-- t0 -->
+<g id="node1" class="node">
+<title>t0</title>
+<g id="a_node1"><a xlink:href="../tables/public.roles.html" xlink:title="public.roles&#10;ロール">
+<polygon fill="#ffe9b3" stroke="none" points="201,-54 201,-79 337,-79 337,-54 201,-54"/>
+<polygon fill="none" stroke="black" points="201,-54 201,-79 337,-79 337,-54 201,-54"/>
+<text text-anchor="start" x="207" y="-64.1" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00">public.roles</text>
+<polygon fill="white" stroke="none" points="201,-29 201,-54 240,-54 240,-29 201,-29"/>
+<polygon fill="none" stroke="black" points="201,-29 201,-54 240,-54 240,-29 201,-29"/>
+<text text-anchor="start" x="207" y="-38.1" font-family="Helvetica,sans-Serif" font-size="11.00">id</text>
+<polygon fill="white" stroke="none" points="240,-29 240,-54 311,-54 311,-29 240,-29"/>
+<polygon fill="none" stroke="black" points="240,-29 240,-54 311,-54 311,-29 240,-29"/>
+<text text-anchor="start" x="246" y="-38.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="311,-29 311,-54 337,-54 337,-29 311,-29"/>
+<polygon fill="none" stroke="black" points="311,-29 311,-54 337,-54 337,-29 311,-29"/>
+<text text-anchor="start" x="318" y="-38.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="201,-4 201,-29 240,-29 240,-4 201,-4"/>
+<polygon fill="none" stroke="black" points="201,-4 201,-29 240,-29 240,-4 201,-4"/>
+<text text-anchor="start" x="206.74" y="-13.1" font-family="Helvetica,sans-Serif" font-size="11.00">name</text>
+<polygon fill="white" stroke="none" points="240,-4 240,-29 311,-29 311,-4 240,-4"/>
+<polygon fill="none" stroke="black" points="240,-4 240,-29 311,-29 311,-4 240,-4"/>
+<text text-anchor="start" x="246" y="-13.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">varchar(50)</text>
+<polygon fill="white" stroke="none" points="311,-4 311,-29 337,-29 337,-4 311,-4"/>
+<polygon fill="none" stroke="black" points="311,-4 311,-29 337,-29 337,-4 311,-4"/>
+</a>
+</g>
+</g>
+<!-- t1 -->
+<g id="node2" class="node">
+<title>t1</title>
+<g id="a_node2"><a xlink:href="../tables/public.user_roles.html" xlink:title="public.user_roles&#10;ユーザーとロールの対応">
+<polygon fill="#e8eef7" stroke="none" points="8,-79 8,-104 127,-104 127,-79 8,-79"/>
+<polygon fill="none" stroke="black" points="8,-79 8,-104 127,-104 127,-79 8,-79"/>
+<text text-anchor="start" x="14" y="-89.1" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00">public.user_roles</text>
+<polygon fill="white" stroke="none" points="8,-54 8,-79 58,-79 58,-54 8,-54"/>
+<polygon fill="none" stroke="black" points="8,-54 8,-79 58,-79 58,-54 8,-54"/>
+<text text-anchor="start" x="14" y="-63.1" font-family="Helvetica,sans-Serif" font-size="11.00">user_id</text>
+<polygon fill="white" stroke="none" points="58,-54 58,-79 101,-79 101,-54 58,-54"/>
+<polygon fill="none" stroke="black" points="58,-54 58,-79 101,-79 101,-54 58,-54"/>
+<text text-anchor="start" x="64" y="-63.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="101,-54 101,-79 127,-79 127,-54 101,-54"/>
+<polygon fill="none" stroke="black" points="101,-54 101,-79 127,-79 127,-54 101,-54"/>
+<text text-anchor="start" x="108" y="-63.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="8,-29 8,-54 58,-54 58,-29 8,-29"/>
+<polygon fill="none" stroke="black" points="8,-29 8,-54 58,-54 58,-29 8,-29"/>
+<text text-anchor="start" x="14" y="-38.1" font-family="Helvetica,sans-Serif" font-size="11.00">role_id</text>
+<polygon fill="white" stroke="none" points="58,-29 58,-54 101,-54 101,-29 58,-29"/>
+<polygon fill="none" stroke="black" points="58,-29 58,-54 101,-54 101,-29 58,-29"/>
+<text text-anchor="start" x="64" y="-38.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="101,-29 101,-54 127,-54 127,-29 101,-29"/>
+<polygon fill="none" stroke="black" points="101,-29 101,-54 127,-54 127,-29 101,-29"/>
+<text text-anchor="start" x="108" y="-38.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+</a>
+</g>
+</g>
+<!-- t1&#45;&gt;t0 -->
+<g id="edge1" class="edge">
+<title>t1:e&#45;&gt;t0:w</title>
+<g id="a_edge1"><a xlink:title="public.user_roles role_id → public.roles id&#10;FOREIGN KEY (role_id) REFERENCES roles(id)">
+<path fill="none" stroke="#666666" d="M147.44,-41.5C165.18,-41.5 175.62,-41.5 200,-41.5"/>
+<polygon fill="#666666" stroke="#666666" points="138.33,-41.5 128.33,-37 133,-41.5 128.67,-41.5 128.67,-41.5 128.67,-41.5 133,-41.5 128.33,-46 138.33,-41.5"/>
+<ellipse fill="none" stroke="#666666" cx="144.05" cy="-41.5" rx="4" ry="4"/>
+</a>
+</g>
+</g>
+</g>
+</svg>
 </div>
 </section>
 

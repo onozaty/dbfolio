@@ -1,0 +1,37 @@
+digraph dbfolio {
+  graph [rankdir=LR, pad=0.2, nodesep=0.3, ranksep=0.8, fontname="Helvetica"];
+  node [shape=plaintext, fontname="Helvetica", fontsize=11];
+  edge [dir=both, color="#666666"];
+  t0 [URL="public.orders.html", tooltip="public.orders
+注文", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="3" width="228" align="left"><b>public.orders</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="65" align="left">id</td><td bgcolor="white" width="142" align="left"><font color="#666666">bigint</font></td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w1" bgcolor="white" width="65" align="left">user_id</td><td bgcolor="white" width="142" align="left"><font color="#666666">bigint</font></td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
+      <tr><td port="w2" bgcolor="white" width="65" align="left">ordered_at</td><td bgcolor="white" width="142" align="left"><font color="#666666">timestamp with time zone</font></td><td port="e2" bgcolor="white" width="21" cellpadding="6"></td></tr>
+    </table>>];
+  t1 [URL="public.order_items.html", tooltip="public.order_items
+注文明細", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="3" width="151" align="left"><b>public.order_items</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="54" align="left">order_id</td><td bgcolor="white" width="76" align="left"><font color="#666666">bigint</font></td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w1" bgcolor="white" width="54" align="left">line_no</td><td bgcolor="white" width="76" align="left"><font color="#666666">integer</font></td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w2" bgcolor="white" width="54" align="left">product</td><td bgcolor="white" width="76" align="left"><font color="#666666">varchar(200)</font></td><td port="e2" bgcolor="white" width="21" cellpadding="6"></td></tr>
+      <tr><td port="w3" bgcolor="white" width="54" align="left">quantity</td><td bgcolor="white" width="76" align="left"><font color="#666666">integer</font></td><td port="e3" bgcolor="white" width="21" cellpadding="6"></td></tr>
+    </table>>];
+  t2 [URL="public.shipments.html", tooltip="public.shipments
+出荷 (注文明細単位)", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#ffe9b3" colspan="3" width="228" align="left"><b>public.shipments</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="65" align="left">id</td><td bgcolor="white" width="142" align="left"><font color="#666666">bigint</font></td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w1" bgcolor="white" width="65" align="left">order_id</td><td bgcolor="white" width="142" align="left"><font color="#666666">bigint</font></td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
+      <tr><td port="w2" bgcolor="white" width="65" align="left">line_no</td><td bgcolor="white" width="142" align="left"><font color="#666666">integer</font></td><td port="e2" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
+      <tr><td port="w3" bgcolor="white" width="65" align="left">shipped_at</td><td bgcolor="white" width="142" align="left"><font color="#666666">timestamp with time zone</font></td><td port="e3" bgcolor="white" width="21" cellpadding="6"></td></tr>
+    </table>>];
+  t1:e0:e -> t0:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.order_items order_id → public.orders id
+FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE"];
+  t2:e1:e -> t0:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.shipments order_id → public.orders id
+FOREIGN KEY (order_id) REFERENCES orders(id)"];
+  t2:e1:e -> t1:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.shipments (order_id, line_no) → public.order_items (order_id, line_no)
+FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)"];
+}

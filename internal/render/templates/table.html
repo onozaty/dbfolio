@@ -13,7 +13,13 @@
 </table>
 </div>
 </section>
-{{if .Parents.Rows}}
+{{if .Diagram}}
+<section>
+<h2>ER Diagram</h2>
+<div class="diagram">
+{{.Diagram}}</div>
+</section>
+{{end}}{{if .Parents.Rows}}
 <section>
 <h2>Parents</h2>
 {{template "relations" .Parents}}

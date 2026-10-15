@@ -64,3 +64,67 @@ func TestRelationIndex_ListsSelfReferenceAsParentAndChild(t *testing.T) {
 		t.Errorf("Children(comments) = %v, want [self]", got)
 	}
 }
+
+func TestRelatedTables_ReturnsTablesWithinDistanceInSchemaOrder(t *testing.T) {
+	// Arrange: regions <- users <- orders <- items, and users <- comments
+	regions := &Table{Name: "regions"}
+	users := &Table{Name: "users"}
+	orders := &Table{Name: "orders"}
+	items := &Table{Name: "items"}
+	comments := &Table{Name: "comments"}
+	isolated := &Table{Name: "isolated"}
+	s := &Schema{
+		Tables: []*Table{regions, users, orders, items, comments, isolated},
+		Relations: []*Relation{
+			{Table: users, ParentTable: regions},
+			{Table: orders, ParentTable: users},
+			{Table: items, ParentTable: orders},
+			{Table: comments, ParentTable: users},
+		},
+	}
+	idx := NewRelationIndex(s)
+	tests := []struct {
+		name     string
+		distance int
+		want     []*Table
+	}{
+		{"distance 0", 0, []*Table{orders}},
+		{"distance 1", 1, []*Table{users, orders, items}},
+		{"distance 2", 2, []*Table{regions, users, orders, items, comments}},
+		{"beyond reach", 10, []*Table{regions, users, orders, items, comments}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Act
+			got := idx.RelatedTables(orders, tt.distance)
+
+			// Assert
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("RelatedTables(orders, %d) = %v, want %v", tt.distance, names(got), names(tt.want))
+			}
+		})
+	}
+}
+
+func TestRelatedTables_HandlesSelfReference(t *testing.T) {
+	// Arrange
+	comments := &Table{Name: "comments"}
+	s := &Schema{Tables: []*Table{comments}, Relations: []*Relation{{Table: comments, ParentTable: comments}}}
+	idx := NewRelationIndex(s)
+
+	// Act
+	got := idx.RelatedTables(comments, 1)
+
+	// Assert
+	if !reflect.DeepEqual(got, []*Table{comments}) {
+		t.Errorf("RelatedTables = %v, want [comments]", names(got))
+	}
+}
+
+func names(tables []*Table) []string {
+	var out []string
+	for _, t := range tables {
+		out = append(out, t.Name)
+	}
+	return out
+}
