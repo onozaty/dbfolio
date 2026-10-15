@@ -7,10 +7,23 @@ import (
 	"github.com/onozaty/dbfolio/internal/schema"
 )
 
-func columnKeys(p tablePage) map[string][]string {
+func plan(t *testing.T, s *schema.Schema) *Site {
+	t.Helper()
+	site, err := Plan(s)
+	if err != nil {
+		t.Fatalf("Plan() error = %v", err)
+	}
+	return site
+}
+
+func keyLabels(p tablePage) map[string][]string {
 	keys := make(map[string][]string)
 	for _, c := range p.Columns {
-		keys[c.Name] = c.Keys
+		var labels []string
+		for _, k := range c.Keys {
+			labels = append(labels, k.Label)
+		}
+		keys[c.Name] = labels
 	}
 	return keys
 }
@@ -24,56 +37,170 @@ func TestNewTablePage_MarksCompositePrimaryKeyColumns(t *testing.T) {
 			{Name: "pk", Kind: schema.ConstraintPrimaryKey, Columns: []string{"order_id", "line_no"}},
 		},
 	}
+	site := plan(t, &schema.Schema{Tables: []*schema.Table{table}})
 
 	// Act
-	p := newTablePage(&schema.Schema{Tables: []*schema.Table{table}}, table)
+	p := site.newTablePage(table)
 
 	// Assert
 	want := map[string][]string{"order_id": {"PK"}, "line_no": {"PK"}, "product": nil}
-	if got := columnKeys(p); !reflect.DeepEqual(got, want) {
+	if got := keyLabels(p); !reflect.DeepEqual(got, want) {
 		t.Errorf("keys = %v, want %v", got, want)
 	}
 }
 
-func TestNewTablePage_ShowsSingleFKForColumnInSeveralForeignKeys(t *testing.T) {
-	// Arrange: order_id is in a single-column FK and in a composite FK.
-	table := &schema.Table{
+func TestNewTablePage_LinksOneFKBadgePerRelation(t *testing.T) {
+	// Arrange: order_id is in a single-column relation and in a composite relation.
+	orders := &schema.Table{Name: "orders"}
+	items := &schema.Table{Name: "order_items"}
+	shipments := &schema.Table{
 		Name:    "shipments",
 		Columns: []*schema.Column{{Name: "id"}, {Name: "order_id"}, {Name: "line_no"}},
-		Constraints: []*schema.Constraint{
-			{Name: "pk", Kind: schema.ConstraintPrimaryKey, Columns: []string{"id"}},
-			{Name: "fk1", Kind: schema.ConstraintForeignKey, Columns: []string{"order_id"}},
-			{Name: "fk2", Kind: schema.ConstraintForeignKey, Columns: []string{"order_id", "line_no"}},
+	}
+	s := &schema.Schema{
+		Tables: []*schema.Table{orders, items, shipments},
+		Relations: []*schema.Relation{
+			{Table: shipments, Columns: []string{"order_id"}, ParentTable: orders, ParentColumns: []string{"id"}},
+			{Table: shipments, Columns: []string{"order_id", "line_no"}, ParentTable: items, ParentColumns: []string{"order_id", "line_no"}},
 		},
 	}
+	site := plan(t, s)
 
 	// Act
-	p := newTablePage(&schema.Schema{Tables: []*schema.Table{table}}, table)
+	p := site.newTablePage(shipments)
 
 	// Assert
-	want := map[string][]string{"id": {"PK"}, "order_id": {"FK"}, "line_no": {"FK"}}
-	if got := columnKeys(p); !reflect.DeepEqual(got, want) {
-		t.Errorf("keys = %v, want %v", got, want)
+	want := map[string][]keyBadge{
+		"id": nil,
+		"order_id": {
+			{Label: "FK", Href: "../tables/orders.html", Title: "References orders id"},
+			{Label: "FK", Href: "../tables/order_items.html", Title: "References order_items (order_id, line_no)"},
+		},
+		"line_no": {
+			{Label: "FK", Href: "../tables/order_items.html", Title: "References order_items (order_id, line_no)"},
+		},
+	}
+	for _, c := range p.Columns {
+		if !reflect.DeepEqual(c.Keys, want[c.Name]) {
+			t.Errorf("%s keys = %+v, want %+v", c.Name, c.Keys, want[c.Name])
+		}
+	}
+}
+
+func TestNewTablePage_MarksVirtualRelationFK(t *testing.T) {
+	// Arrange
+	users := &schema.Table{Name: "users"}
+	logs := &schema.Table{Name: "audit_logs", Columns: []*schema.Column{{Name: "user_id"}}}
+	s := &schema.Schema{
+		Tables:    []*schema.Table{users, logs},
+		Relations: []*schema.Relation{{Table: logs, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"id"}, Virtual: true}},
+	}
+	site := plan(t, s)
+
+	// Act
+	p := site.newTablePage(logs)
+
+	// Assert
+	want := []keyBadge{{Label: "FK", Href: "../tables/users.html", Title: "Virtual relation: References users id", Virtual: true}}
+	if got := p.Columns[0].Keys; !reflect.DeepEqual(got, want) {
+		t.Errorf("keys = %+v, want %+v", got, want)
 	}
 }
 
 func TestNewTablePage_MarksColumnThatIsBothPKAndFK(t *testing.T) {
 	// Arrange
-	table := &schema.Table{
-		Name:    "user_roles",
-		Columns: []*schema.Column{{Name: "user_id"}},
-		Constraints: []*schema.Constraint{
-			{Name: "fk", Kind: schema.ConstraintForeignKey, Columns: []string{"user_id"}},
-			{Name: "pk", Kind: schema.ConstraintPrimaryKey, Columns: []string{"user_id"}},
-		},
+	users := &schema.Table{Name: "users"}
+	userRoles := &schema.Table{
+		Name:        "user_roles",
+		Columns:     []*schema.Column{{Name: "user_id"}},
+		Constraints: []*schema.Constraint{{Name: "pk", Kind: schema.ConstraintPrimaryKey, Columns: []string{"user_id"}}},
 	}
+	s := &schema.Schema{
+		Tables:    []*schema.Table{users, userRoles},
+		Relations: []*schema.Relation{{Table: userRoles, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"id"}}},
+	}
+	site := plan(t, s)
 
 	// Act
-	p := newTablePage(&schema.Schema{Tables: []*schema.Table{table}}, table)
+	p := site.newTablePage(userRoles)
 
 	// Assert
-	if got := p.Columns[0].Keys; !reflect.DeepEqual(got, []string{"PK", "FK"}) {
+	if got := keyLabels(p)["user_id"]; !reflect.DeepEqual(got, []string{"PK", "FK"}) {
 		t.Errorf("keys = %v, want [PK FK]", got)
+	}
+}
+
+func TestNewTablePage_ListsParentsAndChildren(t *testing.T) {
+	// Arrange: comments references users and itself.
+	users := &schema.Table{Name: "users"}
+	comments := &schema.Table{Name: "comments", Columns: []*schema.Column{{Name: "user_id"}, {Name: "parent_id"}}}
+	toUser := &schema.Relation{Table: comments, Columns: []string{"user_id"}, Cardinality: "zero_or_more",
+		ParentTable: users, ParentColumns: []string{"id"}, ParentCardinality: "exactly_one", Def: "FK user"}
+	self := &schema.Relation{Table: comments, Columns: []string{"parent_id"}, Cardinality: "zero_or_more",
+		ParentTable: comments, ParentColumns: []string{"id"}, ParentCardinality: "zero_or_one", Def: "FK self"}
+	site := plan(t, &schema.Schema{Tables: []*schema.Table{users, comments}, Relations: []*schema.Relation{toUser, self}})
+
+	// Act
+	p := site.newTablePage(comments)
+
+	// Assert
+	userRow := relationRow{Child: "comments", ChildHref: "../tables/comments.html", Parent: "users", ParentHref: "../tables/users.html",
+		Columns: "user_id → id", Cardinality: "0..* : 1", Def: "FK user"}
+	selfRow := relationRow{Child: "comments", ChildHref: "../tables/comments.html", Parent: "comments", ParentHref: "../tables/comments.html",
+		Columns: "parent_id → id", Cardinality: "0..* : 0..1", Def: "FK self"}
+	wantParents := relationTable{Rows: []relationRow{userRow, selfRow}, ShowParent: true}
+	wantChildren := relationTable{Rows: []relationRow{selfRow}, ShowChild: true}
+	if !reflect.DeepEqual(p.Parents, wantParents) {
+		t.Errorf("Parents = %+v, want %+v", p.Parents, wantParents)
+	}
+	if !reflect.DeepEqual(p.Children, wantChildren) {
+		t.Errorf("Children = %+v, want %+v", p.Children, wantChildren)
+	}
+}
+
+func TestNewTablePage_OrdersPKBeforeFKsOfSeveralRelations(t *testing.T) {
+	// Arrange: order_id is part of the PK and of two relations.
+	orders := &schema.Table{Name: "orders"}
+	other := &schema.Table{Name: "other"}
+	items := &schema.Table{
+		Name:        "order_items",
+		Columns:     []*schema.Column{{Name: "order_id"}},
+		Constraints: []*schema.Constraint{{Name: "pk", Kind: schema.ConstraintPrimaryKey, Columns: []string{"order_id"}}},
+	}
+	s := &schema.Schema{
+		Tables: []*schema.Table{orders, other, items},
+		Relations: []*schema.Relation{
+			{Table: items, Columns: []string{"order_id"}, ParentTable: orders, ParentColumns: []string{"id"}},
+			{Table: items, Columns: []string{"order_id"}, ParentTable: other, ParentColumns: []string{"id"}, Virtual: true},
+		},
+	}
+	site := plan(t, s)
+
+	// Act
+	p := site.newTablePage(items)
+
+	// Assert
+	got := p.Columns[0].Keys
+	if len(got) != 3 || got[0].Label != "PK" || got[1].Href != "../tables/orders.html" || got[2].Href != "../tables/other.html" || !got[2].Virtual {
+		t.Errorf("keys = %+v, want PK, FK(orders), virtual FK(other)", got)
+	}
+}
+
+func TestNewTablePage_ListsVirtualSelfReferenceAsChild(t *testing.T) {
+	// Arrange
+	nodes := &schema.Table{Name: "nodes", Columns: []*schema.Column{{Name: "parent_id"}}}
+	self := &schema.Relation{Table: nodes, Columns: []string{"parent_id"}, ParentTable: nodes, ParentColumns: []string{"id"}, Virtual: true}
+	site := plan(t, &schema.Schema{Tables: []*schema.Table{nodes}, Relations: []*schema.Relation{self}})
+
+	// Act
+	p := site.newTablePage(nodes)
+
+	// Assert
+	if len(p.Children.Rows) != 1 || !p.Children.Rows[0].Virtual || p.Children.Rows[0].ChildHref != "../tables/nodes.html" {
+		t.Errorf("Children = %+v, want one virtual self reference", p.Children)
+	}
+	if len(p.Parents.Rows) != 1 || !p.Parents.Rows[0].Virtual {
+		t.Errorf("Parents = %+v, want one virtual self reference", p.Parents)
 	}
 }
 
@@ -89,9 +216,10 @@ func TestNewTablePage_ShowsExtraColumnOnlyWhenUsed(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			// Arrange
 			table := &schema.Table{Name: "t", Columns: tt.columns}
+			site := plan(t, &schema.Schema{Tables: []*schema.Table{table}})
 
 			// Act
-			p := newTablePage(&schema.Schema{Tables: []*schema.Table{table}}, table)
+			p := site.newTablePage(table)
 
 			// Assert
 			if p.ShowExtra != tt.want {
@@ -101,15 +229,73 @@ func TestNewTablePage_ShowsExtraColumnOnlyWhenUsed(t *testing.T) {
 	}
 }
 
+func TestNewRelationsPage_ListsAllRelationsWithBothEnds(t *testing.T) {
+	// Arrange
+	users := &schema.Table{Name: "users"}
+	items := &schema.Table{Name: "order_items"}
+	shipments := &schema.Table{Name: "shipments"}
+	s := &schema.Schema{
+		Tables: []*schema.Table{users, items, shipments},
+		Relations: []*schema.Relation{
+			{Table: shipments, Columns: []string{"order_id", "line_no"}, ParentTable: items, ParentColumns: []string{"order_id", "line_no"}},
+			{Table: shipments, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"id"}, Virtual: true},
+		},
+	}
+	site := plan(t, s)
+
+	// Act
+	p := site.newRelationsPage()
+
+	// Assert
+	want := relationTable{
+		ShowChild:  true,
+		ShowParent: true,
+		Rows: []relationRow{
+			{Child: "shipments", ChildHref: "tables/shipments.html", Parent: "order_items", ParentHref: "tables/order_items.html",
+				Columns: "(order_id, line_no) → (order_id, line_no)"},
+			{Child: "shipments", ChildHref: "tables/shipments.html", Parent: "users", ParentHref: "tables/users.html",
+				Columns: "user_id → id", Virtual: true},
+		},
+	}
+	if !reflect.DeepEqual(p.Relations, want) {
+		t.Errorf("Relations = %+v, want %+v", p.Relations, want)
+	}
+}
+
+func TestCardinalityPair(t *testing.T) {
+	tests := []struct {
+		child, parent schema.Cardinality
+		want          string
+	}{
+		{"zero_or_more", "exactly_one", "0..* : 1"},
+		{"one_or_more", "zero_or_one", "1..* : 0..1"},
+		{"exactly_one", "exactly_one", "1 : 1"},
+		{"", "", ""},
+		{"zero_or_more", "", "0..* : ?"},
+		{"many", "one", "many : one"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.want, func(t *testing.T) {
+			// Act
+			got := cardinalityPair(&schema.Relation{Cardinality: tt.child, ParentCardinality: tt.parent})
+
+			// Assert
+			if got != tt.want {
+				t.Errorf("cardinalityPair(%q, %q) = %q, want %q", tt.child, tt.parent, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestNewIndexPage_CountsTablesAndViewsSeparately(t *testing.T) {
 	// Arrange
 	users := &schema.Table{Name: "users", Columns: []*schema.Column{{Name: "id"}, {Name: "name"}}, Indexes: []*schema.Index{{Name: "pk"}}}
 	active := &schema.Table{Name: "active_users", View: true, Columns: []*schema.Column{{Name: "id"}}}
-	s := &schema.Schema{Name: "db", Tables: []*schema.Table{users, active}, Relations: []*schema.Relation{{}}}
-	files := map[*schema.Table]string{users: "users.html", active: "active_users.html"}
+	s := &schema.Schema{Name: "db", Tables: []*schema.Table{users, active}, Relations: []*schema.Relation{{Table: active, ParentTable: users}}}
+	site := plan(t, s)
 
 	// Act
-	p := newIndexPage(s, files)
+	p := site.newIndexPage()
 
 	// Assert
 	want := stats{Tables: 1, Views: 1, Columns: 3, Relations: 1, Indexes: 1}
@@ -122,8 +308,11 @@ func TestNewIndexPage_CountsTablesAndViewsSeparately(t *testing.T) {
 }
 
 func TestNewIndexPage_FallsBackWhenDatabaseNameIsEmpty(t *testing.T) {
+	// Arrange
+	site := plan(t, &schema.Schema{})
+
 	// Act
-	p := newIndexPage(&schema.Schema{}, nil)
+	p := site.newIndexPage()
 
 	// Assert
 	if p.DBName != "Database" {

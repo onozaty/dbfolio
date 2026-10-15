@@ -427,11 +427,12 @@
           ]
         },
         {
-          "name": "orders_user_id_idx",
-          "def": "CREATE INDEX orders_user_id_idx ON public.orders USING btree (user_id)",
+          "name": "orders_user_id_ordered_at_idx",
+          "def": "CREATE INDEX orders_user_id_ordered_at_idx ON public.orders USING btree (user_id, ordered_at)",
           "table": "public.orders",
           "columns": [
-            "user_id"
+            "user_id",
+            "ordered_at"
           ]
         }
       ],
@@ -533,6 +534,15 @@
             "order_id",
             "line_no"
           ]
+        },
+        {
+          "name": "order_items_order_product_key",
+          "def": "CREATE UNIQUE INDEX order_items_order_product_key ON public.order_items USING btree (order_id, product)",
+          "table": "public.order_items",
+          "columns": [
+            "order_id",
+            "product"
+          ]
         }
       ],
       "constraints": [
@@ -608,6 +618,17 @@
           "columns": [
             "order_id",
             "line_no"
+          ]
+        },
+        {
+          "name": "order_items_order_product_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (order_id, product)",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "order_id",
+            "product"
           ]
         }
       ]
@@ -737,6 +758,12 @@
           "nullable": false
         },
         {
+          "name": "parent_id",
+          "type": "bigint",
+          "nullable": true,
+          "comment": "返信先のコメント"
+        },
+        {
           "name": "body",
           "type": "text",
           "nullable": false
@@ -791,6 +818,19 @@
           "referenced_table": "public.users",
           "columns": [
             "user_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "comments_parent_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (parent_id) REFERENCES comments(id)",
+          "table": "public.comments",
+          "referenced_table": "public.comments",
+          "columns": [
+            "parent_id"
           ],
           "referenced_columns": [
             "id"
@@ -1024,6 +1064,19 @@
       ],
       "parent_cardinality": "exactly_one",
       "def": "FOREIGN KEY (user_id) REFERENCES users(id)"
+    },
+    {
+      "table": "public.comments",
+      "columns": [
+        "parent_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.comments",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "zero_or_one",
+      "def": "FOREIGN KEY (parent_id) REFERENCES comments(id)"
     },
     {
       "table": "public.audit_logs",

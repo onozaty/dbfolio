@@ -1,0 +1,8 @@
+{{define "relations"}}<div class="table-wrap">
+<table>
+<thead><tr>{{if .ShowChild}}<th>Child</th>{{end}}{{if .ShowParent}}<th>Parent</th>{{end}}<th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+{{range .Rows}}<tr>{{if $.ShowChild}}<td><a href="{{.ChildHref}}">{{.Child}}</a></td>{{end}}{{if $.ShowParent}}<td><a href="{{.ParentHref}}">{{.Parent}}</a></td>{{end}}<td><code>{{.Columns}}</code></td><td>{{.Cardinality}}</td><td>{{if .Virtual}}<span class="relation-virtual">Virtual</span>{{else}}FK{{end}}</td><td>{{with .Def}}<code>{{.}}</code>{{end}}</td></tr>
+{{end}}</tbody>
+</table>
+</div>{{end}}

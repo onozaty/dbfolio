@@ -12,7 +12,7 @@
 | 0 | 縦切り PoC | 完了 (2026-10-04) |
 | 1 | 最小 CLI | 完了 (2026-10-04) |
 | 2 | Table documentation | 完了 (2026-10-14) |
-| 3 | Relations | 未着手 |
+| 3 | Relations | 完了 (2026-10-14) |
 | 4 | ER diagram | 未着手 |
 | 5 | UX | 未着手 |
 | 6 | Release | 未着手 |
@@ -92,15 +92,17 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 ## Phase 3: Relations
 
-- [ ] RelationIndex (Parents / Children の双方向インデックス)
-- [ ] テーブル詳細に Parents / Children を表示
-- [ ] FK カラム → 親テーブルへのリンク
-- [ ] 複合 FK
-- [ ] Virtual Relation の表示 (通常の FK と区別できる表示)
-- [ ] Relationships 一覧ページ
-- [ ] Relation の両端テーブルが存在しない場合の扱い (`.tbls.yml` の Virtual Relation の typo など)。出力先に触れる前に検出する
+- [x] RelationIndex (Parents / Children の双方向インデックス)
+- [x] テーブル詳細に Parents / Children を表示
+- [x] FK カラム → 親テーブルへのリンク
+- [x] 複合 FK
+- [x] Virtual Relation の表示 (通常の FK と区別できる表示)
+- [x] Relationships 一覧ページ
+- [x] Relation の両端テーブルが存在しない場合の扱い (`.tbls.yml` の Virtual Relation の typo など)。出力先に触れる前に検出する
 
 完了条件: テーブル間をリンクだけでたどれること。
+
+不正な Relation (両端テーブル・カラムの不在など) は読み込み時にエラーとした。
 
 ---
 

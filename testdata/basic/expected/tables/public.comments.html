@@ -9,6 +9,7 @@
 <body>
 <header class="site-header">
 <a class="site-title" href="../index.html">dbfolio</a>
+<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a></nav>
 </header>
 <main>
 <h1>public.comments</h1>
@@ -21,9 +22,35 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;comments_id_seq&#39;::regclass)</code></td><td><span class="key key-PK">PK</span></td><td class="comment"></td></tr>
-<tr><td>user_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-FK">FK</span></td><td class="comment"></td></tr>
+<tr><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;comments_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr><td>user_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><a class="key key-FK" href="../tables/public.users.html" title="References public.users id">FK</a></td><td class="comment"></td></tr>
+<tr><td>parent_id</td><td><code>bigint</code></td><td>YES</td><td></td><td><a class="key key-FK" href="../tables/public.comments.html" title="References public.comments id">FK</a></td><td class="comment">返信先のコメント</td></tr>
 <tr><td>body</td><td><code>text</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Parents</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Parent</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td><a href="../tables/public.users.html">public.users</a></td><td><code>user_id → id</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (user_id) REFERENCES users(id)</code></td></tr>
+<tr><td><a href="../tables/public.comments.html">public.comments</a></td><td><code>parent_id → id</code></td><td>0..* : 0..1</td><td>FK</td><td><code>FOREIGN KEY (parent_id) REFERENCES comments(id)</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Children</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Child</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td><a href="../tables/public.comments.html">public.comments</a></td><td><code>parent_id → id</code></td><td>0..* : 0..1</td><td>FK</td><td><code>FOREIGN KEY (parent_id) REFERENCES comments(id)</code></td></tr>
 </tbody>
 </table>
 </div>
@@ -48,6 +75,7 @@
 <thead><tr><th>Name</th><th>Type</th><th>Definition</th><th>Comment</th></tr></thead>
 <tbody>
 <tr><td>comments_user_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (user_id) REFERENCES users(id)</code></td><td class="comment"></td></tr>
+<tr><td>comments_parent_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (parent_id) REFERENCES comments(id)</code></td><td class="comment"></td></tr>
 <tr><td>comments_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td><td class="comment"></td></tr>
 </tbody>
 </table>

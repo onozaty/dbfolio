@@ -1,6 +1,6 @@
 # basic サンプル
 
-複合 PK / 複合 FK (単独 FK と重なるカラムを含む)、Virtual Relation、トリガー、日本語コメント、View を含むサンプルスキーマ。
+複合 PK / 複合 FK (単独 FK と重なるカラムを含む) / 複合 UNIQUE / 複合インデックス、Virtual Relation、自己参照 FK、トリガー、日本語コメント、View を含むサンプルスキーマ。
 
 `schema.json` は以下の手順で再生成する (Dev Container の PostgreSQL と tbls を使用)。
 

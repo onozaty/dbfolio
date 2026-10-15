@@ -49,7 +49,8 @@ CREATE TABLE orders (
   user_id    bigint NOT NULL REFERENCES users (id),
   ordered_at timestamptz NOT NULL DEFAULT now()
 );
-CREATE INDEX orders_user_id_idx ON orders (user_id);
+-- 複合インデックス (ユーザーごとの注文日時検索用)
+CREATE INDEX orders_user_id_ordered_at_idx ON orders (user_id, ordered_at);
 COMMENT ON TABLE orders IS '注文';
 COMMENT ON COLUMN orders.user_id IS '注文したユーザー';
 
@@ -74,7 +75,9 @@ CREATE TABLE order_items (
   line_no    integer NOT NULL,
   product    varchar(200) NOT NULL,
   quantity   integer NOT NULL CHECK (quantity > 0),
-  PRIMARY KEY (order_id, line_no)
+  PRIMARY KEY (order_id, line_no),
+  -- 複合 UNIQUE (同じ注文に同じ商品を重複させない)
+  CONSTRAINT order_items_order_product_key UNIQUE (order_id, product)
 );
 COMMENT ON TABLE order_items IS '注文明細';
 
@@ -92,11 +95,14 @@ CREATE TABLE shipments (
 COMMENT ON TABLE shipments IS '出荷 (注文明細単位)';
 
 CREATE TABLE comments (
-  id      bigserial PRIMARY KEY,
-  user_id bigint NOT NULL REFERENCES users (id),
-  body    text NOT NULL
+  id        bigserial PRIMARY KEY,
+  user_id   bigint NOT NULL REFERENCES users (id),
+  -- 自己参照 FK
+  parent_id bigint REFERENCES comments (id),
+  body      text NOT NULL
 );
 COMMENT ON TABLE comments IS 'コメント';
+COMMENT ON COLUMN comments.parent_id IS '返信先のコメント';
 
 -- FK を張らないテーブル (.tbls.yml で Virtual Relation を定義する)
 CREATE TABLE audit_logs (

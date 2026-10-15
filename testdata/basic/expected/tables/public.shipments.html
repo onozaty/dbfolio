@@ -9,6 +9,7 @@
 <body>
 <header class="site-header">
 <a class="site-title" href="../index.html">dbfolio</a>
+<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a></nav>
 </header>
 <main>
 <h1>public.shipments</h1>
@@ -21,10 +22,23 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Nullable</th><th>Default</th><th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-<tr><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;shipments_id_seq&#39;::regclass)</code></td><td><span class="key key-PK">PK</span></td><td class="comment"></td></tr>
-<tr><td>order_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><span class="key key-FK">FK</span></td><td class="comment"></td></tr>
-<tr><td>line_no</td><td><code>integer</code></td><td>NO</td><td></td><td><span class="key key-FK">FK</span></td><td class="comment"></td></tr>
+<tr><td>id</td><td><code>bigint</code></td><td>NO</td><td><code>nextval(&#39;shipments_id_seq&#39;::regclass)</code></td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
+<tr><td>order_id</td><td><code>bigint</code></td><td>NO</td><td></td><td><a class="key key-FK" href="../tables/public.orders.html" title="References public.orders id">FK</a> <a class="key key-FK" href="../tables/public.order_items.html" title="References public.order_items (order_id, line_no)">FK</a></td><td class="comment"></td></tr>
+<tr><td>line_no</td><td><code>integer</code></td><td>NO</td><td></td><td><a class="key key-FK" href="../tables/public.order_items.html" title="References public.order_items (order_id, line_no)">FK</a></td><td class="comment"></td></tr>
 <tr><td>shipped_at</td><td><code>timestamp with time zone</code></td><td>YES</td><td></td><td></td><td class="comment"></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>Parents</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Parent</th><th>Columns</th><th>Cardinality<br><small>child : parent</small></th><th>Type</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td><a href="../tables/public.orders.html">public.orders</a></td><td><code>order_id → id</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (order_id) REFERENCES orders(id)</code></td></tr>
+<tr><td><a href="../tables/public.order_items.html">public.order_items</a></td><td><code>(order_id, line_no) → (order_id, line_no)</code></td><td>0..* : 1</td><td>FK</td><td><code>FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)</code></td></tr>
 </tbody>
 </table>
 </div>

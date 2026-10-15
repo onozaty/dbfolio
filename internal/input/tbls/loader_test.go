@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/onozaty/dbfolio/internal/schema"
@@ -33,15 +34,18 @@ func TestLoad_ReadsSampleSchema(t *testing.T) {
 	if len(s.Tables) != 10 {
 		t.Errorf("len(Tables) = %d, want 10", len(s.Tables))
 	}
-	if len(s.Relations) != 9 {
-		t.Errorf("len(Relations) = %d, want 9", len(s.Relations))
+	if len(s.Relations) != 10 {
+		t.Errorf("len(Relations) = %d, want 10", len(s.Relations))
 	}
 }
 
-func TestLoad_ParsesRelationFields(t *testing.T) {
+func TestLoad_ResolvesRelationEndpoints(t *testing.T) {
 	// Arrange
 	path := writeFile(t, `{
-		"tables": [],
+		"tables": [
+			{"name": "public.order_items", "columns": [{"name": "order_id"}, {"name": "line_no"}]},
+			{"name": "public.shipments", "columns": [{"name": "order_id"}, {"name": "line_no"}]}
+		],
 		"relations": [{
 			"table": "public.shipments",
 			"columns": ["order_id", "line_no"],
@@ -62,17 +66,92 @@ func TestLoad_ParsesRelationFields(t *testing.T) {
 		t.Fatalf("Load() error = %v", err)
 	}
 	want := schema.Relation{
-		Table:             "public.shipments",
+		Table:             s.Tables[1],
 		Columns:           []string{"order_id", "line_no"},
 		Cardinality:       "zero_or_more",
-		ParentTable:       "public.order_items",
+		ParentTable:       s.Tables[0],
 		ParentColumns:     []string{"order_id", "line_no"},
 		ParentCardinality: "exactly_one",
 		Def:               "FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)",
 		Virtual:           true,
 	}
-	if !reflect.DeepEqual(*s.Relations[0], want) {
-		t.Errorf("Relation = %+v, want %+v", *s.Relations[0], want)
+	got := *s.Relations[0]
+	// Compare pointers by identity: the endpoints must be the tables of the same schema.
+	if got.Table != want.Table || got.ParentTable != want.ParentTable {
+		t.Errorf("endpoints = %s -> %s, want tables of the schema", got.Table.Name, got.ParentTable.Name)
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("Relation = %+v, want %+v", got, want)
+	}
+}
+
+func TestLoad_ResolvesSelfReference(t *testing.T) {
+	// Arrange
+	path := writeFile(t, `{
+		"tables": [{"name": "comments", "columns": [{"name": "id"}, {"name": "parent_id"}]}],
+		"relations": [{"table": "comments", "columns": ["parent_id"], "parent_table": "comments", "parent_columns": ["id"]}]
+	}`)
+
+	// Act
+	s, err := Load(path)
+
+	// Assert
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	r := s.Relations[0]
+	if r.Table != s.Tables[0] || r.ParentTable != s.Tables[0] {
+		t.Error("self reference is not resolved to the same table")
+	}
+}
+
+func TestLoad_ReturnsErrorForInvalidRelations(t *testing.T) {
+	const tables = `"tables": [
+		{"name": "users", "columns": [{"name": "id"}]},
+		{"name": "orders", "columns": [{"name": "user_id"}, {"name": "line_no"}]}
+	]`
+	tests := map[string]struct {
+		relation string
+		wantErr  string
+	}{
+		"unknown table": {
+			`{"table": "order", "columns": ["user_id"], "parent_table": "users", "parent_columns": ["id"]}`,
+			`table "order" not found`,
+		},
+		"unknown parent table": {
+			`{"table": "orders", "columns": ["user_id"], "parent_table": "user", "parent_columns": ["id"]}`,
+			`parent table "user" not found`,
+		},
+		"unknown column": {
+			`{"table": "orders", "columns": ["userid"], "parent_table": "users", "parent_columns": ["id"]}`,
+			`column "userid" not found in table orders`,
+		},
+		"unknown parent column": {
+			`{"table": "orders", "columns": ["user_id"], "parent_table": "users", "parent_columns": ["uid"]}`,
+			`column "uid" not found in table users`,
+		},
+		"column count mismatch": {
+			`{"table": "orders", "columns": ["user_id", "line_no"], "parent_table": "users", "parent_columns": ["id"]}`,
+			"2 columns but 1 parent columns",
+		},
+		"no columns": {
+			`{"table": "orders", "columns": [], "parent_table": "users", "parent_columns": []}`,
+			"no columns",
+		},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			path := writeFile(t, `{`+tables+`, "relations": [`+tt.relation+`]}`)
+
+			// Act
+			_, err := Load(path)
+
+			// Assert
+			if err == nil || !strings.Contains(err.Error(), tt.wantErr) {
+				t.Errorf("Load() error = %v, want containing %q", err, tt.wantErr)
+			}
+		})
 	}
 }
 
