@@ -1,6 +1,8 @@
 // Package schema defines dbfolio's internal database model, independent of the input format.
 package schema
 
+import "strings"
+
 // Schema is a whole database.
 type Schema struct {
 	Name      string
@@ -28,6 +30,19 @@ type Table struct {
 	// Def is the definition SQL when the input provides it (the query of a view,
 	// or CREATE TABLE on some databases such as MySQL).
 	Def string
+}
+
+// KindLabel returns the table type to show next to the table name: empty for
+// ordinary tables, which are most of a schema, and the type as given otherwise
+// (e.g. "VIEW", "MATERIALIZED VIEW", "FOREIGN TABLE"). The type of ordinary
+// tables differs by database ("BASE TABLE", "table") and is jargon.
+func (t *Table) KindLabel() string {
+	switch strings.ToUpper(t.Type) {
+	case "", "BASE TABLE", "TABLE":
+		return ""
+	default:
+		return t.Type
+	}
 }
 
 // Column is a table column.

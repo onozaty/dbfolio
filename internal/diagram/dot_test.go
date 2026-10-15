@@ -430,30 +430,6 @@ func TestDOT_ShowsCommentInTooltipOnly(t *testing.T) {
 	}
 }
 
-func TestKindLabel(t *testing.T) {
-	tests := map[string]string{
-		"":                  "",
-		"BASE TABLE":        "",
-		"table":             "",
-		"TABLE":             "",
-		"VIEW":              "VIEW",
-		"view":              "view",
-		"MATERIALIZED VIEW": "MATERIALIZED VIEW",
-		"FOREIGN TABLE":     "FOREIGN TABLE",
-	}
-	for in, want := range tests {
-		t.Run(in, func(t *testing.T) {
-			// Act
-			got := kindLabel(in)
-
-			// Assert
-			if got != want {
-				t.Errorf("kindLabel(%q) = %q, want %q", in, got, want)
-			}
-		})
-	}
-}
-
 func TestDOT_ShowsKindOfNonOrdinaryTables(t *testing.T) {
 	// Arrange
 	d := Diagram{Tables: []*schema.Table{

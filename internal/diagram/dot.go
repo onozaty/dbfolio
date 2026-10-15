@@ -184,7 +184,7 @@ func writeNode(b *strings.Builder, id string, t *schema.Table, focus bool, href 
 	}
 	// Bold text is wider than the estimate for regular text.
 	headerWidth := cellWidth(t.Name, 11) * 11 / 10
-	kind := kindLabel(t.Type)
+	kind := t.KindLabel()
 	if kind != "" {
 		kind = "[" + kind + "]"
 		headerWidth += estimateWidth(kind, 9) + kindGap
@@ -245,19 +245,6 @@ func headerContent(name, kind, bg string) string {
 	return fmt.Sprintf(`<table border="0" cellborder="0" cellspacing="0" cellpadding="0">`+
 		`<tr><td bgcolor=%q align="left">%s</td><td bgcolor=%q align="right"><font point-size="9" color=%q>%s</font></td></tr></table>`,
 		bg, bold, bg, typeColor, escapeHTML(kind))
-}
-
-// kindLabel returns the table type to show next to the table name: empty for
-// ordinary tables, which are most of the diagram, and the type as given
-// otherwise (e.g. "VIEW", "MATERIALIZED VIEW", "FOREIGN TABLE"). The type of
-// ordinary tables differs by database ("BASE TABLE", "table") and is jargon.
-func kindLabel(tableType string) string {
-	switch strings.ToUpper(tableType) {
-	case "", "BASE TABLE", "TABLE":
-		return ""
-	default:
-		return tableType
-	}
 }
 
 // rowCells returns the number of cells in a column row.
