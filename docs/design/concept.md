@@ -667,7 +667,7 @@ type TablePage struct {
 
 ## 16. Relation の扱い
 
-ロード時に Relation を双方向に引ける Index を作る。
+Relation を双方向に引ける Index (`schema.RelationIndex`) を作る (Phase 3 で実装)。
 
 ```text
 Relation
@@ -687,16 +687,28 @@ users:
 
 を構築する。
 
-例:
-
 ```go
 type RelationIndex struct {
-    Parents  map[string][]Relation
-    Children map[string][]Relation
+    parents  map[*Table][]*Relation
+    children map[*Table][]*Relation
 }
 ```
 
-HTML 生成時に毎回全 Relation を走査しない設計にする。
+HTML 生成時に毎回全 Relation を走査しない設計にする。Index は描画の Plan で作る。
+
+### 入力の解決と検証
+
+- Relation の両端は、テーブル名の文字列ではなく `*schema.Table` へのポインターとして持つ。入力層で名前を解決する
+- 両端テーブルやカラムが存在しない、子と親のカラム数が合わない、カラムがない Relation は、読み込み時にエラーとする。tbls 自身も生成時にこれらを検証するため、ここで失敗するのは schema.json が編集された場合などに限られる。黙ってスキップすると誤ったドキュメントになるため、エラーで知らせる
+- 描画の Plan でも両端が Schema に含まれることを再確認する (入力層以外で組み立てた Schema でも、出力先の削除後に失敗しないため)
+
+### 表示
+
+- カラム表の Key 列の FK は、FK 制約ではなく Relation から導出する (FK 制約がない Virtual Relation も含めるため)。Relation ごとに FK バッジを出し、親テーブルへリンクする。1 カラムが複数の Relation に属する場合はバッジが複数並ぶ
+- Virtual Relation は DB による整合性の保証がないため、通常の FK と区別して表示する (バッジは点線、表では "Virtual")。見た目だけに頼らず、スクリーンリーダー向けのテキストも付ける
+- テーブル詳細の Parents / Children は相手側のテーブルのみ表示し、Relationships 一覧 (`relationships.html`) は両端を表示する
+- カラムの対応は「子 → 親」で表記し、複合の場合は `(order_id, line_no) → (order_id, line_no)` とする
+- カーディナリティは tbls の値を記号に変換し、`child : parent` の順で表記する (例: `0..* : 1`)
 
 ---
 
