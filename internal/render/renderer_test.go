@@ -1,6 +1,8 @@
 package render
 
 import (
+	"bytes"
+	"context"
 	"flag"
 	"io/fs"
 	"os"
@@ -52,6 +54,86 @@ func TestPlan_RejectsRelationsToTablesOutsideSchema(t *testing.T) {
 	}
 }
 
+func TestPlan_RejectsRelationsWithInvalidColumns(t *testing.T) {
+	users := &schema.Table{Name: "users", Columns: []*schema.Column{{Name: "id"}}}
+	orders := &schema.Table{Name: "orders", Columns: []*schema.Column{{Name: "user_id"}}}
+	tests := map[string]*schema.Relation{
+		"no columns":     {Table: orders, ParentTable: users},
+		"count mismatch": {Table: orders, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"id", "x"}},
+		"unknown column": {Table: orders, Columns: []string{"x"}, ParentTable: users, ParentColumns: []string{"id"}},
+		"unknown parent": {Table: orders, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"x"}},
+	}
+	for name, r := range tests {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			s := &schema.Schema{Tables: []*schema.Table{users, orders}, Relations: []*schema.Relation{r}}
+
+			// Act
+			_, err := Plan(s)
+
+			// Assert
+			if err == nil {
+				t.Error("Plan() error = nil, want column error")
+			}
+		})
+	}
+}
+
+func TestPrefixIDs_PrefixesOnlyIDAttributes(t *testing.T) {
+	// Arrange
+	svg := []byte(`<g id="node1" class="node"><title>id="x"</title><text>grid="y"</text></g>`)
+
+	// Act
+	got := prefixIDs(svg, "keys-")
+
+	// Assert
+	want := `<g id="keys-node1" class="node"><title>id="x"</title><text>grid="y"</text></g>`
+	if string(got) != want {
+		t.Errorf("prefixIDs() = %s, want %s", got, want)
+	}
+}
+
+func TestRenderDiagrams_PrefixesOnlyGraphvizIDs(t *testing.T) {
+	// Arrange: user text that looks like an id attribute is escaped by Graphviz.
+	s := &schema.Schema{Tables: []*schema.Table{{Name: `t id="evil"`, Comment: ` id="evil2"`, Columns: []*schema.Column{{Name: "c"}}}}}
+	site, err := Plan(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Act
+	err = site.RenderDiagrams(context.Background())
+
+	// Assert
+	if err != nil {
+		t.Fatalf("RenderDiagrams() error = %v", err)
+	}
+	for _, svg := range [][]byte{site.wholeKeys, site.wholeAll} {
+		if bytes.Contains(svg, []byte("-evil")) {
+			t.Errorf("user text was prefixed as an id:\n%s", svg)
+		}
+		if !bytes.Contains(svg, []byte(`id=&quot;evil&quot;`)) {
+			t.Errorf("table name is missing or not escaped:\n%s", svg)
+		}
+	}
+}
+
+func TestWrite_RequiresRenderDiagrams(t *testing.T) {
+	// Arrange
+	site, err := Plan(&schema.Schema{Tables: []*schema.Table{{Name: "t"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Act
+	err = site.Write(t.TempDir())
+
+	// Assert
+	if err == nil || !strings.Contains(err.Error(), "RenderDiagrams") {
+		t.Errorf("Write() error = %v, want RenderDiagrams error", err)
+	}
+}
+
 func TestPlan_AcceptsNamesDifferingOnlyByCase(t *testing.T) {
 	// Arrange
 	s := &schema.Schema{Tables: []*schema.Table{{Name: "users"}, {Name: "Users"}}}
@@ -68,6 +150,62 @@ func TestPlan_AcceptsNamesDifferingOnlyByCase(t *testing.T) {
 	}
 }
 
+func TestRenderDiagrams_RendersWholeAndRelatedTablesOnly(t *testing.T) {
+	// Arrange
+	users := &schema.Table{Name: "users", Columns: []*schema.Column{{Name: "id"}}}
+	orders := &schema.Table{Name: "orders", Columns: []*schema.Column{{Name: "user_id"}}}
+	isolated := &schema.Table{Name: "isolated"}
+	s := &schema.Schema{
+		Tables:    []*schema.Table{users, orders, isolated},
+		Relations: []*schema.Relation{{Table: orders, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"id"}}},
+	}
+	site, err := Plan(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Act
+	err = site.RenderDiagrams(context.Background())
+
+	// Assert
+	if err != nil {
+		t.Fatalf("RenderDiagrams() error = %v", err)
+	}
+	for name, svg := range map[string][]byte{"keys": site.wholeKeys, "all": site.wholeAll} {
+		if !bytes.Contains(svg, []byte(`xlink:href="tables/isolated.html"`)) {
+			t.Errorf("whole diagram (%s) does not link isolated table with a root-relative path", name)
+		}
+		if !bytes.Contains(svg, []byte(` id="`+name+`-graph0"`)) {
+			t.Errorf("whole diagram (%s) IDs are not prefixed", name)
+		}
+	}
+	if !bytes.Contains(site.wholeAll, []byte(">user_id</text>")) || bytes.Contains(site.wholeKeys, []byte(">bigint<")) {
+		t.Error("whole diagram variants do not differ in columns shown")
+	}
+	if !bytes.Contains(site.tableDiagrams[orders], []byte(`xlink:href="../tables/users.html"`)) {
+		t.Error("table diagram does not link the parent with a page-relative path")
+	}
+	if _, ok := site.tableDiagrams[isolated]; ok {
+		t.Error("table without relations has a diagram")
+	}
+}
+
+func TestRenderDiagrams_SkipsWholeDiagramForEmptySchema(t *testing.T) {
+	// Arrange
+	site, err := Plan(&schema.Schema{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Act
+	err = site.RenderDiagrams(context.Background())
+
+	// Assert
+	if err != nil || site.wholeKeys != nil || site.wholeAll != nil {
+		t.Errorf("RenderDiagrams() error = %v, whole diagrams = %q / %q; want none", err, site.wholeKeys, site.wholeAll)
+	}
+}
+
 // TestWrite_MatchesGolden compares the whole generated site with testdata/basic/expected.
 // Run `go test ./internal/render -update` to regenerate the expected files.
 func TestWrite_MatchesGolden(t *testing.T) {
@@ -80,6 +218,9 @@ func TestWrite_MatchesGolden(t *testing.T) {
 	}
 	site, err := Plan(s)
 	if err != nil {
+		t.Fatal(err)
+	}
+	if err := site.RenderDiagrams(context.Background()); err != nil {
 		t.Fatal(err)
 	}
 	outDir := t.TempDir()

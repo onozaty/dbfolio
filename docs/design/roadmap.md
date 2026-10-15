@@ -1,6 +1,6 @@
 # dbfolio ロードマップ
 
-更新日: 2026-10-14
+更新日: 2026-10-15
 
 設計方針・技術判断は [concept.md](concept.md) を参照。本ファイルは「何をどの順で進めるか」と進捗を管理する。
 細かいタスクは GitHub Issues で管理し、ここには Phase 単位の計画と完了条件のみを書く。
@@ -13,7 +13,7 @@
 | 1 | 最小 CLI | 完了 (2026-10-04) |
 | 2 | Table documentation | 完了 (2026-10-14) |
 | 3 | Relations | 完了 (2026-10-14) |
-| 4 | ER diagram | 未着手 |
+| 4 | ER diagram | 完了 (2026-10-15) |
 | 5 | UX | 未着手 |
 | 6 | Release | 未着手 |
 
@@ -108,15 +108,17 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 ## Phase 4: ER diagram
 
-- [ ] DOT generator (Golden Test 付き)
-- [ ] go-graphviz による SVG 出力
-- [ ] テーブル単位 ER 図 (distance=1)
-- [ ] 全体 ER 図
-- [ ] ER 図上のテーブル → テーブル詳細へのリンク
-- [ ] 複合 FK の図上の表現
-- [ ] 大規模スキーマでの生成時間・図の可読性の確認
+- [x] DOT generator (Golden Test 付き)
+- [x] go-graphviz による SVG 出力
+- [x] テーブル単位 ER 図 (distance=1)
+- [x] 全体 ER 図
+- [x] ER 図上のテーブル → テーブル詳細へのリンク
+- [x] 複合 FK の図上の表現
+- [x] 大規模スキーマでの生成時間・図の可読性の確認
 
 完了条件: 全体図とテーブル中心図が生成され、図からページへ遷移できること。
+
+全体 ER 図は `diagram.html`、テーブル単位 ER 図は各テーブル詳細に inline SVG で埋め込む。単体の SVG ファイルは出力しない。計測結果は concept.md §21。
 
 ---
 
@@ -160,5 +162,4 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 PoC / 実装中に決める。決まったら concept.md を更新する。比較検討の経緯や計測結果など、concept.md に書くと長くなる内容があるときだけ `docs/design/adr/` に記録する。
 
-- 複合 FK を ER 図でどう表現するか
-- 全体 ER 図が巨大な場合の扱い (分割 / オプション化)
+- 全体 ER 図が巨大な場合の扱い (分割 / オプション化)。キーカラムのみ表示でも数百テーブルで縦に長くなる (concept.md §21)

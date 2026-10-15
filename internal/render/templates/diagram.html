@@ -1,0 +1,11 @@
+{{define "content"}}<h1>ER Diagram</h1>
+{{if .Keys}}<div class="diagram-views">
+<input type="radio" name="diagram-view" id="view-keys" checked><label for="view-keys">Keys only</label>
+<input type="radio" name="diagram-view" id="view-all"><label for="view-all">All columns</label>
+<div class="diagram diagram-keys">
+{{.Keys}}</div>
+<div class="diagram diagram-all">
+{{.All}}</div>
+</div>
+{{else}}<p>No tables.</p>
+{{end}}{{end}}

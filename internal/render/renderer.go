@@ -2,13 +2,18 @@
 package render
 
 import (
+	"bytes"
+	"context"
 	"embed"
+	"errors"
 	"fmt"
 	"html/template"
 	"io"
 	"io/fs"
 	"path/filepath"
+	"slices"
 
+	"github.com/onozaty/dbfolio/internal/diagram"
 	"github.com/onozaty/dbfolio/internal/output"
 	"github.com/onozaty/dbfolio/internal/schema"
 )
@@ -25,7 +30,11 @@ var (
 	indexTmpl     = parsePage("templates/index.html")
 	tableTmpl     = parsePage("templates/table.html")
 	relationsTmpl = parsePage("templates/relationships.html")
+	diagramTmpl   = parsePage("templates/diagram.html")
 )
+
+// tableDiagramDistance is how far table-centered diagrams reach.
+const tableDiagramDistance = 1
 
 func parsePage(name string) *template.Template {
 	return template.Must(template.ParseFS(content, "templates/layout.html", "templates/relations.html", name))
@@ -38,6 +47,12 @@ type Site struct {
 	// files maps each table to its page file name under tablesDir.
 	files     map[*schema.Table]string
 	relations *schema.RelationIndex
+	// wholeKeys, wholeAll and tableDiagrams hold inline SVG, set by RenderDiagrams.
+	// The whole-schema diagram comes in two variants (key columns only / all
+	// columns) that the page switches between. Tables without relations have no diagram.
+	wholeKeys     []byte
+	wholeAll      []byte
+	tableDiagrams map[*schema.Table][]byte
 }
 
 // Plan decides the page file names, failing if two tables map to the same file.
@@ -61,12 +76,82 @@ func Plan(s *schema.Schema) (*Site, error) {
 		if _, ok := files[r.ParentTable]; !ok {
 			return nil, fmt.Errorf("relations[%d]: parent table is not in the schema", i)
 		}
+		if err := checkRelationColumns(r); err != nil {
+			return nil, fmt.Errorf("relations[%d]: %w", i, err)
+		}
 	}
 	return &Site{schema: s, files: files, relations: schema.NewRelationIndex(s)}, nil
 }
 
+// checkRelationColumns ensures what the diagram relies on to place edges.
+func checkRelationColumns(r *schema.Relation) error {
+	if len(r.Columns) == 0 || len(r.Columns) != len(r.ParentColumns) {
+		return errors.New("columns are empty or do not match parent columns")
+	}
+	for _, side := range []struct {
+		table *schema.Table
+		cols  []string
+	}{{r.Table, r.Columns}, {r.ParentTable, r.ParentColumns}} {
+		for _, name := range side.cols {
+			if !slices.ContainsFunc(side.table.Columns, func(c *schema.Column) bool { return c.Name == name }) {
+				return fmt.Errorf("column %q not found in table %s", name, side.table.Name)
+			}
+		}
+	}
+	return nil
+}
+
+// RenderDiagrams lays out the ER diagrams. Call it before preparing the output
+// directory so that a Graphviz failure does not leave the output half-written.
+func (site *Site) RenderDiagrams(ctx context.Context) error {
+	r, err := diagram.NewRenderer(ctx)
+	if err != nil {
+		return err
+	}
+	defer r.Close()
+
+	s := site.schema
+	if len(s.Tables) > 0 {
+		href := func(t *schema.Table) string { return site.tableHref("", t) }
+		if site.wholeKeys, err = r.SVG(ctx, diagram.DOT(diagram.Whole(s, true), href)); err != nil {
+			return fmt.Errorf("render ER diagram: %w", err)
+		}
+		if site.wholeAll, err = r.SVG(ctx, diagram.DOT(diagram.Whole(s, false), href)); err != nil {
+			return fmt.Errorf("render ER diagram: %w", err)
+		}
+		// Both variants are on the same page; keep their element IDs unique.
+		site.wholeKeys = prefixIDs(site.wholeKeys, "keys-")
+		site.wholeAll = prefixIDs(site.wholeAll, "all-")
+	}
+	site.tableDiagrams = make(map[*schema.Table][]byte, len(s.Tables))
+	for _, t := range s.Tables {
+		if len(site.relations.Parents(t)) == 0 && len(site.relations.Children(t)) == 0 {
+			continue
+		}
+		d := diagram.ForTable(s, site.relations, t, tableDiagramDistance)
+		dot := diagram.DOT(d, func(t *schema.Table) string { return site.tableHref("../", t) })
+		svg, err := r.SVG(ctx, dot)
+		if err != nil {
+			return fmt.Errorf("render ER diagram of %s: %w", t.Name, err)
+		}
+		site.tableDiagrams[t] = svg
+	}
+	return nil
+}
+
+// prefixIDs prefixes the id attributes of a Graphviz SVG. Graphviz numbers
+// elements the same way in every graph ("graph0", "node1", ...). Text and other
+// attribute values are XML-escaped, so ` id="` only appears as an attribute.
+func prefixIDs(svg []byte, prefix string) []byte {
+	return bytes.ReplaceAll(svg, []byte(` id="`), []byte(` id="`+prefix))
+}
+
 // Write writes all pages and assets into dir, which must already be prepared.
 func (site *Site) Write(dir string) error {
+	if site.tableDiagrams == nil {
+		// Without this, pages would silently lack their diagrams.
+		return errors.New("render: RenderDiagrams must be called before Write")
+	}
 	if err := writeAssets(dir); err != nil {
 		return err
 	}
@@ -74,6 +159,9 @@ func (site *Site) Write(dir string) error {
 		return err
 	}
 	if err := writePage(filepath.Join(dir, "relationships.html"), relationsTmpl, site.newRelationsPage()); err != nil {
+		return err
+	}
+	if err := writePage(filepath.Join(dir, "diagram.html"), diagramTmpl, site.newDiagramPage()); err != nil {
 		return err
 	}
 	tables := filepath.Join(dir, tablesDir)

@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>public.order_items - dbfolio</title>
 <link rel="stylesheet" href="../assets/app.css">
+<script src="../assets/app.js" defer></script>
 </head>
 <body>
 <header class="site-header">
 <a class="site-title" href="../index.html">dbfolio</a>
-<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a></nav>
+<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a> <a href="../diagram.html">ER Diagram</a></nav>
 </header>
 <main>
 <h1>public.order_items</h1>
@@ -28,6 +29,173 @@
 <tr><td>quantity</td><td><code>integer</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
 </tbody>
 </table>
+</div>
+</section>
+
+<section>
+<h2>ER Diagram</h2>
+<div class="diagram">
+<svg width="815pt" height="225pt"
+ viewBox="0.00 0.00 814.80 224.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(14.4 210.4)">
+<polygon fill="white" stroke="none" points="-14.4,14.4 -14.4,-210.4 800.4,-210.4 800.4,14.4 -14.4,14.4"/>
+<!-- t0 -->
+<g id="node1" class="node">
+<title>t0</title>
+<g id="a_node1"><a xlink:href="../tables/public.orders.html" xlink:title="public.orders&#10;注文">
+<polygon fill="#e8eef7" stroke="none" points="545,-141.5 545,-166.5 778,-166.5 778,-141.5 545,-141.5"/>
+<polygon fill="none" stroke="black" points="545,-141.5 545,-166.5 778,-166.5 778,-141.5 545,-141.5"/>
+<text text-anchor="start" x="551" y="-151.6" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00">public.orders</text>
+<polygon fill="white" stroke="none" points="545,-116.5 545,-141.5 610,-141.5 610,-116.5 545,-116.5"/>
+<polygon fill="none" stroke="black" points="545,-116.5 545,-141.5 610,-141.5 610,-116.5 545,-116.5"/>
+<text text-anchor="start" x="551" y="-125.6" font-family="Helvetica,sans-Serif" font-size="11.00">id</text>
+<polygon fill="white" stroke="none" points="610,-116.5 610,-141.5 752,-141.5 752,-116.5 610,-116.5"/>
+<polygon fill="none" stroke="black" points="610,-116.5 610,-141.5 752,-141.5 752,-116.5 610,-116.5"/>
+<text text-anchor="start" x="616" y="-125.6" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="752,-116.5 752,-141.5 778,-141.5 778,-116.5 752,-116.5"/>
+<polygon fill="none" stroke="black" points="752,-116.5 752,-141.5 778,-141.5 778,-116.5 752,-116.5"/>
+<text text-anchor="start" x="759" y="-126.2" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="545,-91.5 545,-116.5 610,-116.5 610,-91.5 545,-91.5"/>
+<polygon fill="none" stroke="black" points="545,-91.5 545,-116.5 610,-116.5 610,-91.5 545,-91.5"/>
+<text text-anchor="start" x="551" y="-100.6" font-family="Helvetica,sans-Serif" font-size="11.00">user_id</text>
+<polygon fill="white" stroke="none" points="610,-91.5 610,-116.5 752,-116.5 752,-91.5 610,-91.5"/>
+<polygon fill="none" stroke="black" points="610,-91.5 610,-116.5 752,-116.5 752,-91.5 610,-91.5"/>
+<text text-anchor="start" x="616" y="-100.6" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="752,-91.5 752,-116.5 778,-116.5 778,-91.5 752,-91.5"/>
+<polygon fill="none" stroke="black" points="752,-91.5 752,-116.5 778,-116.5 778,-91.5 752,-91.5"/>
+<text text-anchor="start" x="759.25" y="-101.2" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">FK</text>
+<polygon fill="white" stroke="none" points="545,-66.5 545,-91.5 610,-91.5 610,-66.5 545,-66.5"/>
+<polygon fill="none" stroke="black" points="545,-66.5 545,-91.5 610,-91.5 610,-66.5 545,-66.5"/>
+<text text-anchor="start" x="550.9" y="-75.6" font-family="Helvetica,sans-Serif" font-size="11.00">ordered_at</text>
+<polygon fill="white" stroke="none" points="610,-66.5 610,-91.5 752,-91.5 752,-66.5 610,-66.5"/>
+<polygon fill="none" stroke="black" points="610,-66.5 610,-91.5 752,-91.5 752,-66.5 610,-66.5"/>
+<text text-anchor="start" x="616" y="-75.6" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">timestamp with time zone</text>
+<polygon fill="white" stroke="none" points="752,-66.5 752,-91.5 778,-91.5 778,-66.5 752,-66.5"/>
+<polygon fill="none" stroke="black" points="752,-66.5 752,-91.5 778,-91.5 778,-66.5 752,-66.5"/>
+</a>
+</g>
+</g>
+<!-- t1 -->
+<g id="node2" class="node">
+<title>t1</title>
+<g id="a_node2"><a xlink:href="../tables/public.order_items.html" xlink:title="public.order_items&#10;注文明細">
+<polygon fill="#ffe9b3" stroke="none" points="315,-104 315,-129 471,-129 471,-104 315,-104"/>
+<polygon fill="none" stroke="black" points="315,-104 315,-129 471,-129 471,-104 315,-104"/>
+<text text-anchor="start" x="321" y="-114.1" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00">public.order_items</text>
+<polygon fill="white" stroke="none" points="315,-79 315,-104 369,-104 369,-79 315,-79"/>
+<polygon fill="none" stroke="black" points="315,-79 315,-104 369,-104 369,-79 315,-79"/>
+<text text-anchor="start" x="321" y="-88.1" font-family="Helvetica,sans-Serif" font-size="11.00">order_id</text>
+<polygon fill="white" stroke="none" points="369,-79 369,-104 445,-104 445,-79 369,-79"/>
+<polygon fill="none" stroke="black" points="369,-79 369,-104 445,-104 445,-79 369,-79"/>
+<text text-anchor="start" x="375" y="-88.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="445,-79 445,-104 471,-104 471,-79 445,-79"/>
+<polygon fill="none" stroke="black" points="445,-79 445,-104 471,-104 471,-79 445,-79"/>
+<text text-anchor="start" x="452" y="-88.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="315,-54 315,-79 369,-79 369,-54 315,-54"/>
+<polygon fill="none" stroke="black" points="315,-54 315,-79 369,-79 369,-54 315,-54"/>
+<text text-anchor="start" x="321" y="-63.1" font-family="Helvetica,sans-Serif" font-size="11.00">line_no</text>
+<polygon fill="white" stroke="none" points="369,-54 369,-79 445,-79 445,-54 369,-54"/>
+<polygon fill="none" stroke="black" points="369,-54 369,-79 445,-79 445,-54 369,-54"/>
+<text text-anchor="start" x="375" y="-63.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">integer</text>
+<polygon fill="white" stroke="none" points="445,-54 445,-79 471,-79 471,-54 445,-54"/>
+<polygon fill="none" stroke="black" points="445,-54 445,-79 471,-79 471,-54 445,-54"/>
+<text text-anchor="start" x="452" y="-63.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="315,-29 315,-54 369,-54 369,-29 315,-29"/>
+<polygon fill="none" stroke="black" points="315,-29 315,-54 369,-54 369,-29 315,-29"/>
+<text text-anchor="start" x="321" y="-38.1" font-family="Helvetica,sans-Serif" font-size="11.00">product</text>
+<polygon fill="white" stroke="none" points="369,-29 369,-54 445,-54 445,-29 369,-29"/>
+<polygon fill="none" stroke="black" points="369,-29 369,-54 445,-54 445,-29 369,-29"/>
+<text text-anchor="start" x="375" y="-38.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">varchar(200)</text>
+<polygon fill="white" stroke="none" points="445,-29 445,-54 471,-54 471,-29 445,-29"/>
+<polygon fill="none" stroke="black" points="445,-29 445,-54 471,-54 471,-29 445,-29"/>
+<polygon fill="white" stroke="none" points="315,-4 315,-29 369,-29 369,-4 315,-4"/>
+<polygon fill="none" stroke="black" points="315,-4 315,-29 369,-29 369,-4 315,-4"/>
+<text text-anchor="start" x="321" y="-13.1" font-family="Helvetica,sans-Serif" font-size="11.00">quantity</text>
+<polygon fill="white" stroke="none" points="369,-4 369,-29 445,-29 445,-4 369,-4"/>
+<polygon fill="none" stroke="black" points="369,-4 369,-29 445,-29 445,-4 369,-4"/>
+<text text-anchor="start" x="375" y="-13.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">integer</text>
+<polygon fill="white" stroke="none" points="445,-4 445,-29 471,-29 471,-4 445,-4"/>
+<polygon fill="none" stroke="black" points="445,-4 445,-29 471,-29 471,-4 445,-4"/>
+</a>
+</g>
+</g>
+<!-- t1&#45;&gt;t0 -->
+<g id="edge1" class="edge">
+<title>t1:e&#45;&gt;t0:w</title>
+<g id="a_edge1"><a xlink:title="public.order_items order_id → public.orders id&#10;FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE">
+<path fill="none" stroke="#666666" d="M490.67,-95.8C509.63,-105.65 515.53,-129 544,-129"/>
+<polygon fill="#666666" stroke="#666666" points="482.07,-93.82 473.34,-87.19 476.87,-92.62 472.65,-91.65 472.65,-91.65 472.65,-91.65 476.87,-92.62 471.32,-95.96 482.07,-93.82"/>
+<ellipse fill="none" stroke="#666666" cx="487.64" cy="-95.1" rx="4" ry="4"/>
+</a>
+</g>
+</g>
+<!-- t2 -->
+<g id="node3" class="node">
+<title>t2</title>
+<g id="a_node3"><a xlink:href="../tables/public.shipments.html" xlink:title="public.shipments&#10;出荷 (注文明細単位)">
+<polygon fill="#e8eef7" stroke="none" points="8,-167 8,-192 241,-192 241,-167 8,-167"/>
+<polygon fill="none" stroke="black" points="8,-167 8,-192 241,-192 241,-167 8,-167"/>
+<text text-anchor="start" x="14" y="-177.1" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00">public.shipments</text>
+<polygon fill="white" stroke="none" points="8,-142 8,-167 73,-167 73,-142 8,-142"/>
+<polygon fill="none" stroke="black" points="8,-142 8,-167 73,-167 73,-142 8,-142"/>
+<text text-anchor="start" x="14" y="-151.1" font-family="Helvetica,sans-Serif" font-size="11.00">id</text>
+<polygon fill="white" stroke="none" points="73,-142 73,-167 215,-167 215,-142 73,-142"/>
+<polygon fill="none" stroke="black" points="73,-142 73,-167 215,-167 215,-142 73,-142"/>
+<text text-anchor="start" x="79" y="-151.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="215,-142 215,-167 241,-167 241,-142 215,-142"/>
+<polygon fill="none" stroke="black" points="215,-142 215,-167 241,-167 241,-142 215,-142"/>
+<text text-anchor="start" x="222" y="-151.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="8,-117 8,-142 73,-142 73,-117 8,-117"/>
+<polygon fill="none" stroke="black" points="8,-117 8,-142 73,-142 73,-117 8,-117"/>
+<text text-anchor="start" x="14" y="-126.1" font-family="Helvetica,sans-Serif" font-size="11.00">order_id</text>
+<polygon fill="white" stroke="none" points="73,-117 73,-142 215,-142 215,-117 73,-117"/>
+<polygon fill="none" stroke="black" points="73,-117 73,-142 215,-142 215,-117 73,-117"/>
+<text text-anchor="start" x="79" y="-126.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="215,-117 215,-142 241,-142 241,-117 215,-117"/>
+<polygon fill="none" stroke="black" points="215,-117 215,-142 241,-142 241,-117 215,-117"/>
+<text text-anchor="start" x="222.25" y="-126.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">FK</text>
+<polygon fill="white" stroke="none" points="8,-92 8,-117 73,-117 73,-92 8,-92"/>
+<polygon fill="none" stroke="black" points="8,-92 8,-117 73,-117 73,-92 8,-92"/>
+<text text-anchor="start" x="14" y="-101.1" font-family="Helvetica,sans-Serif" font-size="11.00">line_no</text>
+<polygon fill="white" stroke="none" points="73,-92 73,-117 215,-117 215,-92 73,-92"/>
+<polygon fill="none" stroke="black" points="73,-92 73,-117 215,-117 215,-92 73,-92"/>
+<text text-anchor="start" x="79" y="-101.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">integer</text>
+<polygon fill="white" stroke="none" points="215,-92 215,-117 241,-117 241,-92 215,-92"/>
+<polygon fill="none" stroke="black" points="215,-92 215,-117 241,-117 241,-92 215,-92"/>
+<text text-anchor="start" x="222.25" y="-101.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">FK</text>
+<polygon fill="white" stroke="none" points="8,-67 8,-92 73,-92 73,-67 8,-67"/>
+<polygon fill="none" stroke="black" points="8,-67 8,-92 73,-92 73,-67 8,-67"/>
+<text text-anchor="start" x="13.59" y="-76.1" font-family="Helvetica,sans-Serif" font-size="11.00">shipped_at</text>
+<polygon fill="white" stroke="none" points="73,-67 73,-92 215,-92 215,-67 73,-67"/>
+<polygon fill="none" stroke="black" points="73,-67 73,-92 215,-92 215,-67 73,-67"/>
+<text text-anchor="start" x="79" y="-76.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">timestamp with time zone</text>
+<polygon fill="white" stroke="none" points="215,-67 215,-92 241,-92 241,-67 215,-67"/>
+<polygon fill="none" stroke="black" points="215,-67 215,-92 241,-92 241,-67 215,-67"/>
+</a>
+</g>
+</g>
+<!-- t2&#45;&gt;t0 -->
+<g id="edge2" class="edge">
+<title>t2:e&#45;&gt;t0:w</title>
+<g id="a_edge2"><a xlink:title="public.shipments order_id → public.orders id&#10;FOREIGN KEY (order_id) REFERENCES orders(id)">
+<path fill="none" stroke="#666666" d="M261.01,-131.48C276.25,-134.95 285.14,-142.01 307,-144.5 382.95,-153.15 403.08,-153.43 479,-144.5 508.5,-141.03 514.3,-129 544,-129"/>
+<polygon fill="#666666" stroke="#666666" points="252.28,-130.57 242.8,-125.06 246.97,-130.02 242.67,-129.57 242.67,-129.57 242.67,-129.57 246.97,-130.02 241.87,-134.01 252.28,-130.57"/>
+<ellipse fill="none" stroke="#666666" cx="257.97" cy="-131.16" rx="4" ry="4"/>
+</a>
+</g>
+</g>
+<!-- t2&#45;&gt;t1 -->
+<g id="edge3" class="edge">
+<title>t2:e&#45;&gt;t1:w</title>
+<g id="a_edge3"><a xlink:title="public.shipments (order_id, line_no) → public.order_items (order_id, line_no)&#10;FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)">
+<path fill="none" stroke="#666666" d="M260.7,-125.14C279.65,-115.16 285.45,-91.5 314,-91.5"/>
+<polygon fill="#666666" stroke="#666666" points="252.06,-127.15 241.3,-125.04 246.87,-128.37 242.65,-129.35 242.65,-129.35 242.65,-129.35 246.87,-128.37 243.35,-133.81 252.06,-127.15"/>
+<ellipse fill="none" stroke="#666666" cx="257.63" cy="-125.86" rx="4" ry="4"/>
+</a>
+</g>
+</g>
+</g>
+</svg>
 </div>
 </section>
 

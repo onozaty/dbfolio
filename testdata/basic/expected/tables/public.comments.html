@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>public.comments - dbfolio</title>
 <link rel="stylesheet" href="../assets/app.css">
+<script src="../assets/app.js" defer></script>
 </head>
 <body>
 <header class="site-header">
 <a class="site-title" href="../index.html">dbfolio</a>
-<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a></nav>
+<nav class="site-nav"><a href="../index.html">Overview</a> <a href="../relationships.html">Relationships</a> <a href="../diagram.html">ER Diagram</a></nav>
 </header>
 <main>
 <h1>public.comments</h1>
@@ -28,6 +29,143 @@
 <tr><td>body</td><td><code>text</code></td><td>NO</td><td></td><td></td><td class="comment"></td></tr>
 </tbody>
 </table>
+</div>
+</section>
+
+<section>
+<h2>ER Diagram</h2>
+<div class="diagram">
+<svg width="515pt" height="259pt"
+ viewBox="0.00 0.00 515.08 258.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(14.4 244.4)">
+<polygon fill="white" stroke="none" points="-14.4,14.4 -14.4,-244.4 500.68,-244.4 500.68,14.4 -14.4,14.4"/>
+<!-- t0 -->
+<g id="node1" class="node">
+<title>t0</title>
+<g id="a_node1"><a xlink:href="../tables/public.users.html" xlink:title="public.users&#10;ユーザー情報">
+<polygon fill="#e8eef7" stroke="none" points="245.28,-154 245.28,-179 478.28,-179 478.28,-154 245.28,-154"/>
+<polygon fill="none" stroke="black" points="245.28,-154 245.28,-179 478.28,-179 478.28,-154 245.28,-154"/>
+<text text-anchor="start" x="251.28" y="-164.1" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00">public.users</text>
+<polygon fill="white" stroke="none" points="245.28,-129 245.28,-154 310.28,-154 310.28,-129 245.28,-129"/>
+<polygon fill="none" stroke="black" points="245.28,-129 245.28,-154 310.28,-154 310.28,-129 245.28,-129"/>
+<text text-anchor="start" x="251.28" y="-138.1" font-family="Helvetica,sans-Serif" font-size="11.00">id</text>
+<polygon fill="white" stroke="none" points="310.28,-129 310.28,-154 452.28,-154 452.28,-129 310.28,-129"/>
+<polygon fill="none" stroke="black" points="310.28,-129 310.28,-154 452.28,-154 452.28,-129 310.28,-129"/>
+<text text-anchor="start" x="316.28" y="-138.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="452.28,-129 452.28,-154 478.28,-154 478.28,-129 452.28,-129"/>
+<polygon fill="none" stroke="black" points="452.28,-129 452.28,-154 478.28,-154 478.28,-129 452.28,-129"/>
+<text text-anchor="start" x="459.28" y="-138.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="245.28,-104 245.28,-129 310.28,-129 310.28,-104 245.28,-104"/>
+<polygon fill="none" stroke="black" points="245.28,-104 245.28,-129 310.28,-129 310.28,-104 245.28,-104"/>
+<text text-anchor="start" x="251.28" y="-113.1" font-family="Helvetica,sans-Serif" font-size="11.00">name</text>
+<polygon fill="white" stroke="none" points="310.28,-104 310.28,-129 452.28,-129 452.28,-104 310.28,-104"/>
+<polygon fill="none" stroke="black" points="310.28,-104 310.28,-129 452.28,-129 452.28,-104 310.28,-104"/>
+<text text-anchor="start" x="316.28" y="-113.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">varchar(100)</text>
+<polygon fill="white" stroke="none" points="452.28,-104 452.28,-129 478.28,-129 478.28,-104 452.28,-104"/>
+<polygon fill="none" stroke="black" points="452.28,-104 452.28,-129 478.28,-129 478.28,-104 452.28,-104"/>
+<polygon fill="white" stroke="none" points="245.28,-79 245.28,-104 310.28,-104 310.28,-79 245.28,-79"/>
+<polygon fill="none" stroke="black" points="245.28,-79 245.28,-104 310.28,-104 310.28,-79 245.28,-79"/>
+<text text-anchor="start" x="251.28" y="-88.1" font-family="Helvetica,sans-Serif" font-size="11.00">email</text>
+<polygon fill="white" stroke="none" points="310.28,-79 310.28,-104 452.28,-104 452.28,-79 310.28,-79"/>
+<polygon fill="none" stroke="black" points="310.28,-79 310.28,-104 452.28,-104 452.28,-79 310.28,-79"/>
+<text text-anchor="start" x="316.28" y="-88.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">varchar(255)</text>
+<polygon fill="white" stroke="none" points="452.28,-79 452.28,-104 478.28,-104 478.28,-79 452.28,-79"/>
+<polygon fill="none" stroke="black" points="452.28,-79 452.28,-104 478.28,-104 478.28,-79 452.28,-79"/>
+<polygon fill="white" stroke="none" points="245.28,-54 245.28,-79 310.28,-79 310.28,-54 245.28,-54"/>
+<polygon fill="none" stroke="black" points="245.28,-54 245.28,-79 310.28,-79 310.28,-54 245.28,-54"/>
+<text text-anchor="start" x="251.28" y="-63.1" font-family="Helvetica,sans-Serif" font-size="11.00">region_id</text>
+<polygon fill="white" stroke="none" points="310.28,-54 310.28,-79 452.28,-79 452.28,-54 310.28,-54"/>
+<polygon fill="none" stroke="black" points="310.28,-54 310.28,-79 452.28,-79 452.28,-54 310.28,-54"/>
+<text text-anchor="start" x="316.28" y="-63.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="452.28,-54 452.28,-79 478.28,-79 478.28,-54 452.28,-54"/>
+<polygon fill="none" stroke="black" points="452.28,-54 452.28,-79 478.28,-79 478.28,-54 452.28,-54"/>
+<text text-anchor="start" x="459.53" y="-63.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">FK</text>
+<polygon fill="white" stroke="none" points="245.28,-29 245.28,-54 310.28,-54 310.28,-29 245.28,-29"/>
+<polygon fill="none" stroke="black" points="245.28,-29 245.28,-54 310.28,-54 310.28,-29 245.28,-29"/>
+<text text-anchor="start" x="251.28" y="-38.1" font-family="Helvetica,sans-Serif" font-size="11.00">status</text>
+<polygon fill="white" stroke="none" points="310.28,-29 310.28,-54 452.28,-54 452.28,-29 310.28,-29"/>
+<polygon fill="none" stroke="black" points="310.28,-29 310.28,-54 452.28,-54 452.28,-29 310.28,-29"/>
+<text text-anchor="start" x="316.28" y="-38.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">varchar(20)</text>
+<polygon fill="white" stroke="none" points="452.28,-29 452.28,-54 478.28,-54 478.28,-29 452.28,-29"/>
+<polygon fill="none" stroke="black" points="452.28,-29 452.28,-54 478.28,-54 478.28,-29 452.28,-29"/>
+<polygon fill="white" stroke="none" points="245.28,-4 245.28,-29 310.28,-29 310.28,-4 245.28,-4"/>
+<polygon fill="none" stroke="black" points="245.28,-4 245.28,-29 310.28,-29 310.28,-4 245.28,-4"/>
+<text text-anchor="start" x="251.28" y="-13.1" font-family="Helvetica,sans-Serif" font-size="11.00">created_at</text>
+<polygon fill="white" stroke="none" points="310.28,-4 310.28,-29 452.28,-29 452.28,-4 310.28,-4"/>
+<polygon fill="none" stroke="black" points="310.28,-4 310.28,-29 452.28,-29 452.28,-4 310.28,-4"/>
+<text text-anchor="start" x="316.28" y="-13.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">timestamp with time zone</text>
+<polygon fill="white" stroke="none" points="452.28,-4 452.28,-29 478.28,-29 478.28,-4 452.28,-4"/>
+<polygon fill="none" stroke="black" points="452.28,-4 452.28,-29 478.28,-29 478.28,-4 452.28,-4"/>
+</a>
+</g>
+</g>
+<!-- t1 -->
+<g id="node2" class="node">
+<title>t1</title>
+<g id="a_node2"><a xlink:href="../tables/public.comments.html" xlink:title="public.comments&#10;コメント">
+<polygon fill="#ffe9b3" stroke="none" points="42.28,-179 42.28,-204 171.28,-204 171.28,-179 42.28,-179"/>
+<polygon fill="none" stroke="black" points="42.28,-179 42.28,-204 171.28,-204 171.28,-179 42.28,-179"/>
+<text text-anchor="start" x="48.28" y="-189.1" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00">public.comments</text>
+<polygon fill="white" stroke="none" points="42.28,-154 42.28,-179 102.28,-179 102.28,-154 42.28,-154"/>
+<polygon fill="none" stroke="black" points="42.28,-154 42.28,-179 102.28,-179 102.28,-154 42.28,-154"/>
+<text text-anchor="start" x="48.28" y="-163.1" font-family="Helvetica,sans-Serif" font-size="11.00">id</text>
+<polygon fill="white" stroke="none" points="102.28,-154 102.28,-179 145.28,-179 145.28,-154 102.28,-154"/>
+<polygon fill="none" stroke="black" points="102.28,-154 102.28,-179 145.28,-179 145.28,-154 102.28,-154"/>
+<text text-anchor="start" x="108.28" y="-163.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="145.28,-154 145.28,-179 171.28,-179 171.28,-154 145.28,-154"/>
+<polygon fill="none" stroke="black" points="145.28,-154 145.28,-179 171.28,-179 171.28,-154 145.28,-154"/>
+<text text-anchor="start" x="152.28" y="-163.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">PK</text>
+<polygon fill="white" stroke="none" points="42.28,-129 42.28,-154 102.28,-154 102.28,-129 42.28,-129"/>
+<polygon fill="none" stroke="black" points="42.28,-129 42.28,-154 102.28,-154 102.28,-129 42.28,-129"/>
+<text text-anchor="start" x="48.28" y="-138.1" font-family="Helvetica,sans-Serif" font-size="11.00">user_id</text>
+<polygon fill="white" stroke="none" points="102.28,-129 102.28,-154 145.28,-154 145.28,-129 102.28,-129"/>
+<polygon fill="none" stroke="black" points="102.28,-129 102.28,-154 145.28,-154 145.28,-129 102.28,-129"/>
+<text text-anchor="start" x="108.28" y="-138.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="145.28,-129 145.28,-154 171.28,-154 171.28,-129 145.28,-129"/>
+<polygon fill="none" stroke="black" points="145.28,-129 145.28,-154 171.28,-154 171.28,-129 145.28,-129"/>
+<text text-anchor="start" x="152.53" y="-138.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">FK</text>
+<polygon fill="white" stroke="none" points="42.28,-104 42.28,-129 102.28,-129 102.28,-104 42.28,-104"/>
+<polygon fill="none" stroke="black" points="42.28,-104 42.28,-129 102.28,-129 102.28,-104 42.28,-104"/>
+<text text-anchor="start" x="48.28" y="-113.1" font-family="Helvetica,sans-Serif" font-size="11.00">parent_id</text>
+<polygon fill="white" stroke="none" points="102.28,-104 102.28,-129 145.28,-129 145.28,-104 102.28,-104"/>
+<polygon fill="none" stroke="black" points="102.28,-104 102.28,-129 145.28,-129 145.28,-104 102.28,-104"/>
+<text text-anchor="start" x="108.28" y="-113.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">bigint</text>
+<polygon fill="white" stroke="none" points="145.28,-104 145.28,-129 171.28,-129 171.28,-104 145.28,-104"/>
+<polygon fill="none" stroke="black" points="145.28,-104 145.28,-129 171.28,-129 171.28,-104 145.28,-104"/>
+<text text-anchor="start" x="152.53" y="-113.7" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#666666">FK</text>
+<polygon fill="white" stroke="none" points="42.28,-79 42.28,-104 102.28,-104 102.28,-79 42.28,-79"/>
+<polygon fill="none" stroke="black" points="42.28,-79 42.28,-104 102.28,-104 102.28,-79 42.28,-79"/>
+<text text-anchor="start" x="48.28" y="-88.1" font-family="Helvetica,sans-Serif" font-size="11.00">body</text>
+<polygon fill="white" stroke="none" points="102.28,-79 102.28,-104 145.28,-104 145.28,-79 102.28,-79"/>
+<polygon fill="none" stroke="black" points="102.28,-79 102.28,-104 145.28,-104 145.28,-79 102.28,-79"/>
+<text text-anchor="start" x="108.28" y="-88.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#666666">text</text>
+<polygon fill="white" stroke="none" points="145.28,-79 145.28,-104 171.28,-104 171.28,-79 145.28,-79"/>
+<polygon fill="none" stroke="black" points="145.28,-79 145.28,-104 171.28,-104 171.28,-79 145.28,-79"/>
+</a>
+</g>
+</g>
+<!-- t1&#45;&gt;t0 -->
+<g id="edge1" class="edge">
+<title>t1:e&#45;&gt;t0:w</title>
+<g id="a_edge1"><a xlink:title="public.comments user_id → public.users id&#10;FOREIGN KEY (user_id) REFERENCES users(id)">
+<path fill="none" stroke="#666666" d="M191.72,-141.5C209.46,-141.5 219.91,-141.5 244.28,-141.5"/>
+<polygon fill="#666666" stroke="#666666" points="182.62,-141.5 172.62,-137 177.28,-141.5 172.95,-141.5 172.95,-141.5 172.95,-141.5 177.28,-141.5 172.62,-146 182.62,-141.5"/>
+<ellipse fill="none" stroke="#666666" cx="188.33" cy="-141.5" rx="4" ry="4"/>
+</a>
+</g>
+</g>
+<!-- t1&#45;&gt;t1 -->
+<g id="edge2" class="edge">
+<title>t1:e&#45;&gt;t1:w</title>
+<g id="a_edge2"><a xlink:title="public.comments parent_id → public.comments id&#10;FOREIGN KEY (parent_id) REFERENCES comments(id)">
+<path fill="none" stroke="#666666" d="M187.78,-126.35C233.86,-161.31 222.76,-230 106.78,-230 -21.47,-230 -21.47,-196 42.28,-166.5"/>
+<polygon fill="#666666" stroke="#666666" points="180.16,-121.8 173.87,-112.81 175.57,-119.06 171.86,-116.84 171.86,-116.84 171.86,-116.84 175.57,-119.06 169.26,-120.54 180.16,-121.8"/>
+<ellipse fill="none" stroke="#666666" cx="185.07" cy="-124.73" rx="4" ry="4"/>
+</a>
+</g>
+</g>
+</g>
+</svg>
 </div>
 </section>
 

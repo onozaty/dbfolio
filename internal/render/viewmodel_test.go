@@ -2,18 +2,33 @@ package render
 
 import (
 	"reflect"
+	"slices"
 	"testing"
 
 	"github.com/onozaty/dbfolio/internal/schema"
 )
 
+// plan plans s after appending the columns its relations refer to but the
+// fixture tables do not declare, so that tests only spell out what they check.
 func plan(t *testing.T, s *schema.Schema) *Site {
 	t.Helper()
+	for _, r := range s.Relations {
+		addMissingColumns(r.Table, r.Columns)
+		addMissingColumns(r.ParentTable, r.ParentColumns)
+	}
 	site, err := Plan(s)
 	if err != nil {
 		t.Fatalf("Plan() error = %v", err)
 	}
 	return site
+}
+
+func addMissingColumns(t *schema.Table, names []string) {
+	for _, n := range names {
+		if !slices.ContainsFunc(t.Columns, func(c *schema.Column) bool { return c.Name == n }) {
+			t.Columns = append(t.Columns, &schema.Column{Name: n})
+		}
+	}
 }
 
 func keyLabels(p tablePage) map[string][]string {
@@ -291,7 +306,7 @@ func TestNewIndexPage_CountsTablesAndViewsSeparately(t *testing.T) {
 	// Arrange
 	users := &schema.Table{Name: "users", Columns: []*schema.Column{{Name: "id"}, {Name: "name"}}, Indexes: []*schema.Index{{Name: "pk"}}}
 	active := &schema.Table{Name: "active_users", View: true, Columns: []*schema.Column{{Name: "id"}}}
-	s := &schema.Schema{Name: "db", Tables: []*schema.Table{users, active}, Relations: []*schema.Relation{{Table: active, ParentTable: users}}}
+	s := &schema.Schema{Name: "db", Tables: []*schema.Table{users, active}, Relations: []*schema.Relation{{Table: active, Columns: []string{"id"}, ParentTable: users, ParentColumns: []string{"id"}}}}
 	site := plan(t, s)
 
 	// Act

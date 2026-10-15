@@ -1,0 +1,102 @@
+digraph dbfolio {
+  graph [rankdir=LR, pad=0.2, nodesep=0.3, ranksep=0.8, fontname="Helvetica"];
+  node [shape=plaintext, fontname="Helvetica", fontsize=11];
+  edge [dir=both, color="#666666"];
+  t0 [URL="public.regions.html", tooltip="public.regions
+地域マスタ", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="2" width="95" align="left"><b>public.regions</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="74" align="left">id</td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td bgcolor="white" colspan="2" width="95" align="left"><font point-size="9" color="#666666">… 1 more column</font></td></tr>
+    </table>>];
+  t1 [URL="public.users.html", tooltip="public.users
+ユーザー情報", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="2" width="83" align="left"><b>public.users</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="62" align="left">id</td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w3" bgcolor="white" width="62" align="left">region_id</td><td port="e3" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
+      <tr><td bgcolor="white" colspan="2" width="83" align="left"><font point-size="9" color="#666666">… 4 more columns</font></td></tr>
+    </table>>];
+  t2 [URL="public.roles.html", tooltip="public.roles
+ロール", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="2" width="83" align="left"><b>public.roles</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="62" align="left">id</td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td bgcolor="white" colspan="2" width="83" align="left"><font point-size="9" color="#666666">… 1 more column</font></td></tr>
+    </table>>];
+  t3 [URL="public.user_roles.html", tooltip="public.user_roles
+ユーザーとロールの対応", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="2" width="114" align="left"><b>public.user_roles</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="93" align="left">user_id</td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w1" bgcolor="white" width="93" align="left">role_id</td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+    </table>>];
+  t4 [URL="public.orders.html", tooltip="public.orders
+注文", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="2" width="90" align="left"><b>public.orders</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="69" align="left">id</td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w1" bgcolor="white" width="69" align="left">user_id</td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
+      <tr><td bgcolor="white" colspan="2" width="90" align="left"><font point-size="9" color="#666666">… 1 more column</font></td></tr>
+    </table>>];
+  t5 [URL="public.order_items.html", tooltip="public.order_items
+注文明細", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="2" width="119" align="left"><b>public.order_items</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="98" align="left">order_id</td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w1" bgcolor="white" width="98" align="left">line_no</td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td bgcolor="white" colspan="2" width="119" align="left"><font point-size="9" color="#666666">… 2 more columns</font></td></tr>
+    </table>>];
+  t6 [URL="public.shipments.html", tooltip="public.shipments
+出荷 (注文明細単位)", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="2" width="107" align="left"><b>public.shipments</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="86" align="left">id</td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w1" bgcolor="white" width="86" align="left">order_id</td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
+      <tr><td port="w2" bgcolor="white" width="86" align="left">line_no</td><td port="e2" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
+      <tr><td bgcolor="white" colspan="2" width="107" align="left"><font point-size="9" color="#666666">… 1 more column</font></td></tr>
+    </table>>];
+  t7 [URL="public.comments.html", tooltip="public.comments
+コメント", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="2" width="102" align="left"><b>public.comments</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="81" align="left">id</td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w1" bgcolor="white" width="81" align="left">user_id</td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
+      <tr><td port="w2" bgcolor="white" width="81" align="left">parent_id</td><td port="e2" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
+      <tr><td bgcolor="white" colspan="2" width="102" align="left"><font point-size="9" color="#666666">… 1 more column</font></td></tr>
+    </table>>];
+  t8 [URL="public.audit_logs.html", tooltip="public.audit_logs
+監査ログ (コメントは .tbls.yml で付与)", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="2" width="114" align="left"><b>public.audit_logs</b></td></tr>
+      <tr><td port="w0" bgcolor="white" width="93" align="left">id</td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
+      <tr><td port="w1" bgcolor="white" width="93" align="left">user_id</td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
+      <tr><td bgcolor="white" colspan="2" width="114" align="left"><font point-size="9" color="#666666">… 2 more columns</font></td></tr>
+    </table>>];
+  t9 [URL="public.active_users.html", tooltip="public.active_users
+有効なユーザー", label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr><td bgcolor="#e8eef7" colspan="1" width="161" align="left"><table border="0" cellborder="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#e8eef7" align="left"><b>public.active_users</b></td><td bgcolor="#e8eef7" align="right"><font point-size="9" color="#666666">[VIEW]</font></td></tr></table></td></tr>
+      <tr><td bgcolor="white" colspan="1" width="161" align="left"><font point-size="9" color="#666666">… 3 more columns</font></td></tr>
+    </table>>];
+  t1:e3:e -> t0:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.users region_id → public.regions id
+FOREIGN KEY (region_id) REFERENCES regions(id)"];
+  t3:e0:e -> t1:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.user_roles user_id → public.users id
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"];
+  t3:e1:e -> t2:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.user_roles role_id → public.roles id
+FOREIGN KEY (role_id) REFERENCES roles(id)"];
+  t4:e1:e -> t1:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.orders user_id → public.users id
+FOREIGN KEY (user_id) REFERENCES users(id)"];
+  t5:e0:e -> t4:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.order_items order_id → public.orders id
+FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE"];
+  t6:e1:e -> t4:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.shipments order_id → public.orders id
+FOREIGN KEY (order_id) REFERENCES orders(id)"];
+  t6:e1:e -> t5:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.shipments (order_id, line_no) → public.order_items (order_id, line_no)
+FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)"];
+  t7:e1:e -> t1:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.comments user_id → public.users id
+FOREIGN KEY (user_id) REFERENCES users(id)"];
+  t7:e2:e -> t7:w0:w [arrowtail=crowodot, arrowhead=none, style=solid, tooltip="public.comments parent_id → public.comments id
+FOREIGN KEY (parent_id) REFERENCES comments(id)"];
+  t8:e1:e -> t1:w0:w [arrowtail=crowodot, arrowhead=none, style=dashed, tooltip="public.audit_logs user_id → public.users id (virtual)
+audit_logs.user_id -> users.id (アプリケーション側で管理)"];
+}
