@@ -9,6 +9,33 @@ type Schema struct {
 	Desc      string
 	Tables    []*Table
 	Relations []*Relation
+	Functions []*Function
+	Enums     []*Enum
+	// Driver is nil when the input does not tell the database.
+	Driver *Driver
+}
+
+// Driver is what the input tells about the database the schema was read from.
+type Driver struct {
+	// SearchPaths are the schemas the database searches for names without a
+	// schema, in order; nil when unknown.
+	SearchPaths []string
+}
+
+// Function is a stored function or procedure.
+type Function struct {
+	Name       string
+	ReturnType string
+	Arguments  string
+	// Type is "FUNCTION", "PROCEDURE", etc. as given by the input.
+	Type string
+}
+
+// Enum is an enumerated type (e.g. PostgreSQL's CREATE TYPE ... AS ENUM).
+// MySQL ENUM columns carry their values in the column type instead.
+type Enum struct {
+	Name   string
+	Values []string
 }
 
 // Table is a table or a view.
@@ -30,6 +57,10 @@ type Table struct {
 	// Def is the definition SQL when the input provides it (the query of a view,
 	// or CREATE TABLE on some databases such as MySQL).
 	Def string
+	// ReferencedTables are the names of the tables a view reads. They are names,
+	// not tables: a referenced table can be outside the schema (e.g. excluded
+	// in .tbls.yml).
+	ReferencedTables []string
 }
 
 // KindLabel returns the table type to show next to the table name: empty for

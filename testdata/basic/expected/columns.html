@@ -17,6 +17,8 @@
 <a href="columns.html" aria-current="page">Columns</a>
 <a href="constraints.html">Constraints</a>
 <a href="relationships.html">Relationships</a>
+<a href="functions.html">Functions</a>
+<a href="enums.html">Enums</a>
 </nav>
 <div class="search" role="search">
 <input type="search" id="search-input" placeholder="Search tables and columns" autocomplete="off" spellcheck="false" aria-label="Search tables and columns" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
@@ -26,7 +28,7 @@
 </div>
 </header>
 <main>
-<h1>Columns<span class="count">34 columns</span></h1>
+<h1>Columns<span class="count">35 columns</span></h1>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Table</th><th>Name</th><th>Type</th><th>Default</th><th>Nullable</th><th>Key</th><th>Comment</th></tr></thead>
@@ -45,6 +47,7 @@
 <tr><td><a href="tables/public.user_roles.html">public.user_roles</a></td><td>role_id</td><td><code>bigint</code></td><td></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="tables/public.roles.html" title="References public.roles id">FK</a></td><td class="comment"></td></tr>
 <tr><td><a href="tables/public.orders.html">public.orders</a></td><td>id</td><td><code>bigint</code></td><td><code>nextval(&#39;orders_id_seq&#39;::regclass)</code></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>
 <tr><td><a href="tables/public.orders.html">public.orders</a></td><td>user_id</td><td><code>bigint</code></td><td></td><td>NO</td><td><a class="key key-FK" href="tables/public.users.html" title="References public.users id">FK</a></td><td class="comment">注文したユーザー</td></tr>
+<tr><td><a href="tables/public.orders.html">public.orders</a></td><td>status</td><td><code><a href="enums.html#enum-0" title="public.order_status: pending, shipped, cancelled">order_status</a></code></td><td><code>&#39;pending&#39;::order_status</code></td><td>NO</td><td></td><td class="comment">注文の状態</td></tr>
 <tr><td><a href="tables/public.orders.html">public.orders</a></td><td>ordered_at</td><td><code>timestamp with time zone</code></td><td><code>now()</code></td><td>NO</td><td></td><td class="comment"></td></tr>
 <tr><td><a href="tables/public.order_items.html">public.order_items</a></td><td>order_id</td><td><code>bigint</code></td><td></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span> <a class="key key-FK" href="tables/public.orders.html" title="References public.orders id">FK</a></td><td class="comment"></td></tr>
 <tr><td><a href="tables/public.order_items.html">public.order_items</a></td><td>line_no</td><td><code>integer</code></td><td></td><td>NO</td><td><span class="key key-PK" title="Primary key">PK</span></td><td class="comment"></td></tr>

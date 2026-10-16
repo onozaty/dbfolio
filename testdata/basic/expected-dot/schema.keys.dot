@@ -37,7 +37,7 @@ digraph dbfolio {
       <tr><td bgcolor="#e8eef7" colspan="2" width="90" align="left"><b>public.orders</b></td></tr>
       <tr><td port="w0" bgcolor="white" width="69" align="left">id</td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
       <tr><td port="w1" bgcolor="white" width="69" align="left">user_id</td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
-      <tr><td bgcolor="white" colspan="2" width="90" align="left"><font point-size="9" color="#666666">… 1 more column</font></td></tr>
+      <tr><td bgcolor="white" colspan="2" width="90" align="left"><font point-size="9" color="#666666">… 2 more columns</font></td></tr>
     </table>>];
   t5 [URL="public.order_items.html", tooltip="public.order_items
 注文明細", label=<

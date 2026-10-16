@@ -172,6 +172,43 @@ func TestWrite_RendersEmptyStates(t *testing.T) {
 	}
 }
 
+func TestWrite_WritesFunctionsAndEnumsPagesOnlyWhenPresent(t *testing.T) {
+	tests := map[string]struct {
+		schema *schema.Schema
+		want   bool
+	}{
+		"absent":  {&schema.Schema{}, false},
+		"present": {&schema.Schema{Functions: []*schema.Function{{Name: "f"}}, Enums: []*schema.Enum{{Name: "e"}}}, true},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			site, err := Plan(tt.schema)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := site.RenderDiagrams(context.Background()); err != nil {
+				t.Fatal(err)
+			}
+			dir := t.TempDir()
+
+			// Act
+			err = site.Write(dir)
+
+			// Assert
+			if err != nil {
+				t.Fatalf("Write() error = %v", err)
+			}
+			for _, file := range []string{"functions.html", "enums.html"} {
+				_, statErr := os.Stat(filepath.Join(dir, file))
+				if exists := statErr == nil; exists != tt.want {
+					t.Errorf("%s exists = %v, want %v", file, exists, tt.want)
+				}
+			}
+		})
+	}
+}
+
 func TestWrite_RequiresRenderDiagrams(t *testing.T) {
 	// Arrange
 	site, err := Plan(&schema.Schema{Tables: []*schema.Table{{Name: "t"}}})

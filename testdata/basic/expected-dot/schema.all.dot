@@ -40,7 +40,8 @@ digraph dbfolio {
       <tr><td bgcolor="#e8eef7" colspan="3" width="228" align="left"><b>public.orders</b></td></tr>
       <tr><td port="w0" bgcolor="white" width="65" align="left">id</td><td bgcolor="white" width="142" align="left"><font color="#666666">bigint</font></td><td port="e0" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">PK</font></td></tr>
       <tr><td port="w1" bgcolor="white" width="65" align="left">user_id</td><td bgcolor="white" width="142" align="left"><font color="#666666">bigint</font></td><td port="e1" bgcolor="white" width="21" cellpadding="6" valign="bottom"><font point-size="9" color="#666666">FK</font></td></tr>
-      <tr><td port="w2" bgcolor="white" width="65" align="left">ordered_at</td><td bgcolor="white" width="142" align="left"><font color="#666666">timestamp with time zone</font></td><td port="e2" bgcolor="white" width="21" cellpadding="6"></td></tr>
+      <tr><td port="w2" bgcolor="white" width="65" align="left">status</td><td bgcolor="white" width="142" align="left"><font color="#666666">order_status</font></td><td port="e2" bgcolor="white" width="21" cellpadding="6"></td></tr>
+      <tr><td port="w3" bgcolor="white" width="65" align="left">ordered_at</td><td bgcolor="white" width="142" align="left"><font color="#666666">timestamp with time zone</font></td><td port="e3" bgcolor="white" width="21" cellpadding="6"></td></tr>
     </table>>];
   t5 [URL="public.order_items.html", tooltip="public.order_items
 注文明細", label=<

@@ -1,12 +1,5 @@
 {{define "content"}}<h1>Tables<span class="count">{{.Count}}</span></h1>
 {{with .Desc}}<p class="comment">{{.}}</p>
-{{end}}{{if .Tables}}<div class="table-wrap">
-<table>
-<thead><tr><th>Name</th><th>Type</th><th class="num">Columns</th><th>Comment</th></tr></thead>
-<tbody>
-{{range .Tables}}<tr><td><a href="{{.Href}}">{{.Name}}</a></td><td>{{.Type}}</td><td class="num">{{.Columns}}</td><td class="comment">{{.Comment}}</td></tr>
-{{end}}</tbody>
-</table>
-</div>
+{{end}}{{if .Tables}}{{template "tableList" .Tables}}
 {{else}}<p>No tables.</p>
 {{end}}{{end}}

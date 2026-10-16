@@ -9,3 +9,14 @@
 </div>{{end}}
 
 {{define "key"}}{{if .Href}}<a class="key key-{{.Label}}{{if .Virtual}} key-virtual{{end}}" href="{{.Href}}" title="{{.Title}}">{{.Label}}{{if .Virtual}}<span class="visually-hidden"> (virtual)</span>{{end}}</a>{{else}}<span class="key key-{{.Label}}" title="{{.Title}}">{{.Label}}</span>{{end}}{{end}}
+
+{{define "columnType"}}<code>{{if .TypeHref}}<a href="{{.TypeHref}}" title="{{.TypeTitle}}">{{.Type}}</a>{{else}}{{.Type}}{{end}}</code>{{end}}
+
+{{define "tableList"}}<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th class="num">Columns</th><th>Comment</th></tr></thead>
+<tbody>
+{{range .}}<tr><td>{{if .Href}}<a href="{{.Href}}">{{.Name}}</a>{{else}}{{.Name}}{{end}}</td><td>{{.Type}}</td><td class="num">{{if .Href}}{{.Columns}}{{end}}</td><td class="comment">{{.Comment}}</td></tr>
+{{end}}</tbody>
+</table>
+</div>{{end}}
