@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -374,4 +375,53 @@ func readTree(t *testing.T, root string) map[string]string {
 		t.Fatal(err)
 	}
 	return files
+}
+
+// TestDiagramColorsAreThemed checks that every color Graphviz writes in the
+// diagrams is recolored by app.css in dark mode, so that a color added to the
+// DOT source is not left out of the theme.
+func TestDiagramColorsAreThemed(t *testing.T) {
+	// Arrange
+	s, err := tbls.Load(filepath.Join("..", "..", "testdata", "basic", "schema.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	site, err := Plan(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := site.RenderDiagrams(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	css, err := content.ReadFile("assets/app.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+	svgs := [][]byte{site.wholeKeys, site.wholeAll}
+	for _, svg := range site.tableDiagrams {
+		svgs = append(svgs, svg)
+	}
+
+	// Act
+	colors := regexp.MustCompile(`(fill|stroke)="([^"]+)"`)
+	seen := make(map[string]bool)
+	for _, svg := range svgs {
+		for _, m := range colors.FindAllSubmatch(svg, -1) {
+			seen[string(m[1])+`="`+string(m[2])+`"`] = true
+		}
+	}
+
+	// Assert
+	for attr := range seen {
+		if strings.HasSuffix(attr, `="none"`) {
+			continue
+		}
+		if !bytes.Contains(css, []byte(".diagram svg ["+attr+"]")) {
+			t.Errorf("app.css has no dark mode rule for %s", attr)
+		}
+	}
+	// Text without a fill attribute is black by default.
+	if !bytes.Contains(css, []byte(".diagram svg text:not([fill])")) {
+		t.Error("app.css has no dark mode rule for text without fill")
+	}
 }
