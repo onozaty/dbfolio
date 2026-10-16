@@ -1,0 +1,10 @@
+{{define "content"}}<h1>Functions<span class="count">{{.Count}}</span></h1>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Type</th><th>Arguments</th><th>Return Type</th></tr></thead>
+<tbody>
+{{range .Functions}}<tr><td>{{.Name}}</td><td>{{.Type}}</td><td>{{with .Arguments}}<code>{{.}}</code>{{end}}</td><td><code>{{.ReturnType}}</code></td></tr>
+{{end}}</tbody>
+</table>
+</div>
+{{end}}

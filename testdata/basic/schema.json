@@ -411,6 +411,13 @@
           "comment": "注文したユーザー"
         },
         {
+          "name": "status",
+          "type": "order_status",
+          "nullable": false,
+          "default": "'pending'::order_status",
+          "comment": "注文の状態"
+        },
+        {
           "name": "ordered_at",
           "type": "timestamp with time zone",
           "nullable": false,
@@ -455,6 +462,16 @@
           "referenced_table": "",
           "columns": [
             "ordered_at"
+          ]
+        },
+        {
+          "name": "orders_status_not_null",
+          "type": "n",
+          "def": "NOT NULL status",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "status"
           ]
         },
         {
@@ -1099,6 +1116,16 @@
       "return_type": "trigger",
       "arguments": "",
       "type": "FUNCTION"
+    }
+  ],
+  "enums": [
+    {
+      "name": "public.order_status",
+      "values": [
+        "pending",
+        "shipped",
+        "cancelled"
+      ]
     }
   ],
   "driver": {

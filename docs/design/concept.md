@@ -250,12 +250,19 @@ dbfolio ではコメントを重要情報として扱う。
 | Columns | `columns.html` | 全テーブルのカラム (テーブル / 名前 / 型 / Nullable / Default / Key / コメント)。テーブルを横断してカラムを探す・比べる |
 | Constraints | `constraints.html` | DB に定義されている制約 (PK / FK / UNIQUE / CHECK など) |
 | Relationships | `relationships.html` | テーブル間の関係。全体 ER 図 (キーカラムのみ / 全カラム) と一覧をタブで切り替える |
+| Functions | `functions.html` | 関数・ストアドプロシージャ (名前 / 種別 / 引数 / 戻り値の型)。ある場合のみメニューに出す |
+| Enums | `enums.html` | enum 型 (名前 / 値)。ある場合のみメニューに出す |
 
 - 当初の Overview ページは Tables ページにまとめた。最初にしたいのは目的のテーブルを探すことで、件数はその補足になるため
 - 件数のサマリー (カード) は置かず、各ページの見出しの横に件数を添える (例: `Tables 9 tables, 1 view`、`Columns 34 columns`)。サマリーは下の一覧やメニューと重複し、場所を取るため
 - 関係の一覧は Relationships に置く。テーブル間の関係は図で把握するのが自然で、一覧は図の補助になるため
 - Virtual Relation は DB に存在しない関係で制約ではないため、Constraints には含めず Relationships に置く。テーブル詳細も同じく、Constraints セクションは DB の制約のみ、Parents / Children は Virtual Relation を含む
 - 現在のページはメニューに `aria-current="page"` で示す
+- 関数と enum は tbls の README ではトップページに並ぶが、メニュー名 (Tables) と中身が合わなくなるため別ページにする。多くの DB は関数も enum も持たないため、ある場合だけメニューに出す
+- 関数は tbls の schema.json に名前・種別・引数・戻り値の型しかない (定義やコメントは出力されない) ため、一覧のみで個別ページは作らない
+- enum 型のカラムは、型名を Enums ページの該当行へのリンクにし、ツールチップに値を出す。PostgreSQL は search_path 上のスキーマを省いた型名 (`order_status`) を出すため、スキーマなしの型名は tbls の `driver.meta.search_paths` の順に解決する (DB と同じ解決順になり、別スキーマの同名の型と取り違えない)。search_paths がない場合は、スキーマを除いた名前が一意なときだけ照合する。配列 (`order_status[]`) も同じ enum を指すとみなし、引用符付きの型名 (`public."OrderStatus"`) は引用符を除いて照合する。MySQL の ENUM はカラムの型に値が含まれるため対象外
+- DB の種類とバージョン (`driver.name` / `database_version`) は表示しない。tbls の Markdown も出しておらず、仕様書を読む上での必要性が低い一方、表示用に短くする処理が DB ごとに必要になるため。`driver.meta.search_paths` は enum の照合に使う
+- ビューのテーブル詳細には参照先テーブル (Referenced Tables) を出す。スキーマ外のテーブル (`.tbls.yml` で除外したものなど) はリンクなしで出す
 
 ### Table detail
 

@@ -32,6 +32,8 @@ var (
 	constraintsTmpl   = parsePage("templates/constraints.html")
 	relationshipsTmpl = parsePage("templates/relationships.html")
 	tableTmpl         = parsePage("templates/table.html")
+	functionsTmpl     = parsePage("templates/functions.html")
+	enumsTmpl         = parsePage("templates/enums.html")
 )
 
 // tableDiagramDistance is how far table-centered diagrams reach.
@@ -49,6 +51,9 @@ type Site struct {
 	// files maps each table to its page file name under tablesDir.
 	files     map[*schema.Table]string
 	relations *schema.RelationIndex
+	// tablesByName resolves referenced tables of views.
+	tablesByName map[string]*schema.Table
+	enums        *enumResolver
 	// wholeKeys, wholeAll and tableDiagrams hold inline SVG, set by RenderDiagrams.
 	// The whole-schema diagram comes in two variants (key columns only / all
 	// columns) that the page switches between. Tables without relations have no diagram.
@@ -82,8 +87,24 @@ func Plan(s *schema.Schema) (*Site, error) {
 			return nil, fmt.Errorf("relations[%d]: %w", i, err)
 		}
 	}
-	return &Site{schema: s, files: files, relations: schema.NewRelationIndex(s)}, nil
+	tablesByName := make(map[string]*schema.Table, len(s.Tables))
+	for _, t := range s.Tables {
+		tablesByName[t.Name] = t
+	}
+	return &Site{
+		schema:       s,
+		files:        files,
+		relations:    schema.NewRelationIndex(s),
+		tablesByName: tablesByName,
+		enums:        newEnumResolver(s.Enums, s.Driver),
+	}, nil
 }
+
+// hasFunctions and hasEnums decide both whether the optional pages are
+// written and whether the menu links to them.
+func (site *Site) hasFunctions() bool { return len(site.schema.Functions) > 0 }
+
+func (site *Site) hasEnums() bool { return len(site.schema.Enums) > 0 }
 
 // checkRelationColumns ensures what the diagram relies on to place edges.
 func checkRelationColumns(r *schema.Relation) error {
@@ -171,6 +192,17 @@ func (site *Site) Write(dir string) error {
 		{"relationships.html", relationshipsTmpl, site.newRelationshipsPage()},
 	} {
 		if err := writePage(filepath.Join(dir, p.file), p.tmpl, p.data); err != nil {
+			return err
+		}
+	}
+	// Optional pages, linked from the menu only when there is something to list.
+	if site.hasFunctions() {
+		if err := writePage(filepath.Join(dir, "functions.html"), functionsTmpl, site.newFunctionsPage()); err != nil {
+			return err
+		}
+	}
+	if site.hasEnums() {
+		if err := writePage(filepath.Join(dir, "enums.html"), enumsTmpl, site.newEnumsPage()); err != nil {
 			return err
 		}
 	}

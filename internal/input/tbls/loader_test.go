@@ -238,6 +238,8 @@ func TestLoad_ReturnsErrorForNullEntries(t *testing.T) {
 		"null index":      `{"tables": [{"name": "t", "columns": [], "indexes": [null]}]}`,
 		"null relation":   `{"tables": [], "relations": [null]}`,
 		"duplicate table": `{"tables": [{"name": "t"}, {"name": "t"}]}`,
+		"null function":   `{"tables": [], "functions": [null]}`,
+		"null enum":       `{"tables": [], "enums": [null]}`,
 	}
 	for name, content := range tests {
 		t.Run(name, func(t *testing.T) {
@@ -372,5 +374,49 @@ func TestLoad_ConvertsIndexesTriggersAndDef(t *testing.T) {
 	}
 	if got.Def != "SELECT 1" {
 		t.Errorf("Def = %q, want %q", got.Def, "SELECT 1")
+	}
+}
+
+func TestLoad_ConvertsFunctionsEnumsAndSearchPaths(t *testing.T) {
+	// Arrange
+	path := writeFile(t, `{
+		"tables": [{"name": "v", "type": "VIEW", "columns": [], "referenced_tables": ["public.users", "other.excluded"]}],
+		"functions": [{"name": "public.f", "return_type": "trigger", "arguments": "a integer", "type": "FUNCTION"}],
+		"enums": [{"name": "public.status", "values": ["on", "off"]}],
+		"driver": {"name": "postgres", "database_version": "PostgreSQL 18.3", "meta": {"current_schema": "public", "search_paths": ["postgres", "public"]}}
+	}`)
+
+	// Act
+	s, err := Load(path)
+
+	// Assert
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	wantFunctions := []*schema.Function{{Name: "public.f", ReturnType: "trigger", Arguments: "a integer", Type: "FUNCTION"}}
+	wantEnums := []*schema.Enum{{Name: "public.status", Values: []string{"on", "off"}}}
+	wantDriver := &schema.Driver{SearchPaths: []string{"postgres", "public"}}
+	if !reflect.DeepEqual(s.Functions, wantFunctions) {
+		t.Errorf("Functions = %+v, want %+v", s.Functions, wantFunctions)
+	}
+	if !reflect.DeepEqual(s.Enums, wantEnums) {
+		t.Errorf("Enums = %+v, want %+v", s.Enums, wantEnums)
+	}
+	if !reflect.DeepEqual(s.Driver, wantDriver) {
+		t.Errorf("Driver = %+v, want %+v", s.Driver, wantDriver)
+	}
+	// Referenced tables are kept as names, including ones outside the schema.
+	if got := s.Tables[0].ReferencedTables; !reflect.DeepEqual(got, []string{"public.users", "other.excluded"}) {
+		t.Errorf("ReferencedTables = %v", got)
+	}
+}
+
+func TestLoad_LeavesDriverNilWhenMissing(t *testing.T) {
+	// Act
+	s, err := Load(writeFile(t, `{"tables": []}`))
+
+	// Assert
+	if err != nil || s.Driver != nil || s.Functions != nil || s.Enums != nil {
+		t.Errorf("Load() = %+v, %v; want no driver, functions or enums", s, err)
 	}
 }

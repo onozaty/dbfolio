@@ -482,3 +482,109 @@ func TestNewConstraintsPage_ShowsCommentColumnOnlyWhenUsed(t *testing.T) {
 		})
 	}
 }
+
+func TestColumnRows_LinksEnumTypes(t *testing.T) {
+	// Arrange: "status" is ambiguous without schema, "level" is not.
+	table := &schema.Table{Name: "t", Columns: []*schema.Column{
+		{Name: "a", Type: "public.status"},
+		{Name: "b", Type: "status"},
+		{Name: "c", Type: "level"},
+		{Name: "d", Type: "text"},
+	}}
+	s := &schema.Schema{
+		Tables: []*schema.Table{table},
+		Enums: []*schema.Enum{
+			{Name: "public.status", Values: []string{"on", "off"}},
+			{Name: "other.status", Values: []string{"x"}},
+			{Name: "public.level", Values: []string{"low", "high"}},
+		},
+	}
+	site := plan(t, s)
+
+	// Act
+	rows, _ := site.columnRows("../", table, nil)
+
+	// Assert
+	got := []string{rows[0].TypeHref, rows[1].TypeHref, rows[2].TypeHref, rows[3].TypeHref}
+	want := []string{"../enums.html#enum-0", "", "../enums.html#enum-2", ""}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("TypeHref = %v, want %v", got, want)
+	}
+	if rows[2].TypeTitle != "public.level: low, high" {
+		t.Errorf("TypeTitle = %q", rows[2].TypeTitle)
+	}
+}
+
+func TestNewTablePage_ListsReferencedTables(t *testing.T) {
+	// Arrange: one referenced table is outside the schema.
+	users := &schema.Table{Name: "public.users", Type: "BASE TABLE", Comment: "ユーザー", Columns: []*schema.Column{{Name: "id"}}}
+	view := &schema.Table{Name: "public.v", Type: "VIEW", View: true, ReferencedTables: []string{"public.users", "other.excluded"}}
+	site := plan(t, &schema.Schema{Tables: []*schema.Table{users, view}})
+
+	// Act
+	p := site.newTablePage(view)
+
+	// Assert
+	want := []tableRow{
+		{Name: "public.users", Href: "../tables/public.users.html", Type: "BASE TABLE", Columns: 1, Comment: "ユーザー"},
+		{Name: "other.excluded"},
+	}
+	if !reflect.DeepEqual(p.ReferencedTables, want) {
+		t.Errorf("ReferencedTables = %+v, want %+v", p.ReferencedTables, want)
+	}
+}
+
+func TestPages_ShowFunctionsAndEnumsMenusOnlyWhenPresent(t *testing.T) {
+	tests := map[string]struct {
+		schema    *schema.Schema
+		functions bool
+		enums     bool
+	}{
+		"neither":        {&schema.Schema{}, false, false},
+		"functions only": {&schema.Schema{Functions: []*schema.Function{{Name: "f"}}}, true, false},
+		"enums only":     {&schema.Schema{Enums: []*schema.Enum{{Name: "e"}}}, false, true},
+		"both": {&schema.Schema{
+			Functions: []*schema.Function{{Name: "f"}},
+			Enums:     []*schema.Enum{{Name: "e"}},
+		}, true, true},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			// Arrange
+			site := plan(t, tt.schema)
+
+			// Act: a page at the root and one in tables/.
+			root := site.newTablesPage().page
+			table := site.newTablePage(&schema.Table{Name: "t"}).page
+
+			// Assert
+			for _, p := range []page{root, table} {
+				if p.HasFunctions != tt.functions || p.HasEnums != tt.enums {
+					t.Errorf("HasFunctions = %v, HasEnums = %v; want %v, %v", p.HasFunctions, p.HasEnums, tt.functions, tt.enums)
+				}
+			}
+		})
+	}
+}
+
+func TestNewFunctionsAndEnumsPages(t *testing.T) {
+	// Arrange
+	s := &schema.Schema{
+		Functions: []*schema.Function{{Name: "f1", Type: "FUNCTION"}, {Name: "p1", Type: "PROCEDURE"}},
+		Enums:     []*schema.Enum{{Name: "public.status", Values: []string{"on", "off"}}},
+	}
+	site := plan(t, s)
+
+	// Act
+	functions := site.newFunctionsPage()
+	enums := site.newEnumsPage()
+
+	// Assert
+	if functions.Count != "2 functions" || functions.Current != menuFunctions || len(functions.Functions) != 2 {
+		t.Errorf("functions page = %+v", functions)
+	}
+	wantEnum := enumRow{Enum: s.Enums[0], Anchor: "enum-0", Values: "on, off"}
+	if enums.Count != "1 enum" || enums.Current != menuEnums || !reflect.DeepEqual(enums.Enums, []enumRow{wantEnum}) {
+		t.Errorf("enums page = %+v", enums)
+	}
+}

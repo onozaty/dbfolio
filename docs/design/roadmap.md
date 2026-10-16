@@ -128,7 +128,8 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 - [x] テーブル検索 (`assets/search-index.js` + 軽量 JS、`file://` で動作すること)
 - [ ] Responsive layout
 - [ ] Dark mode (必要なら)
-- [ ] 大規模 DB 向け表示改善 (Schema 単位の分類など)
+- [x] tbls schema.json の未対応項目の表示: Functions / Enums ページ、ビューの参照先テーブル
+- [ ] 大規模 DB 向け表示改善 (Schema 単位の分類、tbls の viewpoints など)
 
 完了条件: 中〜大規模スキーマでも目的のテーブルにすぐたどり着けること。
 
@@ -154,6 +155,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 - `dbfolio diff before.json after.json` (スキーマ差分の HTML 表示)
 - Anomalies (tbls lint との重複を確認してから)
+- tbls の labels (テーブル・カラムのラベル) の表示や絞り込み
 - ER 図の distance 設定
 - 入力形式の追加 (DBML / Prisma / SQL DDL)
 - elk-go の再評価 (Graphviz で表現しきれない場合)

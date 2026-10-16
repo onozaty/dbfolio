@@ -44,15 +44,20 @@ CREATE TABLE user_roles (
 );
 COMMENT ON TABLE user_roles IS 'ユーザーとロールの対応';
 
+-- enum 型
+CREATE TYPE order_status AS ENUM ('pending', 'shipped', 'cancelled');
+
 CREATE TABLE orders (
   id         bigserial PRIMARY KEY,
   user_id    bigint NOT NULL REFERENCES users (id),
+  status     order_status NOT NULL DEFAULT 'pending',
   ordered_at timestamptz NOT NULL DEFAULT now()
 );
 -- 複合インデックス (ユーザーごとの注文日時検索用)
 CREATE INDEX orders_user_id_ordered_at_idx ON orders (user_id, ordered_at);
 COMMENT ON TABLE orders IS '注文';
 COMMENT ON COLUMN orders.user_id IS '注文したユーザー';
+COMMENT ON COLUMN orders.status IS '注文の状態';
 
 -- トリガー
 CREATE FUNCTION reject_future_ordered_at() RETURNS trigger AS $$

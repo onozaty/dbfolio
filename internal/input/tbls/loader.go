@@ -19,6 +19,27 @@ type tblsSchema struct {
 	Desc      string          `json:"desc"`
 	Tables    []*tblsTable    `json:"tables"`
 	Relations []*tblsRelation `json:"relations"`
+	Functions []*tblsFunction `json:"functions"`
+	Enums     []*tblsEnum     `json:"enums"`
+	Driver    *tblsDriver     `json:"driver"`
+}
+
+type tblsFunction struct {
+	Name       string `json:"name"`
+	ReturnType string `json:"return_type"`
+	Arguments  string `json:"arguments"`
+	Type       string `json:"type"`
+}
+
+type tblsEnum struct {
+	Name   string   `json:"name"`
+	Values []string `json:"values"`
+}
+
+type tblsDriver struct {
+	Meta *struct {
+		SearchPaths []string `json:"search_paths"`
+	} `json:"meta"`
 }
 
 type tblsTable struct {
@@ -30,6 +51,8 @@ type tblsTable struct {
 	Constraints []*tblsConstraint `json:"constraints"`
 	Triggers    []*tblsTrigger    `json:"triggers"`
 	Def         string            `json:"def"`
+	// ReferencedTables lists the tables a view reads.
+	ReferencedTables []string `json:"referenced_tables"`
 }
 
 type tblsColumn struct {
@@ -136,6 +159,16 @@ func validate(s *tblsSchema) error {
 			}
 		}
 	}
+	for i, f := range s.Functions {
+		if f == nil {
+			return fmt.Errorf("functions[%d] is null", i)
+		}
+	}
+	for i, e := range s.Enums {
+		if e == nil {
+			return fmt.Errorf("enums[%d] is null", i)
+		}
+	}
 	for i, r := range s.Relations {
 		if r == nil {
 			return fmt.Errorf("relations[%d] is null", i)
@@ -204,6 +237,15 @@ func convert(s *tblsSchema) *schema.Schema {
 		out.Tables = append(out.Tables, ct)
 		byName[t.Name] = ct
 	}
+	for _, f := range s.Functions {
+		out.Functions = append(out.Functions, &schema.Function{Name: f.Name, ReturnType: f.ReturnType, Arguments: f.Arguments, Type: f.Type})
+	}
+	for _, e := range s.Enums {
+		out.Enums = append(out.Enums, &schema.Enum{Name: e.Name, Values: e.Values})
+	}
+	if s.Driver != nil && s.Driver.Meta != nil {
+		out.Driver = &schema.Driver{SearchPaths: s.Driver.Meta.SearchPaths}
+	}
 	// validate has ensured that both endpoints exist.
 	for _, r := range s.Relations {
 		out.Relations = append(out.Relations, &schema.Relation{
@@ -227,6 +269,8 @@ func convertTable(t *tblsTable) *schema.Table {
 		View:    isView(t.Type),
 		Comment: t.Comment,
 		Def:     t.Def,
+
+		ReferencedTables: t.ReferencedTables,
 	}
 	for _, c := range t.Columns {
 		out.Columns = append(out.Columns, &schema.Column{

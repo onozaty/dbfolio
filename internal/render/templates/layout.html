@@ -17,7 +17,9 @@
 <a href="{{.Root}}columns.html"{{if eq .Current "columns"}} aria-current="page"{{end}}>Columns</a>
 <a href="{{.Root}}constraints.html"{{if eq .Current "constraints"}} aria-current="page"{{end}}>Constraints</a>
 <a href="{{.Root}}relationships.html"{{if eq .Current "relationships"}} aria-current="page"{{end}}>Relationships</a>
-</nav>
+{{if .HasFunctions}}<a href="{{.Root}}functions.html"{{if eq .Current "functions"}} aria-current="page"{{end}}>Functions</a>
+{{end}}{{if .HasEnums}}<a href="{{.Root}}enums.html"{{if eq .Current "enums"}} aria-current="page"{{end}}>Enums</a>
+{{end}}</nav>
 <div class="search" role="search">
 <input type="search" id="search-input" placeholder="Search tables and columns" autocomplete="off" spellcheck="false" aria-label="Search tables and columns" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
 <kbd class="search-key" aria-hidden="true">/</kbd>

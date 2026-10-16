@@ -12,12 +12,17 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Nullable</th>{{if .ShowExtra}}<th>Extra</th>{{end}}<th>Key</th><th>Comment</th></tr></thead>
 <tbody>
-{{range $pos, $_ := .Columns}}<tr id="{{columnAnchor $pos}}"><td>{{.Name}}</td><td><code>{{.Type}}</code></td><td>{{with .Default}}<code>{{.}}</code>{{end}}</td><td>{{if .Nullable}}YES{{else}}NO{{end}}</td>{{if $.ShowExtra}}<td>{{with .ExtraDef}}<code>{{.}}</code>{{end}}</td>{{end}}<td>{{range $i, $k := .Keys}}{{if $i}} {{end}}{{template "key" $k}}{{end}}</td><td class="comment">{{.Comment}}</td></tr>
+{{range $pos, $_ := .Columns}}<tr id="{{columnAnchor $pos}}"><td>{{.Name}}</td><td>{{template "columnType" .}}</td><td>{{with .Default}}<code>{{.}}</code>{{end}}</td><td>{{if .Nullable}}YES{{else}}NO{{end}}</td>{{if $.ShowExtra}}<td>{{with .ExtraDef}}<code>{{.}}</code>{{end}}</td>{{end}}<td>{{range $i, $k := .Keys}}{{if $i}} {{end}}{{template "key" $k}}{{end}}</td><td class="comment">{{.Comment}}</td></tr>
 {{end}}</tbody>
 </table>
 </div>
 </section>
-{{with .Constraints}}
+{{with .ReferencedTables}}
+<section>
+<h2>Referenced Tables</h2>
+{{template "tableList" .}}
+</section>
+{{end}}{{with .Constraints}}
 <section>
 <h2>Constraints</h2>
 <div class="table-wrap">

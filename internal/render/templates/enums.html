@@ -1,0 +1,10 @@
+{{define "content"}}<h1>Enums<span class="count">{{.Count}}</span></h1>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Name</th><th>Values</th></tr></thead>
+<tbody>
+{{range .Enums}}<tr id="{{.Anchor}}"><td>{{.Name}}</td><td><code>{{.Values}}</code></td></tr>
+{{end}}</tbody>
+</table>
+</div>
+{{end}}
