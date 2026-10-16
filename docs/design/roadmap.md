@@ -1,6 +1,6 @@
 # dbfolio ロードマップ
 
-更新日: 2026-10-15
+更新日: 2026-10-16
 
 設計方針・技術判断は [concept.md](concept.md) を参照。本ファイルは「何をどの順で進めるか」と進捗を管理する。
 細かいタスクは GitHub Issues で管理し、ここには Phase 単位の計画と完了条件のみを書く。
@@ -126,7 +126,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 - [x] 共通ナビゲーション (Tables / Columns / Constraints / Relationships、現在のページの表示)
 - [x] テーブル検索 (`assets/search-index.js` + 軽量 JS、`file://` で動作すること)
-- [ ] Responsive layout
+- [x] Responsive layout (狭い画面で崩れないことの確認のみ。専用レイアウトは作らない)
 - [ ] Dark mode (必要なら)
 - [x] tbls schema.json の未対応項目の表示: Functions / Enums ページ、ビューの参照先テーブル
 - [ ] 大規模 DB 向け表示改善 (Schema 単位の分類、tbls の viewpoints など)

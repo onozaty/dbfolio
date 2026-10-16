@@ -258,6 +258,7 @@ dbfolio ではコメントを重要情報として扱う。
 - 関係の一覧は Relationships に置く。テーブル間の関係は図で把握するのが自然で、一覧は図の補助になるため
 - Virtual Relation は DB に存在しない関係で制約ではないため、Constraints には含めず Relationships に置く。テーブル詳細も同じく、Constraints セクションは DB の制約のみ、Parents / Children は Virtual Relation を含む
 - 現在のページはメニューに `aria-current="page"` で示す
+- スマートフォン向けの専用レイアウトは作らない。DB の仕様書は主に PC で見るもので、中身の大半が横に長い表と ER 図のため作り込みの効果が小さい。狭い画面では、ヘッダーの折り返しと表・図の横スクロールで崩れないようにする (幅 400px 程度で確認済み)
 - 関数と enum は tbls の README ではトップページに並ぶが、メニュー名 (Tables) と中身が合わなくなるため別ページにする。多くの DB は関数も enum も持たないため、ある場合だけメニューに出す
 - 関数は tbls の schema.json に名前・種別・引数・戻り値の型しかない (定義やコメントは出力されない) ため、一覧のみで個別ページは作らない
 - enum 型のカラムは、型名を Enums ページの該当行へのリンクにし、ツールチップに値を出す。PostgreSQL は search_path 上のスキーマを省いた型名 (`order_status`) を出すため、スキーマなしの型名は tbls の `driver.meta.search_paths` の順に解決する (DB と同じ解決順になり、別スキーマの同名の型と取り違えない)。search_paths がない場合は、スキーマを除いた名前が一意なときだけ照合する。配列 (`order_status[]`) も同じ enum を指すとみなし、引用符付きの型名 (`public."OrderStatus"`) は引用符を除いて照合する。MySQL の ENUM はカラムの型に値が含まれるため対象外
