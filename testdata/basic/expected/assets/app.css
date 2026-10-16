@@ -1,5 +1,7 @@
 /* Minimal styles for readability. The full UX is designed in a later phase. */
 :root {
+  /* Form controls, scrollbars, etc. follow the theme too. */
+  color-scheme: light dark;
   --fg: #1f2328;
   --muted: #59636e;
   --border: #d1d9e0;
@@ -8,6 +10,11 @@
   --link: #0969da;
   --pk: #9a6700;
   --fk: #0969da;
+  /* ER diagram colors, matching those set in internal/diagram/dot.go. */
+  --diagram-header: #e8eef7;
+  --diagram-focus: #ffe9b3;
+  --diagram-line: #666666;
+  --diagram-border: #000000;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,6 +27,10 @@
     --link: #4493f8;
     --pk: #d29922;
     --fk: #4493f8;
+    --diagram-header: #1c2a3e;
+    --diagram-focus: #4d3b0f;
+    --diagram-line: #9198a1;
+    --diagram-border: #6e7681;
   }
 }
 
@@ -106,12 +117,24 @@ pre { background: var(--bg-subtle); border: 1px solid var(--border); border-radi
 
 /* Diagrams keep their natural size (text stays readable) and scroll, or pan by dragging (app.js),
    when larger than the frame. The height limit keeps both scroll directions inside the frame. */
-.diagram { overflow: auto; max-height: 80vh; border: 1px solid var(--border); border-radius: 6px; background: #ffffff; cursor: grab; user-select: none; }
+.diagram { overflow: auto; max-height: 80vh; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); cursor: grab; user-select: none; }
 .diagram.dragging { cursor: grabbing; }
 .diagram svg { display: block; }
 .diagram a { cursor: pointer; }
 /* The site-wide hover underline would underline every text in a table node. */
 .diagram a:hover { text-decoration: none; }
+
+/* Theme the Graphviz SVG: CSS overrides its presentation attributes. The
+   selectors match the colors dbfolio gives Graphviz (internal/diagram/dot.go),
+   so nothing else is recolored. In light mode the variables keep the same
+   colors. */
+.diagram svg [fill="white"] { fill: var(--bg); }
+.diagram svg [stroke="black"] { stroke: var(--diagram-border); }
+.diagram svg text:not([fill]) { fill: var(--fg); }
+.diagram svg [fill="#666666"] { fill: var(--diagram-line); }
+.diagram svg [stroke="#666666"] { stroke: var(--diagram-line); }
+.diagram svg [fill="#e8eef7"] { fill: var(--diagram-header); }
+.diagram svg [fill="#ffe9b3"] { fill: var(--diagram-focus); }
 
 /* Relationships page: switch between the diagrams (key columns only / all
    columns) and the list. Radio buttons + CSS, so it works without JavaScript. */

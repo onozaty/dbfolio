@@ -45,6 +45,8 @@ func ForTable(s *schema.Schema, idx *schema.RelationIndex, t *schema.Table, dist
 	return d
 }
 
+// Diagram colors. The page recolors them in dark mode by matching these exact
+// values (and Graphviz's "white" / "black"), see internal/render/assets/app.css.
 const (
 	headerColor = "#e8eef7"
 	focusColor  = "#ffe9b3"
