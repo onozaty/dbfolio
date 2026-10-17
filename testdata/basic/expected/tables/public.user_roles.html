@@ -14,14 +14,12 @@
 <a class="site-title" href="../index.html">dbfolio</a>
 <nav class="site-nav">
 <a href="../index.html">Tables</a>
-<a href="../columns.html">Columns</a>
-<a href="../constraints.html">Constraints</a>
 <a href="../relationships.html">Relationships</a>
 <a href="../functions.html">Functions</a>
 <a href="../enums.html">Enums</a>
 </nav>
 <div class="search" role="search">
-<input type="search" id="search-input" placeholder="Search tables and columns" autocomplete="off" spellcheck="false" aria-label="Search tables and columns" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
+<input type="search" id="search-input" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search tables, columns, constraints and indexes" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
 <kbd class="search-key" aria-hidden="true">/</kbd>
 <ul id="search-results" role="listbox" aria-label="Search results" hidden></ul>
 <div id="search-status" class="search-status" aria-live="polite"></div>
@@ -51,9 +49,9 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Definition</th></tr></thead>
 <tbody>
-<tr><td>user_roles_user_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE</code></td></tr>
-<tr><td>user_roles_role_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (role_id) REFERENCES roles(id)</code></td></tr>
-<tr><td>user_roles_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (user_id, role_id)</code></td></tr>
+<tr id="constraint-0"><td>user_roles_user_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE</code></td></tr>
+<tr id="constraint-1"><td>user_roles_role_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (role_id) REFERENCES roles(id)</code></td></tr>
+<tr id="constraint-2"><td>user_roles_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (user_id, role_id)</code></td></tr>
 </tbody>
 </table>
 </div>
@@ -65,7 +63,7 @@
 <table>
 <thead><tr><th>Name</th><th>Definition</th></tr></thead>
 <tbody>
-<tr><td>user_roles_pkey</td><td><code>CREATE UNIQUE INDEX user_roles_pkey ON public.user_roles USING btree (user_id, role_id)</code></td></tr>
+<tr id="index-0"><td>user_roles_pkey</td><td><code>CREATE UNIQUE INDEX user_roles_pkey ON public.user_roles USING btree (user_id, role_id)</code></td></tr>
 </tbody>
 </table>
 </div>

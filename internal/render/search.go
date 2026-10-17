@@ -13,23 +13,33 @@ const searchIndexFile = "search-index.js"
 // searchEntry is a table or a column in the search index. Field names are
 // short because the index grows with the schema.
 type searchEntry struct {
-	// Kind is "t" for tables and "c" for columns.
+	// Kind is "t" for tables, "c" for columns, "n" for constraints and "i"
+	// for indexes.
 	Kind string `json:"k"`
-	// Name is the table name, or the column name.
+	// Name is the table name, or the name of the column, constraint or index.
 	Name string `json:"n"`
-	// Table is the table of a column.
+	// Table is the table of a column, constraint or index.
 	Table string `json:"t,omitempty"`
-	// Type is the kind label of a table (e.g. "VIEW") or the type of a column.
+	// Type is the kind label of a table (e.g. "VIEW"), the type of a column,
+	// the type of a constraint (e.g. "UNIQUE") or "INDEX".
 	Type    string `json:"y,omitempty"`
 	Comment string `json:"c,omitempty"`
 	// Href is relative to the output root; pages in subdirectories prefix it.
 	Href string `json:"h"`
 }
 
-// columnAnchor is the id of a column row on a table page. Column names can
-// contain any character, so the position is used.
+// columnAnchor, constraintAnchor and indexAnchor are the ids of rows on a
+// table page. Names can contain any character, so the position is used.
 func columnAnchor(i int) string {
 	return fmt.Sprintf("column-%d", i)
+}
+
+func constraintAnchor(i int) string {
+	return fmt.Sprintf("constraint-%d", i)
+}
+
+func indexAnchor(i int) string {
+	return fmt.Sprintf("index-%d", i)
 }
 
 func (site *Site) searchEntries() []searchEntry {
@@ -46,6 +56,14 @@ func (site *Site) searchEntries() []searchEntry {
 				Comment: c.Comment,
 				Href:    href + "#" + columnAnchor(i),
 			})
+		}
+		// Constraint and index names appear in error messages and query plans;
+		// searching them leads to their table.
+		for i, c := range t.Constraints {
+			entries = append(entries, searchEntry{Kind: "n", Name: c.Name, Table: t.Name, Type: c.Type, Comment: c.Comment, Href: href + "#" + constraintAnchor(i)})
+		}
+		for i, x := range t.Indexes {
+			entries = append(entries, searchEntry{Kind: "i", Name: x.Name, Table: t.Name, Type: "INDEX", Comment: x.Comment, Href: href + "#" + indexAnchor(i)})
 		}
 	}
 	return entries

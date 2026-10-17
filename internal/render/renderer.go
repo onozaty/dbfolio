@@ -28,8 +28,6 @@ const (
 
 var (
 	tablesTmpl        = parsePage("templates/index.html")
-	columnsTmpl       = parsePage("templates/columns.html")
-	constraintsTmpl   = parsePage("templates/constraints.html")
 	relationshipsTmpl = parsePage("templates/relationships.html")
 	tableTmpl         = parsePage("templates/table.html")
 	functionsTmpl     = parsePage("templates/functions.html")
@@ -40,7 +38,11 @@ var (
 const tableDiagramDistance = 1
 
 func parsePage(name string) *template.Template {
-	return template.Must(template.New("").Funcs(template.FuncMap{"columnAnchor": columnAnchor}).
+	return template.Must(template.New("").Funcs(template.FuncMap{
+		"columnAnchor":     columnAnchor,
+		"constraintAnchor": constraintAnchor,
+		"indexAnchor":      indexAnchor,
+	}).
 		ParseFS(content, "templates/layout.html", "templates/partials.html", name))
 }
 
@@ -187,8 +189,6 @@ func (site *Site) Write(dir string) error {
 		data any
 	}{
 		{"index.html", tablesTmpl, site.newTablesPage()},
-		{"columns.html", columnsTmpl, site.newColumnsPage()},
-		{"constraints.html", constraintsTmpl, site.newConstraintsPage()},
 		{"relationships.html", relationshipsTmpl, site.newRelationshipsPage()},
 	} {
 		if err := writePage(filepath.Join(dir, p.file), p.tmpl, p.data); err != nil {

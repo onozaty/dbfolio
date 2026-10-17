@@ -32,8 +32,6 @@ type page struct {
 // Menu items, as compared in layout.html.
 const (
 	menuTables        = "tables"
-	menuColumns       = "columns"
-	menuConstraints   = "constraints"
 	menuRelationships = "relationships"
 	menuFunctions     = "functions"
 	menuEnums         = "enums"
@@ -108,33 +106,6 @@ type enumRow struct {
 	*schema.Enum
 	Anchor string
 	Values string
-}
-
-type columnsPage struct {
-	page
-	Columns   []tableColumnRow
-	ShowExtra bool
-}
-
-// tableColumnRow is a column with its table, for lists across tables.
-type tableColumnRow struct {
-	Table     string
-	TableHref string
-	columnRow
-}
-
-// constraintsPage lists the constraints defined in the database. Virtual
-// relations are not constraints and are on the relationships page.
-type constraintsPage struct {
-	page
-	Constraints []tableConstraintRow
-	ShowComment bool
-}
-
-type tableConstraintRow struct {
-	Table     string
-	TableHref string
-	*schema.Constraint
 }
 
 // relationshipsPage shows the relations between tables, from foreign keys
@@ -292,33 +263,6 @@ func (site *Site) newEnumsPage() enumsPage {
 // any character, so the position is used.
 func enumAnchor(i int) string {
 	return fmt.Sprintf("enum-%d", i)
-}
-
-func (site *Site) newColumnsPage() columnsPage {
-	s := site.schema
-	p := columnsPage{page: site.newPage("", "Columns", menuColumns)}
-	for _, t := range s.Tables {
-		rows, extra := site.columnRows(p.Root, t, site.relations.Parents(t))
-		p.ShowExtra = p.ShowExtra || extra
-		for _, r := range rows {
-			p.Columns = append(p.Columns, tableColumnRow{Table: t.Name, TableHref: site.tableHref(p.Root, t), columnRow: r})
-		}
-	}
-	p.Count = plural(len(p.Columns), "column", "columns")
-	return p
-}
-
-func (site *Site) newConstraintsPage() constraintsPage {
-	s := site.schema
-	p := constraintsPage{page: site.newPage("", "Constraints", menuConstraints)}
-	for _, t := range s.Tables {
-		for _, c := range t.Constraints {
-			p.Constraints = append(p.Constraints, tableConstraintRow{Table: t.Name, TableHref: site.tableHref(p.Root, t), Constraint: c})
-			p.ShowComment = p.ShowComment || c.Comment != ""
-		}
-	}
-	p.Count = plural(len(p.Constraints), "constraint", "constraints")
-	return p
 }
 
 func (site *Site) newRelationshipsPage() relationshipsPage {

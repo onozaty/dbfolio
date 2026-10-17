@@ -29,7 +29,7 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Definition</th>{{if $.ConstraintComments}}<th>Comment</th>{{end}}</tr></thead>
 <tbody>
-{{range .}}<tr><td>{{.Name}}</td><td>{{.Type}}</td><td><code>{{.Def}}</code></td>{{if $.ConstraintComments}}<td class="comment">{{.Comment}}</td>{{end}}</tr>
+{{range $pos, $_ := .}}<tr id="{{constraintAnchor $pos}}"><td>{{.Name}}</td><td>{{.Type}}</td><td><code>{{.Def}}</code></td>{{if $.ConstraintComments}}<td class="comment">{{.Comment}}</td>{{end}}</tr>
 {{end}}</tbody>
 </table>
 </div>
@@ -41,7 +41,7 @@
 <table>
 <thead><tr><th>Name</th><th>Definition</th>{{if $.IndexComments}}<th>Comment</th>{{end}}</tr></thead>
 <tbody>
-{{range .}}<tr><td>{{.Name}}</td><td><code>{{.Def}}</code></td>{{if $.IndexComments}}<td class="comment">{{.Comment}}</td>{{end}}</tr>
+{{range $pos, $_ := .}}<tr id="{{indexAnchor $pos}}"><td>{{.Name}}</td><td><code>{{.Def}}</code></td>{{if $.IndexComments}}<td class="comment">{{.Comment}}</td>{{end}}</tr>
 {{end}}</tbody>
 </table>
 </div>
