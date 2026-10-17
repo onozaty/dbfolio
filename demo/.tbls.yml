@@ -1,0 +1,29 @@
+dsn: postgres://postgres:postgres@localhost:5432/dbfolio_demo?sslmode=disable
+
+include:
+  - public.*
+  - billing.*
+
+relations:
+  - table: activity_logs
+    columns:
+      - staff_id
+    parentTable: staff
+    parentColumns:
+      - id
+    def: Logged by the application; no foreign key so that logs outlive staff
+  - table: activity_logs
+    columns:
+      - order_id
+    parentTable: orders
+    parentColumns:
+      - id
+    def: Logged by the application; no foreign key so that logs outlive orders
+
+comments:
+  - table: activity_logs
+    tableComment: Back office actions, written by the application
+    columnComments:
+      staff_id: Staff member who did the action
+      order_id: Order the action was about, if any
+      detail: Action-specific data

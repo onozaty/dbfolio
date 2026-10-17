@@ -602,6 +602,7 @@ dbfolio/
 ├── scripts/notices/             ← THIRD_PARTY_NOTICES の生成
 ├── third_party/graphviz-wasm/   ← graphviz.wasm に含まれるもののライセンス
 ├── testdata/basic/              ← サンプルスキーマと Golden ファイル
+├── demo/                        ← デモサイト用の英語のサンプルスキーマ (GitHub Pages で公開)
 ├── docs/
 │   ├── release.md               ← リリース手順
 │   └── design/                  ← concept.md / roadmap.md

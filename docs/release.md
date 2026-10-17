@@ -24,6 +24,10 @@ GitHub Release の作成は、タグの push をきっかけに GitHub Actions (
 
 プレリリースやスナップショットでは更新しない (`skip_upload: auto`)。
 
+## デモサイト
+
+GitHub Release を公開すると、`.github/workflows/pages.yml` が `demo/schema.json` からドキュメントを生成して GitHub Pages (https://onozaty.github.io/dbfolio/) に公開する。手動でも実行できる (Actions の Demo site ワークフロー)。サンプルの再生成方法は [demo/README.md](../demo/README.md) を参照。
+
 ## 配布物
 
 - 対象: linux / darwin / windows の amd64 / arm64

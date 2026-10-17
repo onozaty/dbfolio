@@ -143,7 +143,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 - [x] Homebrew Tap (macOS / Linux。onozaty/homebrew-tap の Cask。v1.0.1 から)
 - [x] Scoop bucket (Windows。onozaty/scoop-bucket。v1.0.1 から)
 - [x] README (使い方、tbls との連携手順)
-- [ ] デモサイト (生成サンプルを GitHub Pages で公開するか検討)
+- [ ] デモサイト (英語のサンプル `demo/` を GitHub Pages で公開。リリースの公開時に再生成)
 
 完了条件: GitHub Release / Homebrew / Scoop のいずれからでもインストールでき、`dbfolio build` が使えること。
 

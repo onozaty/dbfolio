@@ -4,6 +4,8 @@ Generate browsable static HTML database documentation and ER diagrams from [tbls
 
 tbls reads your database; dbfolio turns its output into a small website you can open locally or publish anywhere static files are served.
 
+**Demo**: <https://onozaty.github.io/dbfolio/> (a sample online shop schema)
+
 ## Features
 
 - **Table pages**: columns, constraints, indexes, triggers and view definitions, with the comments from your database (and from `.tbls.yml`)

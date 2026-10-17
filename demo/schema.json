@@ -1,0 +1,2446 @@
+{
+  "name": "dbfolio_demo",
+  "tables": [
+    {
+      "name": "public.customers",
+      "type": "BASE TABLE",
+      "comment": "People who buy from the shop",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('customers_id_seq'::regclass)"
+        },
+        {
+          "name": "email",
+          "type": "varchar(255)",
+          "nullable": false,
+          "comment": "Login ID and contact address"
+        },
+        {
+          "name": "name",
+          "type": "varchar(100)",
+          "nullable": false
+        },
+        {
+          "name": "country",
+          "type": "character(2)",
+          "nullable": false,
+          "comment": "ISO 3166-1 alpha-2 country code"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()"
+        },
+        {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "comment": "Set when the account is closed; the row is kept for order history"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "customers_pkey",
+          "def": "CREATE UNIQUE INDEX customers_pkey ON public.customers USING btree (id)",
+          "table": "public.customers",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "customers_email_key",
+          "def": "CREATE UNIQUE INDEX customers_email_key ON public.customers USING btree (email)",
+          "table": "public.customers",
+          "columns": [
+            "email"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "customers_country_not_null",
+          "type": "n",
+          "def": "NOT NULL country",
+          "table": "public.customers",
+          "referenced_table": "",
+          "columns": [
+            "country"
+          ]
+        },
+        {
+          "name": "customers_created_at_not_null",
+          "type": "n",
+          "def": "NOT NULL created_at",
+          "table": "public.customers",
+          "referenced_table": "",
+          "columns": [
+            "created_at"
+          ]
+        },
+        {
+          "name": "customers_email_not_null",
+          "type": "n",
+          "def": "NOT NULL email",
+          "table": "public.customers",
+          "referenced_table": "",
+          "columns": [
+            "email"
+          ]
+        },
+        {
+          "name": "customers_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.customers",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "customers_name_not_null",
+          "type": "n",
+          "def": "NOT NULL name",
+          "table": "public.customers",
+          "referenced_table": "",
+          "columns": [
+            "name"
+          ]
+        },
+        {
+          "name": "customers_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.customers",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "customers_email_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (email)",
+          "table": "public.customers",
+          "referenced_table": "",
+          "columns": [
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.addresses",
+      "type": "BASE TABLE",
+      "comment": "Shipping and billing addresses of customers",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('addresses_id_seq'::regclass)"
+        },
+        {
+          "name": "customer_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "label",
+          "type": "varchar(50)",
+          "nullable": false,
+          "default": "'home'::character varying",
+          "comment": "Name the customer gives the address, unique per customer"
+        },
+        {
+          "name": "line1",
+          "type": "varchar(200)",
+          "nullable": false
+        },
+        {
+          "name": "line2",
+          "type": "varchar(200)",
+          "nullable": true
+        },
+        {
+          "name": "city",
+          "type": "varchar(100)",
+          "nullable": false
+        },
+        {
+          "name": "postal_code",
+          "type": "varchar(20)",
+          "nullable": false
+        },
+        {
+          "name": "country",
+          "type": "character(2)",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "addresses_pkey",
+          "def": "CREATE UNIQUE INDEX addresses_pkey ON public.addresses USING btree (id)",
+          "table": "public.addresses",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "addresses_customer_label_key",
+          "def": "CREATE UNIQUE INDEX addresses_customer_label_key ON public.addresses USING btree (customer_id, label)",
+          "table": "public.addresses",
+          "columns": [
+            "customer_id",
+            "label"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "addresses_city_not_null",
+          "type": "n",
+          "def": "NOT NULL city",
+          "table": "public.addresses",
+          "referenced_table": "",
+          "columns": [
+            "city"
+          ]
+        },
+        {
+          "name": "addresses_country_not_null",
+          "type": "n",
+          "def": "NOT NULL country",
+          "table": "public.addresses",
+          "referenced_table": "",
+          "columns": [
+            "country"
+          ]
+        },
+        {
+          "name": "addresses_customer_id_not_null",
+          "type": "n",
+          "def": "NOT NULL customer_id",
+          "table": "public.addresses",
+          "referenced_table": "",
+          "columns": [
+            "customer_id"
+          ]
+        },
+        {
+          "name": "addresses_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.addresses",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "addresses_label_not_null",
+          "type": "n",
+          "def": "NOT NULL label",
+          "table": "public.addresses",
+          "referenced_table": "",
+          "columns": [
+            "label"
+          ]
+        },
+        {
+          "name": "addresses_line1_not_null",
+          "type": "n",
+          "def": "NOT NULL line1",
+          "table": "public.addresses",
+          "referenced_table": "",
+          "columns": [
+            "line1"
+          ]
+        },
+        {
+          "name": "addresses_postal_code_not_null",
+          "type": "n",
+          "def": "NOT NULL postal_code",
+          "table": "public.addresses",
+          "referenced_table": "",
+          "columns": [
+            "postal_code"
+          ]
+        },
+        {
+          "name": "addresses_customer_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE",
+          "table": "public.addresses",
+          "referenced_table": "public.customers",
+          "columns": [
+            "customer_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "addresses_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.addresses",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "addresses_customer_label_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (customer_id, label)",
+          "table": "public.addresses",
+          "referenced_table": "",
+          "columns": [
+            "customer_id",
+            "label"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.staff",
+      "type": "BASE TABLE",
+      "comment": "Shop employees who use the back office",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('staff_id_seq'::regclass)"
+        },
+        {
+          "name": "email",
+          "type": "varchar(255)",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "varchar(100)",
+          "nullable": false
+        },
+        {
+          "name": "manager_id",
+          "type": "bigint",
+          "nullable": true,
+          "comment": "Reporting line; null for the top"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "staff_pkey",
+          "def": "CREATE UNIQUE INDEX staff_pkey ON public.staff USING btree (id)",
+          "table": "public.staff",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "staff_email_key",
+          "def": "CREATE UNIQUE INDEX staff_email_key ON public.staff USING btree (email)",
+          "table": "public.staff",
+          "columns": [
+            "email"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "staff_email_not_null",
+          "type": "n",
+          "def": "NOT NULL email",
+          "table": "public.staff",
+          "referenced_table": "",
+          "columns": [
+            "email"
+          ]
+        },
+        {
+          "name": "staff_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.staff",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "staff_name_not_null",
+          "type": "n",
+          "def": "NOT NULL name",
+          "table": "public.staff",
+          "referenced_table": "",
+          "columns": [
+            "name"
+          ]
+        },
+        {
+          "name": "staff_manager_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (manager_id) REFERENCES staff(id)",
+          "table": "public.staff",
+          "referenced_table": "public.staff",
+          "columns": [
+            "manager_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "staff_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.staff",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "staff_email_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (email)",
+          "table": "public.staff",
+          "referenced_table": "",
+          "columns": [
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.roles",
+      "type": "BASE TABLE",
+      "comment": "Back office roles",
+      "columns": [
+        {
+          "name": "id",
+          "type": "smallint",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "varchar(50)",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "roles_pkey",
+          "def": "CREATE UNIQUE INDEX roles_pkey ON public.roles USING btree (id)",
+          "table": "public.roles",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "roles_name_key",
+          "def": "CREATE UNIQUE INDEX roles_name_key ON public.roles USING btree (name)",
+          "table": "public.roles",
+          "columns": [
+            "name"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "roles_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.roles",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "roles_name_not_null",
+          "type": "n",
+          "def": "NOT NULL name",
+          "table": "public.roles",
+          "referenced_table": "",
+          "columns": [
+            "name"
+          ]
+        },
+        {
+          "name": "roles_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.roles",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "roles_name_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (name)",
+          "table": "public.roles",
+          "referenced_table": "",
+          "columns": [
+            "name"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.staff_roles",
+      "type": "BASE TABLE",
+      "comment": "Roles granted to staff",
+      "columns": [
+        {
+          "name": "staff_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "role_id",
+          "type": "smallint",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "staff_roles_pkey",
+          "def": "CREATE UNIQUE INDEX staff_roles_pkey ON public.staff_roles USING btree (staff_id, role_id)",
+          "table": "public.staff_roles",
+          "columns": [
+            "staff_id",
+            "role_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "staff_roles_role_id_not_null",
+          "type": "n",
+          "def": "NOT NULL role_id",
+          "table": "public.staff_roles",
+          "referenced_table": "",
+          "columns": [
+            "role_id"
+          ]
+        },
+        {
+          "name": "staff_roles_staff_id_not_null",
+          "type": "n",
+          "def": "NOT NULL staff_id",
+          "table": "public.staff_roles",
+          "referenced_table": "",
+          "columns": [
+            "staff_id"
+          ]
+        },
+        {
+          "name": "staff_roles_staff_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE",
+          "table": "public.staff_roles",
+          "referenced_table": "public.staff",
+          "columns": [
+            "staff_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "staff_roles_role_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (role_id) REFERENCES roles(id)",
+          "table": "public.staff_roles",
+          "referenced_table": "public.roles",
+          "columns": [
+            "role_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "staff_roles_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (staff_id, role_id)",
+          "table": "public.staff_roles",
+          "referenced_table": "",
+          "columns": [
+            "staff_id",
+            "role_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.categories",
+      "type": "BASE TABLE",
+      "comment": "Product categories, as a tree",
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "parent_id",
+          "type": "integer",
+          "nullable": true,
+          "comment": "Parent category; null for top-level categories"
+        },
+        {
+          "name": "name",
+          "type": "varchar(100)",
+          "nullable": false
+        },
+        {
+          "name": "slug",
+          "type": "varchar(100)",
+          "nullable": false,
+          "comment": "URL-friendly name"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "categories_pkey",
+          "def": "CREATE UNIQUE INDEX categories_pkey ON public.categories USING btree (id)",
+          "table": "public.categories",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "categories_slug_key",
+          "def": "CREATE UNIQUE INDEX categories_slug_key ON public.categories USING btree (slug)",
+          "table": "public.categories",
+          "columns": [
+            "slug"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "categories_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.categories",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "categories_name_not_null",
+          "type": "n",
+          "def": "NOT NULL name",
+          "table": "public.categories",
+          "referenced_table": "",
+          "columns": [
+            "name"
+          ]
+        },
+        {
+          "name": "categories_slug_not_null",
+          "type": "n",
+          "def": "NOT NULL slug",
+          "table": "public.categories",
+          "referenced_table": "",
+          "columns": [
+            "slug"
+          ]
+        },
+        {
+          "name": "categories_parent_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (parent_id) REFERENCES categories(id)",
+          "table": "public.categories",
+          "referenced_table": "public.categories",
+          "columns": [
+            "parent_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "categories_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.categories",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "categories_slug_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (slug)",
+          "table": "public.categories",
+          "referenced_table": "",
+          "columns": [
+            "slug"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.products",
+      "type": "BASE TABLE",
+      "comment": "Items for sale",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('products_id_seq'::regclass)"
+        },
+        {
+          "name": "category_id",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "sku",
+          "type": "varchar(40)",
+          "nullable": false,
+          "comment": "Stock keeping unit"
+        },
+        {
+          "name": "name",
+          "type": "varchar(200)",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "name": "price",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "comment": "Current unit price; orders keep the price at the time of purchase"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "nullable": false,
+          "default": "true",
+          "comment": "False hides the product from the store"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "products_pkey",
+          "def": "CREATE UNIQUE INDEX products_pkey ON public.products USING btree (id)",
+          "table": "public.products",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "products_sku_key",
+          "def": "CREATE UNIQUE INDEX products_sku_key ON public.products USING btree (sku)",
+          "table": "public.products",
+          "columns": [
+            "sku"
+          ]
+        },
+        {
+          "name": "products_category_id_idx",
+          "def": "CREATE INDEX products_category_id_idx ON public.products USING btree (category_id)",
+          "table": "public.products",
+          "columns": [
+            "category_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "products_active_not_null",
+          "type": "n",
+          "def": "NOT NULL active",
+          "table": "public.products",
+          "referenced_table": "",
+          "columns": [
+            "active"
+          ]
+        },
+        {
+          "name": "products_category_id_not_null",
+          "type": "n",
+          "def": "NOT NULL category_id",
+          "table": "public.products",
+          "referenced_table": "",
+          "columns": [
+            "category_id"
+          ]
+        },
+        {
+          "name": "products_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.products",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "products_name_not_null",
+          "type": "n",
+          "def": "NOT NULL name",
+          "table": "public.products",
+          "referenced_table": "",
+          "columns": [
+            "name"
+          ]
+        },
+        {
+          "name": "products_price_check",
+          "type": "CHECK",
+          "def": "CHECK ((price \u003e= (0)::numeric))",
+          "table": "public.products",
+          "referenced_table": "",
+          "columns": [
+            "price"
+          ]
+        },
+        {
+          "name": "products_price_not_null",
+          "type": "n",
+          "def": "NOT NULL price",
+          "table": "public.products",
+          "referenced_table": "",
+          "columns": [
+            "price"
+          ]
+        },
+        {
+          "name": "products_sku_not_null",
+          "type": "n",
+          "def": "NOT NULL sku",
+          "table": "public.products",
+          "referenced_table": "",
+          "columns": [
+            "sku"
+          ]
+        },
+        {
+          "name": "products_category_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (category_id) REFERENCES categories(id)",
+          "table": "public.products",
+          "referenced_table": "public.categories",
+          "columns": [
+            "category_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "products_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.products",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "products_sku_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (sku)",
+          "table": "public.products",
+          "referenced_table": "",
+          "columns": [
+            "sku"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.inventory",
+      "type": "BASE TABLE",
+      "comment": "Stock on hand per product",
+      "columns": [
+        {
+          "name": "product_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "quantity",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "inventory_pkey",
+          "def": "CREATE UNIQUE INDEX inventory_pkey ON public.inventory USING btree (product_id)",
+          "table": "public.inventory",
+          "columns": [
+            "product_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "inventory_product_id_not_null",
+          "type": "n",
+          "def": "NOT NULL product_id",
+          "table": "public.inventory",
+          "referenced_table": "",
+          "columns": [
+            "product_id"
+          ]
+        },
+        {
+          "name": "inventory_quantity_check",
+          "type": "CHECK",
+          "def": "CHECK ((quantity \u003e= 0))",
+          "table": "public.inventory",
+          "referenced_table": "",
+          "columns": [
+            "quantity"
+          ]
+        },
+        {
+          "name": "inventory_quantity_not_null",
+          "type": "n",
+          "def": "NOT NULL quantity",
+          "table": "public.inventory",
+          "referenced_table": "",
+          "columns": [
+            "quantity"
+          ]
+        },
+        {
+          "name": "inventory_updated_at_not_null",
+          "type": "n",
+          "def": "NOT NULL updated_at",
+          "table": "public.inventory",
+          "referenced_table": "",
+          "columns": [
+            "updated_at"
+          ]
+        },
+        {
+          "name": "inventory_product_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (product_id) REFERENCES products(id)",
+          "table": "public.inventory",
+          "referenced_table": "public.products",
+          "columns": [
+            "product_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "inventory_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (product_id)",
+          "table": "public.inventory",
+          "referenced_table": "",
+          "columns": [
+            "product_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.orders",
+      "type": "BASE TABLE",
+      "comment": "Orders placed by customers",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('orders_id_seq'::regclass)"
+        },
+        {
+          "name": "customer_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "shipping_address_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "order_status",
+          "nullable": false,
+          "default": "'pending'::order_status"
+        },
+        {
+          "name": "ordered_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()"
+        },
+        {
+          "name": "total",
+          "type": "numeric(12,2)",
+          "nullable": false,
+          "default": "0",
+          "comment": "Sum of the order lines, kept up to date by a trigger"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "orders_pkey",
+          "def": "CREATE UNIQUE INDEX orders_pkey ON public.orders USING btree (id)",
+          "table": "public.orders",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "orders_customer_id_ordered_at_idx",
+          "def": "CREATE INDEX orders_customer_id_ordered_at_idx ON public.orders USING btree (customer_id, ordered_at)",
+          "table": "public.orders",
+          "columns": [
+            "customer_id",
+            "ordered_at"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "orders_customer_id_not_null",
+          "type": "n",
+          "def": "NOT NULL customer_id",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "customer_id"
+          ]
+        },
+        {
+          "name": "orders_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "orders_ordered_at_not_null",
+          "type": "n",
+          "def": "NOT NULL ordered_at",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "ordered_at"
+          ]
+        },
+        {
+          "name": "orders_shipping_address_id_not_null",
+          "type": "n",
+          "def": "NOT NULL shipping_address_id",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "shipping_address_id"
+          ]
+        },
+        {
+          "name": "orders_status_not_null",
+          "type": "n",
+          "def": "NOT NULL status",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "status"
+          ]
+        },
+        {
+          "name": "orders_total_not_null",
+          "type": "n",
+          "def": "NOT NULL total",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "total"
+          ]
+        },
+        {
+          "name": "orders_customer_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (customer_id) REFERENCES customers(id)",
+          "table": "public.orders",
+          "referenced_table": "public.customers",
+          "columns": [
+            "customer_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "orders_shipping_address_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (shipping_address_id) REFERENCES addresses(id)",
+          "table": "public.orders",
+          "referenced_table": "public.addresses",
+          "columns": [
+            "shipping_address_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "orders_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.orders",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.order_items",
+      "type": "BASE TABLE",
+      "comment": "Lines of an order",
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "line_no",
+          "type": "smallint",
+          "nullable": false
+        },
+        {
+          "name": "product_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "quantity",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "unit_price",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "comment": "Product price when the order was placed"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "order_items_pkey",
+          "def": "CREATE UNIQUE INDEX order_items_pkey ON public.order_items USING btree (order_id, line_no)",
+          "table": "public.order_items",
+          "columns": [
+            "order_id",
+            "line_no"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "order_items_line_no_not_null",
+          "type": "n",
+          "def": "NOT NULL line_no",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "line_no"
+          ]
+        },
+        {
+          "name": "order_items_order_id_not_null",
+          "type": "n",
+          "def": "NOT NULL order_id",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "order_id"
+          ]
+        },
+        {
+          "name": "order_items_product_id_not_null",
+          "type": "n",
+          "def": "NOT NULL product_id",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "product_id"
+          ]
+        },
+        {
+          "name": "order_items_quantity_check",
+          "type": "CHECK",
+          "def": "CHECK ((quantity \u003e 0))",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "quantity"
+          ]
+        },
+        {
+          "name": "order_items_quantity_not_null",
+          "type": "n",
+          "def": "NOT NULL quantity",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "quantity"
+          ]
+        },
+        {
+          "name": "order_items_unit_price_not_null",
+          "type": "n",
+          "def": "NOT NULL unit_price",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "unit_price"
+          ]
+        },
+        {
+          "name": "order_items_product_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (product_id) REFERENCES products(id)",
+          "table": "public.order_items",
+          "referenced_table": "public.products",
+          "columns": [
+            "product_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "order_items_order_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE",
+          "table": "public.order_items",
+          "referenced_table": "public.orders",
+          "columns": [
+            "order_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "order_items_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (order_id, line_no)",
+          "table": "public.order_items",
+          "referenced_table": "",
+          "columns": [
+            "order_id",
+            "line_no"
+          ]
+        }
+      ],
+      "triggers": [
+        {
+          "name": "order_items_update_total",
+          "def": "CREATE TRIGGER order_items_update_total AFTER INSERT OR DELETE OR UPDATE ON public.order_items FOR EACH ROW EXECUTE FUNCTION update_order_total()",
+          "comment": "Recalculates orders.total"
+        }
+      ]
+    },
+    {
+      "name": "public.shipments",
+      "type": "BASE TABLE",
+      "comment": "Parcels sent for an order; an order can ship in several parcels",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('shipments_id_seq'::regclass)"
+        },
+        {
+          "name": "order_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "carrier",
+          "type": "varchar(50)",
+          "nullable": false
+        },
+        {
+          "name": "tracking_no",
+          "type": "varchar(100)",
+          "nullable": true
+        },
+        {
+          "name": "shipped_at",
+          "type": "timestamp with time zone",
+          "nullable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "shipments_pkey",
+          "def": "CREATE UNIQUE INDEX shipments_pkey ON public.shipments USING btree (id)",
+          "table": "public.shipments",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "shipments_carrier_not_null",
+          "type": "n",
+          "def": "NOT NULL carrier",
+          "table": "public.shipments",
+          "referenced_table": "",
+          "columns": [
+            "carrier"
+          ]
+        },
+        {
+          "name": "shipments_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.shipments",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "shipments_order_id_not_null",
+          "type": "n",
+          "def": "NOT NULL order_id",
+          "table": "public.shipments",
+          "referenced_table": "",
+          "columns": [
+            "order_id"
+          ]
+        },
+        {
+          "name": "shipments_order_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (order_id) REFERENCES orders(id)",
+          "table": "public.shipments",
+          "referenced_table": "public.orders",
+          "columns": [
+            "order_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "shipments_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.shipments",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.shipment_items",
+      "type": "BASE TABLE",
+      "comment": "Which order lines (and how many) are in a parcel",
+      "columns": [
+        {
+          "name": "shipment_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "order_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "line_no",
+          "type": "smallint",
+          "nullable": false
+        },
+        {
+          "name": "quantity",
+          "type": "integer",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "shipment_items_pkey",
+          "def": "CREATE UNIQUE INDEX shipment_items_pkey ON public.shipment_items USING btree (shipment_id, order_id, line_no)",
+          "table": "public.shipment_items",
+          "columns": [
+            "shipment_id",
+            "order_id",
+            "line_no"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "shipment_items_line_no_not_null",
+          "type": "n",
+          "def": "NOT NULL line_no",
+          "table": "public.shipment_items",
+          "referenced_table": "",
+          "columns": [
+            "line_no"
+          ]
+        },
+        {
+          "name": "shipment_items_order_id_not_null",
+          "type": "n",
+          "def": "NOT NULL order_id",
+          "table": "public.shipment_items",
+          "referenced_table": "",
+          "columns": [
+            "order_id"
+          ]
+        },
+        {
+          "name": "shipment_items_quantity_check",
+          "type": "CHECK",
+          "def": "CHECK ((quantity \u003e 0))",
+          "table": "public.shipment_items",
+          "referenced_table": "",
+          "columns": [
+            "quantity"
+          ]
+        },
+        {
+          "name": "shipment_items_quantity_not_null",
+          "type": "n",
+          "def": "NOT NULL quantity",
+          "table": "public.shipment_items",
+          "referenced_table": "",
+          "columns": [
+            "quantity"
+          ]
+        },
+        {
+          "name": "shipment_items_shipment_id_not_null",
+          "type": "n",
+          "def": "NOT NULL shipment_id",
+          "table": "public.shipment_items",
+          "referenced_table": "",
+          "columns": [
+            "shipment_id"
+          ]
+        },
+        {
+          "name": "shipment_items_order_item_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)",
+          "table": "public.shipment_items",
+          "referenced_table": "public.order_items",
+          "columns": [
+            "order_id",
+            "line_no"
+          ],
+          "referenced_columns": [
+            "order_id",
+            "line_no"
+          ]
+        },
+        {
+          "name": "shipment_items_shipment_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (shipment_id) REFERENCES shipments(id) ON DELETE CASCADE",
+          "table": "public.shipment_items",
+          "referenced_table": "public.shipments",
+          "columns": [
+            "shipment_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "shipment_items_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (shipment_id, order_id, line_no)",
+          "table": "public.shipment_items",
+          "referenced_table": "",
+          "columns": [
+            "shipment_id",
+            "order_id",
+            "line_no"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.reviews",
+      "type": "BASE TABLE",
+      "comment": "Product reviews; one per customer and product",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('reviews_id_seq'::regclass)"
+        },
+        {
+          "name": "product_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "customer_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "rating",
+          "type": "smallint",
+          "nullable": false,
+          "comment": "Stars, from 1 to 5"
+        },
+        {
+          "name": "body",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "reviews_pkey",
+          "def": "CREATE UNIQUE INDEX reviews_pkey ON public.reviews USING btree (id)",
+          "table": "public.reviews",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "reviews_product_customer_key",
+          "def": "CREATE UNIQUE INDEX reviews_product_customer_key ON public.reviews USING btree (product_id, customer_id)",
+          "table": "public.reviews",
+          "columns": [
+            "product_id",
+            "customer_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "reviews_created_at_not_null",
+          "type": "n",
+          "def": "NOT NULL created_at",
+          "table": "public.reviews",
+          "referenced_table": "",
+          "columns": [
+            "created_at"
+          ]
+        },
+        {
+          "name": "reviews_customer_id_not_null",
+          "type": "n",
+          "def": "NOT NULL customer_id",
+          "table": "public.reviews",
+          "referenced_table": "",
+          "columns": [
+            "customer_id"
+          ]
+        },
+        {
+          "name": "reviews_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.reviews",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "reviews_product_id_not_null",
+          "type": "n",
+          "def": "NOT NULL product_id",
+          "table": "public.reviews",
+          "referenced_table": "",
+          "columns": [
+            "product_id"
+          ]
+        },
+        {
+          "name": "reviews_rating_check",
+          "type": "CHECK",
+          "def": "CHECK (((rating \u003e= 1) AND (rating \u003c= 5)))",
+          "table": "public.reviews",
+          "referenced_table": "",
+          "columns": [
+            "rating"
+          ]
+        },
+        {
+          "name": "reviews_rating_not_null",
+          "type": "n",
+          "def": "NOT NULL rating",
+          "table": "public.reviews",
+          "referenced_table": "",
+          "columns": [
+            "rating"
+          ]
+        },
+        {
+          "name": "reviews_customer_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (customer_id) REFERENCES customers(id)",
+          "table": "public.reviews",
+          "referenced_table": "public.customers",
+          "columns": [
+            "customer_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "reviews_product_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (product_id) REFERENCES products(id)",
+          "table": "public.reviews",
+          "referenced_table": "public.products",
+          "columns": [
+            "product_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "reviews_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.reviews",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "reviews_product_customer_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (product_id, customer_id)",
+          "table": "public.reviews",
+          "referenced_table": "",
+          "columns": [
+            "product_id",
+            "customer_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.activity_logs",
+      "type": "BASE TABLE",
+      "comment": "Back office actions, written by the application",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('activity_logs_id_seq'::regclass)"
+        },
+        {
+          "name": "staff_id",
+          "type": "bigint",
+          "nullable": true,
+          "comment": "Staff member who did the action"
+        },
+        {
+          "name": "order_id",
+          "type": "bigint",
+          "nullable": true,
+          "comment": "Order the action was about, if any"
+        },
+        {
+          "name": "action",
+          "type": "varchar(50)",
+          "nullable": false
+        },
+        {
+          "name": "detail",
+          "type": "jsonb",
+          "nullable": true,
+          "comment": "Action-specific data"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "activity_logs_pkey",
+          "def": "CREATE UNIQUE INDEX activity_logs_pkey ON public.activity_logs USING btree (id)",
+          "table": "public.activity_logs",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "activity_logs_created_at_idx",
+          "def": "CREATE INDEX activity_logs_created_at_idx ON public.activity_logs USING btree (created_at)",
+          "table": "public.activity_logs",
+          "columns": [
+            "created_at"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "activity_logs_action_not_null",
+          "type": "n",
+          "def": "NOT NULL action",
+          "table": "public.activity_logs",
+          "referenced_table": "",
+          "columns": [
+            "action"
+          ]
+        },
+        {
+          "name": "activity_logs_created_at_not_null",
+          "type": "n",
+          "def": "NOT NULL created_at",
+          "table": "public.activity_logs",
+          "referenced_table": "",
+          "columns": [
+            "created_at"
+          ]
+        },
+        {
+          "name": "activity_logs_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "public.activity_logs",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "activity_logs_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "public.activity_logs",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.active_customers",
+      "type": "VIEW",
+      "comment": "Customers with an open account",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": true
+        },
+        {
+          "name": "email",
+          "type": "varchar(255)",
+          "nullable": true
+        },
+        {
+          "name": "name",
+          "type": "varchar(100)",
+          "nullable": true
+        },
+        {
+          "name": "country",
+          "type": "character(2)",
+          "nullable": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "nullable": true
+        }
+      ],
+      "def": "CREATE VIEW active_customers AS (\n SELECT id,\n    email,\n    name,\n    country,\n    created_at\n   FROM customers\n  WHERE (deleted_at IS NULL)\n)",
+      "referenced_tables": [
+        "public.customers"
+      ]
+    },
+    {
+      "name": "public.product_sales",
+      "type": "MATERIALIZED VIEW",
+      "comment": "Units sold and revenue per product, refreshed nightly",
+      "columns": [
+        {
+          "name": "product_id",
+          "type": "bigint",
+          "nullable": true
+        },
+        {
+          "name": "name",
+          "type": "varchar(200)",
+          "nullable": true
+        },
+        {
+          "name": "units_sold",
+          "type": "bigint",
+          "nullable": true
+        },
+        {
+          "name": "revenue",
+          "type": "numeric",
+          "nullable": true
+        }
+      ],
+      "def": "CREATE MATERIALIZED VIEW product_sales AS (\n SELECT p.id AS product_id,\n    p.name,\n    sum(i.quantity) AS units_sold,\n    sum(((i.quantity)::numeric * i.unit_price)) AS revenue\n   FROM ((products p\n     JOIN order_items i ON ((i.product_id = p.id)))\n     JOIN orders o ON ((o.id = i.order_id)))\n  WHERE (o.status \u003c\u003e 'cancelled'::order_status)\n  GROUP BY p.id, p.name\n)",
+      "referenced_tables": [
+        "public.products",
+        "public.order_items",
+        "public.orders"
+      ]
+    },
+    {
+      "name": "billing.invoices",
+      "type": "BASE TABLE",
+      "comment": "One invoice per order",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('billing.invoices_id_seq'::regclass)"
+        },
+        {
+          "name": "order_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "number",
+          "type": "varchar(20)",
+          "nullable": false,
+          "comment": "Invoice number shown to the customer"
+        },
+        {
+          "name": "issued_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()"
+        },
+        {
+          "name": "amount",
+          "type": "numeric(12,2)",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "invoices_pkey",
+          "def": "CREATE UNIQUE INDEX invoices_pkey ON billing.invoices USING btree (id)",
+          "table": "billing.invoices",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "invoices_order_id_key",
+          "def": "CREATE UNIQUE INDEX invoices_order_id_key ON billing.invoices USING btree (order_id)",
+          "table": "billing.invoices",
+          "columns": [
+            "order_id"
+          ]
+        },
+        {
+          "name": "invoices_number_key",
+          "def": "CREATE UNIQUE INDEX invoices_number_key ON billing.invoices USING btree (number)",
+          "table": "billing.invoices",
+          "columns": [
+            "number"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "invoices_amount_not_null",
+          "type": "n",
+          "def": "NOT NULL amount",
+          "table": "billing.invoices",
+          "referenced_table": "",
+          "columns": [
+            "amount"
+          ]
+        },
+        {
+          "name": "invoices_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "billing.invoices",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "invoices_issued_at_not_null",
+          "type": "n",
+          "def": "NOT NULL issued_at",
+          "table": "billing.invoices",
+          "referenced_table": "",
+          "columns": [
+            "issued_at"
+          ]
+        },
+        {
+          "name": "invoices_number_not_null",
+          "type": "n",
+          "def": "NOT NULL number",
+          "table": "billing.invoices",
+          "referenced_table": "",
+          "columns": [
+            "number"
+          ]
+        },
+        {
+          "name": "invoices_order_id_not_null",
+          "type": "n",
+          "def": "NOT NULL order_id",
+          "table": "billing.invoices",
+          "referenced_table": "",
+          "columns": [
+            "order_id"
+          ]
+        },
+        {
+          "name": "invoices_order_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (order_id) REFERENCES orders(id)",
+          "table": "billing.invoices",
+          "referenced_table": "public.orders",
+          "columns": [
+            "order_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "invoices_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "billing.invoices",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "invoices_order_id_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (order_id)",
+          "table": "billing.invoices",
+          "referenced_table": "",
+          "columns": [
+            "order_id"
+          ]
+        },
+        {
+          "name": "invoices_number_key",
+          "type": "UNIQUE",
+          "def": "UNIQUE (number)",
+          "table": "billing.invoices",
+          "referenced_table": "",
+          "columns": [
+            "number"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "billing.payments",
+      "type": "BASE TABLE",
+      "comment": "Payments received; an invoice can be paid in several payments",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('billing.payments_id_seq'::regclass)"
+        },
+        {
+          "name": "invoice_id",
+          "type": "bigint",
+          "nullable": false
+        },
+        {
+          "name": "method",
+          "type": "billing.payment_method",
+          "nullable": false
+        },
+        {
+          "name": "amount",
+          "type": "numeric(12,2)",
+          "nullable": false
+        },
+        {
+          "name": "paid_at",
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "payments_pkey",
+          "def": "CREATE UNIQUE INDEX payments_pkey ON billing.payments USING btree (id)",
+          "table": "billing.payments",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "payments_amount_check",
+          "type": "CHECK",
+          "def": "CHECK ((amount \u003e (0)::numeric))",
+          "table": "billing.payments",
+          "referenced_table": "",
+          "columns": [
+            "amount"
+          ]
+        },
+        {
+          "name": "payments_amount_not_null",
+          "type": "n",
+          "def": "NOT NULL amount",
+          "table": "billing.payments",
+          "referenced_table": "",
+          "columns": [
+            "amount"
+          ]
+        },
+        {
+          "name": "payments_id_not_null",
+          "type": "n",
+          "def": "NOT NULL id",
+          "table": "billing.payments",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "payments_invoice_id_not_null",
+          "type": "n",
+          "def": "NOT NULL invoice_id",
+          "table": "billing.payments",
+          "referenced_table": "",
+          "columns": [
+            "invoice_id"
+          ]
+        },
+        {
+          "name": "payments_method_not_null",
+          "type": "n",
+          "def": "NOT NULL method",
+          "table": "billing.payments",
+          "referenced_table": "",
+          "columns": [
+            "method"
+          ]
+        },
+        {
+          "name": "payments_paid_at_not_null",
+          "type": "n",
+          "def": "NOT NULL paid_at",
+          "table": "billing.payments",
+          "referenced_table": "",
+          "columns": [
+            "paid_at"
+          ]
+        },
+        {
+          "name": "payments_invoice_id_fkey",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (invoice_id) REFERENCES billing.invoices(id)",
+          "table": "billing.payments",
+          "referenced_table": "billing.invoices",
+          "columns": [
+            "invoice_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "payments_pkey",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "billing.payments",
+          "referenced_table": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "table": "public.addresses",
+      "columns": [
+        "customer_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.customers",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE"
+    },
+    {
+      "table": "public.staff",
+      "columns": [
+        "manager_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.staff",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "zero_or_one",
+      "def": "FOREIGN KEY (manager_id) REFERENCES staff(id)"
+    },
+    {
+      "table": "public.staff_roles",
+      "columns": [
+        "staff_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.staff",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE"
+    },
+    {
+      "table": "public.staff_roles",
+      "columns": [
+        "role_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.roles",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (role_id) REFERENCES roles(id)"
+    },
+    {
+      "table": "public.categories",
+      "columns": [
+        "parent_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.categories",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "zero_or_one",
+      "def": "FOREIGN KEY (parent_id) REFERENCES categories(id)"
+    },
+    {
+      "table": "public.products",
+      "columns": [
+        "category_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.categories",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (category_id) REFERENCES categories(id)"
+    },
+    {
+      "table": "public.inventory",
+      "columns": [
+        "product_id"
+      ],
+      "cardinality": "zero_or_one",
+      "parent_table": "public.products",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (product_id) REFERENCES products(id)"
+    },
+    {
+      "table": "public.orders",
+      "columns": [
+        "customer_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.customers",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (customer_id) REFERENCES customers(id)"
+    },
+    {
+      "table": "public.orders",
+      "columns": [
+        "shipping_address_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.addresses",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (shipping_address_id) REFERENCES addresses(id)"
+    },
+    {
+      "table": "public.order_items",
+      "columns": [
+        "product_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.products",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (product_id) REFERENCES products(id)"
+    },
+    {
+      "table": "public.order_items",
+      "columns": [
+        "order_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.orders",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE"
+    },
+    {
+      "table": "public.shipments",
+      "columns": [
+        "order_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.orders",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (order_id) REFERENCES orders(id)"
+    },
+    {
+      "table": "public.shipment_items",
+      "columns": [
+        "order_id",
+        "line_no"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.order_items",
+      "parent_columns": [
+        "order_id",
+        "line_no"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (order_id, line_no) REFERENCES order_items(order_id, line_no)"
+    },
+    {
+      "table": "public.shipment_items",
+      "columns": [
+        "shipment_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.shipments",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (shipment_id) REFERENCES shipments(id) ON DELETE CASCADE"
+    },
+    {
+      "table": "public.reviews",
+      "columns": [
+        "customer_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.customers",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (customer_id) REFERENCES customers(id)"
+    },
+    {
+      "table": "public.reviews",
+      "columns": [
+        "product_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.products",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (product_id) REFERENCES products(id)"
+    },
+    {
+      "table": "billing.invoices",
+      "columns": [
+        "order_id"
+      ],
+      "cardinality": "zero_or_one",
+      "parent_table": "public.orders",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (order_id) REFERENCES orders(id)"
+    },
+    {
+      "table": "billing.payments",
+      "columns": [
+        "invoice_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "billing.invoices",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (invoice_id) REFERENCES billing.invoices(id)"
+    },
+    {
+      "table": "public.activity_logs",
+      "columns": [
+        "staff_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.staff",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "zero_or_one",
+      "def": "Logged by the application; no foreign key so that logs outlive staff",
+      "virtual": true
+    },
+    {
+      "table": "public.activity_logs",
+      "columns": [
+        "order_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "public.orders",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "zero_or_one",
+      "def": "Logged by the application; no foreign key so that logs outlive orders",
+      "virtual": true
+    }
+  ],
+  "functions": [
+    {
+      "name": "public.update_order_total",
+      "return_type": "trigger",
+      "arguments": "",
+      "type": "FUNCTION"
+    }
+  ],
+  "enums": [
+    {
+      "name": "billing.payment_method",
+      "values": [
+        "card",
+        "bank_transfer",
+        "wallet"
+      ]
+    },
+    {
+      "name": "public.order_status",
+      "values": [
+        "delivered",
+        "pending",
+        "cancelled",
+        "paid",
+        "shipped"
+      ]
+    }
+  ],
+  "driver": {
+    "name": "postgres",
+    "database_version": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+    "meta": {
+      "current_schema": "public",
+      "search_paths": [
+        "postgres",
+        "public"
+      ],
+      "dict": {
+        "Functions": "Stored procedures and functions"
+      }
+    }
+  }
+}
