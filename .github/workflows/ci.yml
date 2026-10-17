@@ -18,6 +18,10 @@ jobs:
           go-version-file: go.mod
       - run: go vet ./...
       - run: go test -race ./...
+      - name: Check THIRD_PARTY_NOTICES is up to date
+        run: |
+          go run ./scripts/notices
+          git diff --exit-code THIRD_PARTY_NOTICES
 
   lint:
     runs-on: ubuntu-latest

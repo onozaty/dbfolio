@@ -1,0 +1,23 @@
+graphviz.wasm (embedded in github.com/goccy/go-graphviz v0.2.10)
+
+graphviz.wasm is a WebAssembly build of the following components, made by
+go-graphviz (see internal/wasm/build/Dockerfile in its repository). dbfolio
+distributes it unmodified, in object code form, as part of its binary.
+
+- Graphviz 12.1.2
+  License: Eclipse Public License - v 1.0 (graphviz-LICENSE below)
+  Source code: https://gitlab.com/graphviz/graphviz/-/tree/12.1.2
+  Release archive: https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/12.1.2/graphviz-12.1.2.tar.gz
+  The source code of Graphviz is available from the locations above.
+
+- Expat 2.6.3
+  License: MIT (expat-COPYING below)
+  Source code: https://github.com/libexpat/libexpat/tree/R_2_6_3
+
+- wasi-libc (wasi-sdk 24)
+  License: multi-licensed; used under the MIT License (wasi-libc-LICENSE-MIT
+  below). Portions are derived from third-party works under their own
+  licenses: musl (MIT, wasi-libc-musl-COPYRIGHT below), cloudlibc
+  (BSD-2-Clause, wasi-libc-cloudlibc-LICENSE below), emmalloc (MIT,
+  Copyright 2018 The Emscripten Authors) and dlmalloc (CC0, public domain).
+  Source code: https://github.com/WebAssembly/wasi-libc/tree/wasi-sdk-24

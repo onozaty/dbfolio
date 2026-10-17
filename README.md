@@ -38,3 +38,5 @@ Tested with tbls v1.96.1.
 ## License
 
 MIT
+
+The dbfolio binary includes third-party software, such as Graphviz (Eclipse Public License 1.0) built into WebAssembly. See [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES) for their licenses and where to obtain the source code. Regenerate it with `go run ./scripts/notices` after changing dependencies.
