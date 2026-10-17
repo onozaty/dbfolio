@@ -142,7 +142,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 - [ ] GitHub Release
 - [ ] Homebrew Tap (macOS / Linux)
 - [ ] Scoop bucket (Windows)
-- [ ] README (使い方、tbls との連携手順)
+- [x] README (使い方、tbls との連携手順)
 - [ ] デモサイト (生成サンプルを GitHub Pages で公開するか検討)
 
 完了条件: GitHub Release / Homebrew / Scoop のいずれからでもインストールでき、`dbfolio build` が使えること。
