@@ -10,7 +10,8 @@
           "name": "id",
           "type": "bigint",
           "nullable": false,
-          "default": "nextval('customers_id_seq'::regclass)"
+          "default": "nextval('customers_id_seq'::regclass)",
+          "comment": "Customer ID"
         },
         {
           "name": "email",
@@ -21,7 +22,8 @@
         {
           "name": "name",
           "type": "varchar(100)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Full name"
         },
         {
           "name": "country",
@@ -33,7 +35,8 @@
           "name": "created_at",
           "type": "timestamp with time zone",
           "nullable": false,
-          "default": "now()"
+          "default": "now()",
+          "comment": "When the account was created"
         },
         {
           "name": "deleted_at",
@@ -142,12 +145,14 @@
           "name": "id",
           "type": "bigint",
           "nullable": false,
-          "default": "nextval('addresses_id_seq'::regclass)"
+          "default": "nextval('addresses_id_seq'::regclass)",
+          "comment": "Address ID"
         },
         {
           "name": "customer_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Owner of the address"
         },
         {
           "name": "label",
@@ -159,27 +164,32 @@
         {
           "name": "line1",
           "type": "varchar(200)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Street address"
         },
         {
           "name": "line2",
           "type": "varchar(200)",
-          "nullable": true
+          "nullable": true,
+          "comment": "Apartment, suite, etc."
         },
         {
           "name": "city",
           "type": "varchar(100)",
-          "nullable": false
+          "nullable": false,
+          "comment": "City"
         },
         {
           "name": "postal_code",
           "type": "varchar(20)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Postal or ZIP code"
         },
         {
           "name": "country",
           "type": "character(2)",
-          "nullable": false
+          "nullable": false,
+          "comment": "ISO 3166-1 alpha-2 country code"
         }
       ],
       "indexes": [
@@ -317,17 +327,20 @@
           "name": "id",
           "type": "bigint",
           "nullable": false,
-          "default": "nextval('staff_id_seq'::regclass)"
+          "default": "nextval('staff_id_seq'::regclass)",
+          "comment": "Staff ID"
         },
         {
           "name": "email",
           "type": "varchar(255)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Login ID for the back office"
         },
         {
           "name": "name",
           "type": "varchar(100)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Full name"
         },
         {
           "name": "manager_id",
@@ -428,12 +441,14 @@
         {
           "name": "id",
           "type": "smallint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Role ID"
         },
         {
           "name": "name",
           "type": "varchar(50)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Role name, e.g. admin or support"
         }
       ],
       "indexes": [
@@ -505,12 +520,14 @@
         {
           "name": "staff_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Staff member"
         },
         {
           "name": "role_id",
           "type": "smallint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Granted role"
         }
       ],
       "indexes": [
@@ -592,7 +609,8 @@
         {
           "name": "id",
           "type": "integer",
-          "nullable": false
+          "nullable": false,
+          "comment": "Category ID"
         },
         {
           "name": "parent_id",
@@ -603,7 +621,8 @@
         {
           "name": "name",
           "type": "varchar(100)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Display name"
         },
         {
           "name": "slug",
@@ -705,12 +724,14 @@
           "name": "id",
           "type": "bigint",
           "nullable": false,
-          "default": "nextval('products_id_seq'::regclass)"
+          "default": "nextval('products_id_seq'::regclass)",
+          "comment": "Product ID"
         },
         {
           "name": "category_id",
           "type": "integer",
-          "nullable": false
+          "nullable": false,
+          "comment": "Category the product is listed in"
         },
         {
           "name": "sku",
@@ -721,12 +742,14 @@
         {
           "name": "name",
           "type": "varchar(200)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Display name"
         },
         {
           "name": "description",
           "type": "text",
-          "nullable": true
+          "nullable": true,
+          "comment": "Product description shown in the store"
         },
         {
           "name": "price",
@@ -882,18 +905,21 @@
         {
           "name": "product_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Product"
         },
         {
           "name": "quantity",
           "type": "integer",
-          "nullable": false
+          "nullable": false,
+          "comment": "Units in stock"
         },
         {
           "name": "updated_at",
           "type": "timestamp with time zone",
           "nullable": false,
-          "default": "now()"
+          "default": "now()",
+          "comment": "Last stock update"
         }
       ],
       "indexes": [
@@ -981,29 +1007,34 @@
           "name": "id",
           "type": "bigint",
           "nullable": false,
-          "default": "nextval('orders_id_seq'::regclass)"
+          "default": "nextval('orders_id_seq'::regclass)",
+          "comment": "Order ID"
         },
         {
           "name": "customer_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Customer who placed the order"
         },
         {
           "name": "shipping_address_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Where the order is shipped"
         },
         {
           "name": "status",
           "type": "order_status",
           "nullable": false,
-          "default": "'pending'::order_status"
+          "default": "'pending'::order_status",
+          "comment": "Order status"
         },
         {
           "name": "ordered_at",
           "type": "timestamp with time zone",
           "nullable": false,
-          "default": "now()"
+          "default": "now()",
+          "comment": "When the order was placed"
         },
         {
           "name": "total",
@@ -1139,22 +1170,26 @@
         {
           "name": "order_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Order"
         },
         {
           "name": "line_no",
           "type": "smallint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Line number within the order"
         },
         {
           "name": "product_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Ordered product"
         },
         {
           "name": "quantity",
           "type": "integer",
-          "nullable": false
+          "nullable": false,
+          "comment": "Units ordered"
         },
         {
           "name": "unit_price",
@@ -1290,27 +1325,32 @@
           "name": "id",
           "type": "bigint",
           "nullable": false,
-          "default": "nextval('shipments_id_seq'::regclass)"
+          "default": "nextval('shipments_id_seq'::regclass)",
+          "comment": "Shipment ID"
         },
         {
           "name": "order_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Order being shipped"
         },
         {
           "name": "carrier",
           "type": "varchar(50)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Delivery company"
         },
         {
           "name": "tracking_no",
           "type": "varchar(100)",
-          "nullable": true
+          "nullable": true,
+          "comment": "Tracking number from the carrier"
         },
         {
           "name": "shipped_at",
           "type": "timestamp with time zone",
-          "nullable": true
+          "nullable": true,
+          "comment": "When the parcel left the warehouse; null until shipped"
         }
       ],
       "indexes": [
@@ -1387,22 +1427,26 @@
         {
           "name": "shipment_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Parcel"
         },
         {
           "name": "order_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Order of the line"
         },
         {
           "name": "line_no",
           "type": "smallint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Order line in the parcel"
         },
         {
           "name": "quantity",
           "type": "integer",
-          "nullable": false
+          "nullable": false,
+          "comment": "Units of the line in the parcel"
         }
       ],
       "indexes": [
@@ -1519,17 +1563,20 @@
           "name": "id",
           "type": "bigint",
           "nullable": false,
-          "default": "nextval('reviews_id_seq'::regclass)"
+          "default": "nextval('reviews_id_seq'::regclass)",
+          "comment": "Review ID"
         },
         {
           "name": "product_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Reviewed product"
         },
         {
           "name": "customer_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Reviewer"
         },
         {
           "name": "rating",
@@ -1540,13 +1587,15 @@
         {
           "name": "body",
           "type": "text",
-          "nullable": true
+          "nullable": true,
+          "comment": "Review text"
         },
         {
           "name": "created_at",
           "type": "timestamp with time zone",
           "nullable": false,
-          "default": "now()"
+          "default": "now()",
+          "comment": "When the review was posted"
         }
       ],
       "indexes": [
@@ -1687,7 +1736,8 @@
           "name": "id",
           "type": "bigint",
           "nullable": false,
-          "default": "nextval('activity_logs_id_seq'::regclass)"
+          "default": "nextval('activity_logs_id_seq'::regclass)",
+          "comment": "Log ID"
         },
         {
           "name": "staff_id",
@@ -1704,7 +1754,8 @@
         {
           "name": "action",
           "type": "varchar(50)",
-          "nullable": false
+          "nullable": false,
+          "comment": "What was done, e.g. order.cancel"
         },
         {
           "name": "detail",
@@ -1716,7 +1767,8 @@
           "name": "created_at",
           "type": "timestamp with time zone",
           "nullable": false,
-          "default": "now()"
+          "default": "now()",
+          "comment": "When the action was done"
         }
       ],
       "indexes": [
@@ -1858,12 +1910,14 @@
           "name": "id",
           "type": "bigint",
           "nullable": false,
-          "default": "nextval('billing.invoices_id_seq'::regclass)"
+          "default": "nextval('billing.invoices_id_seq'::regclass)",
+          "comment": "Invoice ID"
         },
         {
           "name": "order_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Invoiced order"
         },
         {
           "name": "number",
@@ -1875,12 +1929,14 @@
           "name": "issued_at",
           "type": "timestamp with time zone",
           "nullable": false,
-          "default": "now()"
+          "default": "now()",
+          "comment": "Issue date"
         },
         {
           "name": "amount",
           "type": "numeric(12,2)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Amount to pay"
         }
       ],
       "indexes": [
@@ -2014,28 +2070,33 @@
           "name": "id",
           "type": "bigint",
           "nullable": false,
-          "default": "nextval('billing.payments_id_seq'::regclass)"
+          "default": "nextval('billing.payments_id_seq'::regclass)",
+          "comment": "Payment ID"
         },
         {
           "name": "invoice_id",
           "type": "bigint",
-          "nullable": false
+          "nullable": false,
+          "comment": "Invoice paid"
         },
         {
           "name": "method",
           "type": "billing.payment_method",
-          "nullable": false
+          "nullable": false,
+          "comment": "How it was paid"
         },
         {
           "name": "amount",
           "type": "numeric(12,2)",
-          "nullable": false
+          "nullable": false,
+          "comment": "Amount received"
         },
         {
           "name": "paid_at",
           "type": "timestamp with time zone",
           "nullable": false,
-          "default": "now()"
+          "default": "now()",
+          "comment": "When the payment was received"
         }
       ],
       "indexes": [
