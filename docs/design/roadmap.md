@@ -165,3 +165,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 PoC / 実装中に決める。決まったら concept.md を更新する。比較検討の経緯や計測結果など、concept.md に書くと長くなる内容があるときだけ `docs/design/adr/` に記録する。
 
 - 全体 ER 図が巨大な場合の扱い (分割 / オプション化)。キーカラムのみ表示でも数百テーブルで縦に長くなる (concept.md §21)
+- tbls の viewpoints の表示方法 (大規模 DB 向け表示改善)。調査済みの事項:
+  - `.tbls.yml` の `viewpoints` で定義する (名前、説明、`tables` または `labels` による対象テーブル、`distance`、`groups` (名前 / 説明 / テーブル / 色))。schema.json には定義がそのまま入り、`distance` で広げたテーブルは含まれない (使う側で計算する)
+  - tbls の Markdown: README に一覧 (名前 / 説明)、ビューポイントごとのページ (説明、グループごとのテーブル一覧、ER 図。グループの外のテーブルと `distance` で広げたテーブルはまとめて「-」の下)、テーブル詳細にそのテーブルを含むビューポイントへのリンク。ER 図ではグループを囲み (cluster) で描く
+  - 論点: `distance` で広げたテーブルを直接指定したテーブルと区別するか、グループの色 (利用者指定の任意色) とダークモードの両立、`labels` による指定への対応 (テーブルのラベルの読み込みが必要)
