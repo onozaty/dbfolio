@@ -1,5 +1,9 @@
 # dbfolio
 
+[![GitHub license](https://img.shields.io/github/license/onozaty/dbfolio)](https://github.com/onozaty/dbfolio/blob/main/LICENSE)
+[![CI](https://github.com/onozaty/dbfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/onozaty/dbfolio/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/onozaty/dbfolio/graph/badge.svg)](https://codecov.io/gh/onozaty/dbfolio)
+
 Generate browsable static HTML database documentation and ER diagrams from [tbls](https://github.com/k1LoW/tbls) `schema.json`.
 
 tbls reads your database; dbfolio turns its output into a small website you can open locally or publish anywhere static files are served.
