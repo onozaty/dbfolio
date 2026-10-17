@@ -9,8 +9,8 @@ GitHub Release の作成は、タグの push をきっかけに GitHub Actions (
 3. バージョンのタグを付けて push する
 
    ```bash
-   git tag v0.1.0
-   git push origin v0.1.0
+   git tag v1.0.0
+   git push origin v1.0.0
    ```
 
 4. Actions の Release ワークフローが完了したら、GitHub Release の内容 (変更履歴、アーカイブ) を確認する
