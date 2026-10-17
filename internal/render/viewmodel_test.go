@@ -334,60 +334,6 @@ func TestNewTablesPage_FallsBackWhenDatabaseNameIsEmpty(t *testing.T) {
 	}
 }
 
-func TestNewColumnsPage_ListsColumnsOfAllTablesWithKeys(t *testing.T) {
-	// Arrange
-	users := &schema.Table{
-		Name:        "users",
-		Columns:     []*schema.Column{{Name: "id"}},
-		Constraints: []*schema.Constraint{{Kind: schema.ConstraintPrimaryKey, Columns: []string{"id"}}},
-	}
-	orders := &schema.Table{Name: "orders", Columns: []*schema.Column{{Name: "user_id", ExtraDef: "x"}}}
-	r := &schema.Relation{Table: orders, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"id"}}
-	site := plan(t, &schema.Schema{Tables: []*schema.Table{users, orders}, Relations: []*schema.Relation{r}})
-
-	// Act
-	p := site.newColumnsPage()
-
-	// Assert
-	if len(p.Columns) != 2 {
-		t.Fatalf("len(Columns) = %d, want 2", len(p.Columns))
-	}
-	idRow, fkRow := p.Columns[0], p.Columns[1]
-	if idRow.Table != "users" || idRow.TableHref != "tables/users.html" || idRow.Name != "id" || idRow.Keys[0].Label != "PK" {
-		t.Errorf("first row = %+v", idRow)
-	}
-	// Links are relative to the root, not to a table page.
-	if fkRow.Table != "orders" || len(fkRow.Keys) != 1 || fkRow.Keys[0].Href != "tables/users.html" {
-		t.Errorf("second row = %+v", fkRow)
-	}
-	if !p.ShowExtra || p.Current != menuColumns {
-		t.Errorf("ShowExtra = %v, Current = %q", p.ShowExtra, p.Current)
-	}
-}
-
-func TestNewConstraintsPage_ListsDatabaseConstraintsOnly(t *testing.T) {
-	// Arrange: the virtual relation is not a constraint.
-	users := &schema.Table{Name: "users", Columns: []*schema.Column{{Name: "id"}},
-		Constraints: []*schema.Constraint{{Name: "users_pkey", Kind: schema.ConstraintPrimaryKey, Columns: []string{"id"}}}}
-	logs := &schema.Table{Name: "logs", Columns: []*schema.Column{{Name: "user_id"}},
-		Constraints: []*schema.Constraint{{Name: "logs_check", Kind: schema.ConstraintCheck}}}
-	virtual := &schema.Relation{Table: logs, Columns: []string{"user_id"}, ParentTable: users, ParentColumns: []string{"id"}, Virtual: true}
-	site := plan(t, &schema.Schema{Tables: []*schema.Table{users, logs}, Relations: []*schema.Relation{virtual}})
-
-	// Act
-	p := site.newConstraintsPage()
-
-	// Assert
-	var got []string
-	for _, c := range p.Constraints {
-		got = append(got, c.Table+"/"+c.Name+"@"+c.TableHref)
-	}
-	want := []string{"users/users_pkey@tables/users.html", "logs/logs_check@tables/logs.html"}
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("constraints = %v, want %v", got, want)
-	}
-}
-
 func TestPages_MarkCurrentMenu(t *testing.T) {
 	// Arrange
 	table := &schema.Table{Name: "t"}
@@ -396,8 +342,6 @@ func TestPages_MarkCurrentMenu(t *testing.T) {
 	// Act
 	got := map[string]string{
 		"tables":        site.newTablesPage().Current,
-		"columns":       site.newColumnsPage().Current,
-		"constraints":   site.newConstraintsPage().Current,
 		"relationships": site.newRelationshipsPage().Current,
 		"table page":    site.newTablePage(table).Current,
 	}
@@ -405,8 +349,6 @@ func TestPages_MarkCurrentMenu(t *testing.T) {
 	// Assert
 	want := map[string]string{
 		"tables":        menuTables,
-		"columns":       menuColumns,
-		"constraints":   menuConstraints,
 		"relationships": menuRelationships,
 		"table page":    "",
 	}
@@ -426,13 +368,11 @@ func TestPages_ShowCounts(t *testing.T) {
 	// Act
 	got := []string{
 		site.newTablesPage().Count,
-		site.newColumnsPage().Count,
-		site.newConstraintsPage().Count,
 		site.newRelationshipsPage().Count,
 	}
 
 	// Assert: no views, so the tables count does not mention them.
-	want := []string{"2 tables", "3 columns", "1 constraint", "1 relationship"}
+	want := []string{"2 tables", "1 relationship"}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("counts = %v, want %v", got, want)
 	}
@@ -455,31 +395,6 @@ func TestNewTablePage_ShowsCommentColumnsOnlyWhenUsed(t *testing.T) {
 	if !p.IndexComments || p.ConstraintComments || p.TriggerComments {
 		t.Errorf("comment columns = index %v, constraint %v, trigger %v; want true, false, false",
 			p.IndexComments, p.ConstraintComments, p.TriggerComments)
-	}
-}
-
-func TestNewConstraintsPage_ShowsCommentColumnOnlyWhenUsed(t *testing.T) {
-	tests := map[string]struct {
-		comment string
-		want    bool
-	}{
-		"no comments": {"", false},
-		"a comment":   {"note", true},
-	}
-	for name, tt := range tests {
-		t.Run(name, func(t *testing.T) {
-			// Arrange
-			table := &schema.Table{Name: "t", Constraints: []*schema.Constraint{{Name: "a"}, {Name: "b", Comment: tt.comment}}}
-			site := plan(t, &schema.Schema{Tables: []*schema.Table{table}})
-
-			// Act
-			p := site.newConstraintsPage()
-
-			// Assert
-			if p.ShowComment != tt.want {
-				t.Errorf("ShowComment = %v, want %v", p.ShowComment, tt.want)
-			}
-		})
 	}
 }
 

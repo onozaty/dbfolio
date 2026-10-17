@@ -15,7 +15,9 @@ import (
 func TestSearchEntries_IndexesTablesAndColumns(t *testing.T) {
 	// Arrange
 	users := &schema.Table{Name: "users", Type: "BASE TABLE", Comment: "ユーザー",
-		Columns: []*schema.Column{{Name: "id", Type: "bigint", Comment: "ID"}, {Name: "name", Type: "text"}}}
+		Columns:     []*schema.Column{{Name: "id", Type: "bigint", Comment: "ID"}, {Name: "name", Type: "text"}},
+		Constraints: []*schema.Constraint{{Name: "users_pkey", Type: "PRIMARY KEY"}, {Name: "users_name_key", Type: "UNIQUE", Comment: "一意"}},
+		Indexes:     []*schema.Index{{Name: "users_name_idx"}}}
 	active := &schema.Table{Name: "active_users", Type: "VIEW", View: true}
 	site := plan(t, &schema.Schema{Tables: []*schema.Table{users, active}})
 
@@ -27,6 +29,9 @@ func TestSearchEntries_IndexesTablesAndColumns(t *testing.T) {
 		{Kind: "t", Name: "users", Comment: "ユーザー", Href: "tables/users.html"},
 		{Kind: "c", Name: "id", Table: "users", Type: "bigint", Comment: "ID", Href: "tables/users.html#column-0"},
 		{Kind: "c", Name: "name", Table: "users", Type: "text", Href: "tables/users.html#column-1"},
+		{Kind: "n", Name: "users_pkey", Table: "users", Type: "PRIMARY KEY", Href: "tables/users.html#constraint-0"},
+		{Kind: "n", Name: "users_name_key", Table: "users", Type: "UNIQUE", Comment: "一意", Href: "tables/users.html#constraint-1"},
+		{Kind: "i", Name: "users_name_idx", Table: "users", Type: "INDEX", Href: "tables/users.html#index-0"},
 		{Kind: "t", Name: "active_users", Type: "VIEW", Href: "tables/active_users.html"},
 	}
 	if !reflect.DeepEqual(got, want) {
@@ -80,9 +85,10 @@ func TestWriteSearchIndex_WritesEmptyArrayForEmptySchema(t *testing.T) {
 	}
 }
 
-func TestNewTablePage_AnchorsColumnRows(t *testing.T) {
+func TestNewTablePage_AnchorsRows(t *testing.T) {
 	// Arrange
-	table := &schema.Table{Name: "t", Columns: []*schema.Column{{Name: "a"}, {Name: "b"}}}
+	table := &schema.Table{Name: "t", Columns: []*schema.Column{{Name: "a"}, {Name: "b"}},
+		Constraints: []*schema.Constraint{{Name: "t_pkey"}}, Indexes: []*schema.Index{{Name: "t_idx"}}}
 	site := plan(t, &schema.Schema{Tables: []*schema.Table{table}})
 	var buf bytes.Buffer
 
@@ -93,7 +99,10 @@ func TestNewTablePage_AnchorsColumnRows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, want := range []string{`<tr id="column-0"><td>a</td>`, `<tr id="column-1"><td>b</td>`} {
+	for _, want := range []string{
+		`<tr id="column-0"><td>a</td>`, `<tr id="column-1"><td>b</td>`,
+		`<tr id="constraint-0"><td>t_pkey</td>`, `<tr id="index-0"><td>t_idx</td>`,
+	} {
 		if !strings.Contains(buf.String(), want) {
 			t.Errorf("table page does not contain %q", want)
 		}

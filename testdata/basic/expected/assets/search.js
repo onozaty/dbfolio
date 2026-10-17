@@ -16,12 +16,16 @@
         name: name,
         // The last dotted part, so that "users" is a prefix of "public.users".
         last: name.slice(name.lastIndexOf(".") + 1),
-        // A column also matches with its table ("users.id").
-        full: e.k === "c" ? (e.t + "." + e.n).toLowerCase() : name,
+        // A column, constraint or index also matches with its table ("users.id").
+        full: e.k === "t" ? name : (e.t + "." + e.n).toLowerCase(),
         comment: (e.c || "").toLowerCase(),
       };
     });
   }
+
+  // Rank of a name match by kind: tables, then columns, then constraints and
+  // indexes. A prefix match ranks one better than a substring match.
+  var kindRank = { t: 0, c: 2, n: 4, i: 4 };
 
   // search returns the entries matching every space-separated term of query
   // (case-insensitive substring), best first:
@@ -29,7 +33,9 @@
   //   1. table name containing the terms
   //   2. column name starting with the first term
   //   3. column name containing the terms
-  //   4. comment containing the terms
+  //   4. constraint or index name starting with the first term
+  //   5. constraint or index name containing the terms
+  //   6. comment containing the terms
   // Ties keep the shorter name first, then the index order.
   function search(prepared, query, limit) {
     var terms = query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -49,10 +55,10 @@
         }
       }
       if (!inAny) continue;
-      var rank = 4;
+      var rank = 6;
       if (inName) {
         var prefix = startsWith(p.name, terms[0]) || startsWith(p.last, terms[0]);
-        rank = (p.entry.k === "t" ? 0 : 2) + (prefix ? 0 : 1);
+        rank = kindRank[p.entry.k] + (prefix ? 0 : 1);
       }
       hits.push({ p: p, rank: rank });
     }
@@ -133,7 +139,7 @@
       a.href = root + e.h;
       a.tabIndex = -1;
       // textContent, never innerHTML: names and comments come from the database.
-      appendSpan(a, "search-name", e.k === "c" ? e.t + "." + e.n : e.n);
+      appendSpan(a, "search-name", e.k === "t" ? e.n : e.t + "." + e.n);
       if (e.y) appendSpan(a, "search-type", e.k === "t" ? "[" + e.y + "]" : e.y);
       if (e.c) appendSpan(a, "search-comment", e.c);
       li.appendChild(a);

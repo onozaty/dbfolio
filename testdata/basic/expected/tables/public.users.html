@@ -14,14 +14,12 @@
 <a class="site-title" href="../index.html">dbfolio</a>
 <nav class="site-nav">
 <a href="../index.html">Tables</a>
-<a href="../columns.html">Columns</a>
-<a href="../constraints.html">Constraints</a>
 <a href="../relationships.html">Relationships</a>
 <a href="../functions.html">Functions</a>
 <a href="../enums.html">Enums</a>
 </nav>
 <div class="search" role="search">
-<input type="search" id="search-input" placeholder="Search tables and columns" autocomplete="off" spellcheck="false" aria-label="Search tables and columns" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
+<input type="search" id="search-input" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search tables, columns, constraints and indexes" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
 <kbd class="search-key" aria-hidden="true">/</kbd>
 <ul id="search-results" role="listbox" aria-label="Search results" hidden></ul>
 <div id="search-status" class="search-status" aria-live="polite"></div>
@@ -55,10 +53,10 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Definition</th></tr></thead>
 <tbody>
-<tr><td>users_status_check</td><td>CHECK</td><td><code>CHECK (((status)::text = ANY ((ARRAY[&#39;active&#39;::character varying, &#39;suspended&#39;::character varying, &#39;deleted&#39;::character varying])::text[])))</code></td></tr>
-<tr><td>users_region_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (region_id) REFERENCES regions(id)</code></td></tr>
-<tr><td>users_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td></tr>
-<tr><td>users_email_key</td><td>UNIQUE</td><td><code>UNIQUE (email)</code></td></tr>
+<tr id="constraint-0"><td>users_status_check</td><td>CHECK</td><td><code>CHECK (((status)::text = ANY ((ARRAY[&#39;active&#39;::character varying, &#39;suspended&#39;::character varying, &#39;deleted&#39;::character varying])::text[])))</code></td></tr>
+<tr id="constraint-1"><td>users_region_id_fkey</td><td>FOREIGN KEY</td><td><code>FOREIGN KEY (region_id) REFERENCES regions(id)</code></td></tr>
+<tr id="constraint-2"><td>users_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td></tr>
+<tr id="constraint-3"><td>users_email_key</td><td>UNIQUE</td><td><code>UNIQUE (email)</code></td></tr>
 </tbody>
 </table>
 </div>
@@ -70,9 +68,9 @@
 <table>
 <thead><tr><th>Name</th><th>Definition</th></tr></thead>
 <tbody>
-<tr><td>users_pkey</td><td><code>CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id)</code></td></tr>
-<tr><td>users_email_key</td><td><code>CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email)</code></td></tr>
-<tr><td>users_region_id_idx</td><td><code>CREATE INDEX users_region_id_idx ON public.users USING btree (region_id)</code></td></tr>
+<tr id="index-0"><td>users_pkey</td><td><code>CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id)</code></td></tr>
+<tr id="index-1"><td>users_email_key</td><td><code>CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email)</code></td></tr>
+<tr id="index-2"><td>users_region_id_idx</td><td><code>CREATE INDEX users_region_id_idx ON public.users USING btree (region_id)</code></td></tr>
 </tbody>
 </table>
 </div>

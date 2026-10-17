@@ -14,14 +14,12 @@
 <a class="site-title" href="../index.html">dbfolio</a>
 <nav class="site-nav">
 <a href="../index.html">Tables</a>
-<a href="../columns.html">Columns</a>
-<a href="../constraints.html">Constraints</a>
 <a href="../relationships.html">Relationships</a>
 <a href="../functions.html">Functions</a>
 <a href="../enums.html">Enums</a>
 </nav>
 <div class="search" role="search">
-<input type="search" id="search-input" placeholder="Search tables and columns" autocomplete="off" spellcheck="false" aria-label="Search tables and columns" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
+<input type="search" id="search-input" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search tables, columns, constraints and indexes" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" aria-keyshortcuts="/">
 <kbd class="search-key" aria-hidden="true">/</kbd>
 <ul id="search-results" role="listbox" aria-label="Search results" hidden></ul>
 <div id="search-status" class="search-status" aria-live="polite"></div>
@@ -51,7 +49,7 @@
 <table>
 <thead><tr><th>Name</th><th>Type</th><th>Definition</th></tr></thead>
 <tbody>
-<tr><td>regions_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td></tr>
+<tr id="constraint-0"><td>regions_pkey</td><td>PRIMARY KEY</td><td><code>PRIMARY KEY (id)</code></td></tr>
 </tbody>
 </table>
 </div>
@@ -63,7 +61,7 @@
 <table>
 <thead><tr><th>Name</th><th>Definition</th></tr></thead>
 <tbody>
-<tr><td>regions_pkey</td><td><code>CREATE UNIQUE INDEX regions_pkey ON public.regions USING btree (id)</code></td></tr>
+<tr id="index-0"><td>regions_pkey</td><td><code>CREATE UNIQUE INDEX regions_pkey ON public.regions USING btree (id)</code></td></tr>
 </tbody>
 </table>
 </div>

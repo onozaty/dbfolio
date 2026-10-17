@@ -58,7 +58,7 @@ func TestBuild_GeneratesTablePagesAndAssets(t *testing.T) {
 	if err != nil {
 		t.Fatalf("build error = %v", err)
 	}
-	for _, name := range []string{"columns.html", "constraints.html", "relationships.html", "functions.html", "enums.html", "tables/public.users.html", "tables/public.active_users.html", "assets/app.css", "assets/search-index.js", "assets/search.js"} {
+	for _, name := range []string{"relationships.html", "functions.html", "enums.html", "tables/public.users.html", "tables/public.active_users.html", "assets/app.css", "assets/search-index.js", "assets/search.js"} {
 		if _, err := os.Stat(filepath.Join(outDir, name)); err != nil {
 			t.Errorf("%s not generated: %v", name, err)
 		}

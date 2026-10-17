@@ -13,7 +13,7 @@ const index = [
   { k: "c", n: "email", t: "public.users", y: "varchar(255)", c: "ログインに使用するメールアドレス", h: "tables/public.users.html#column-2" },
   { k: "t", n: "public.active_users", y: "VIEW", c: "有効なユーザー", h: "tables/public.active_users.html" },
 ];
-const names = (entries) => entries.map((e) => (e.k === "c" ? e.t + "." + e.n : e.n));
+const names = (entries) => entries.map((e) => (e.k === "t" ? e.n : e.t + "." + e.n));
 const tests = [];
 const test = (name, fn) => tests.push([name, fn]);
 
@@ -93,6 +93,22 @@ test("treats regular expression characters literally", () => {
   ];
   assert.deepEqual(names(search(special, "(yen)")), ["t.price(yen)"]);
   assert.deepEqual(names(search(special, ".*")), []);
+});
+
+test("ranks constraints and indexes after columns", () => {
+  const entries = [
+    { k: "i", n: "users_email_idx", t: "public.users", y: "INDEX", h: "x" },
+    { k: "n", n: "users_email_key", t: "public.users", y: "UNIQUE", h: "x" },
+    { k: "c", n: "email", t: "public.users", y: "text", h: "x" },
+    { k: "c", n: "note", t: "public.users", y: "text", c: "email address", h: "x" },
+  ];
+  assert.deepEqual(names(search(entries, "email")), [
+    "public.users.email",           // column, prefix
+    "public.users.users_email_idx", // index and constraint, substring: same rank and length, so index order
+    "public.users.users_email_key",
+    "public.users.note",            // comment
+  ]);
+  assert.deepEqual(names(search(entries, "users_email_key")), ["public.users.users_email_key"]);
 });
 
 let failed = 0;

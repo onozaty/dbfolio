@@ -128,15 +128,12 @@ func TestWrite_RendersEmptyStates(t *testing.T) {
 			&schema.Schema{},
 			map[string]string{
 				"index.html":         "<p>No tables.</p>",
-				"columns.html":       "<p>No columns.</p>",
-				"constraints.html":   "<p>No constraints.</p>",
 				"relationships.html": "<p>No tables.</p>",
 			},
 		},
 		"no relations": {
 			&schema.Schema{Tables: []*schema.Table{{Name: "t", Columns: []*schema.Column{{Name: "c"}}}}},
 			map[string]string{
-				"constraints.html":   "<p>No constraints.</p>",
 				"relationships.html": "<p>No relationships.</p>",
 			},
 		},
