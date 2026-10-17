@@ -1011,7 +1011,7 @@ Phase 構成・最初の PoC・進捗は [roadmap.md](roadmap.md) で管理す�
 | tbls | DB schema extraction layer |
 | CLI | cobra (位置引数の後ろのフラグも解析できるため) |
 | SPA framework | MVP では使用しない |
-| 配布 | 単一バイナリ (GitHub Release / Homebrew / Scoop) |
+| 配布 | 単一バイナリ (GitHub Release / Homebrew / Scoop)。GoReleaser でビルドし、CGO なしで linux / darwin / windows × amd64 / arm64 を作る |
 | リポジトリのドキュメント | `docs/` (設計資料は `docs/design/`) |
 
 ---
