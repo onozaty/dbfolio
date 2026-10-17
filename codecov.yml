@@ -1,0 +1,5 @@
+# Coverage covers the tool itself: the entry point (cmd/, only main) and the
+# development scripts (scripts/) have no tests of their own.
+ignore:
+  - "cmd/"
+  - "scripts/"
