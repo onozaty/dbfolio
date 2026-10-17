@@ -137,7 +137,7 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 ## Phase 6: Release
 
-- [ ] THIRD_PARTY_NOTICES (go-graphviz: MIT、graphviz.wasm: EPL など依存ライセンスの整理)
+- [x] THIRD_PARTY_NOTICES (go-graphviz: MIT、graphviz.wasm: EPL など依存ライセンスの整理。`scripts/notices` で生成し CI で確認)
 - [ ] GoReleaser
 - [ ] GitHub Release
 - [ ] Homebrew Tap (macOS / Linux)

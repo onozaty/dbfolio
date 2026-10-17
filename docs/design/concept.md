@@ -422,9 +422,16 @@ if err := g.Render(ctx, graph, graphviz.SVG, &buf); err != nil {
 ### ライセンス注意
 
 - `go-graphviz` 本体: MIT
-- 内包される `graphviz.wasm`: Graphviz 由来の Eclipse Public License
+- 内包される `graphviz.wasm`: Graphviz 12.1.2 (EPL-1.0)、Expat 2.6.3 (MIT)、wasi-libc (MIT を選択。一部 musl / cloudlibc などのライセンス) から作られている
 
-リリース時は THIRD_PARTY_NOTICES 等で依存ライセンスを整理する。
+依存ライセンスは THIRD_PARTY_NOTICES (リポジトリのルート) にまとめる (Phase 6)。
+
+- `scripts/notices` で生成する。リリース対象の OS (linux / darwin / windows) ごとに実際にリンクされる Go モジュールを `go list -deps` で集め、モジュールキャッシュからライセンスファイルを取り出す。Go の標準ライブラリも含める
+- `graphviz.wasm` の中身は Go モジュールからは分からないため、ライセンス文と入手先を `third_party/graphviz-wasm/` に置いて追加する。go-graphviz を更新したら、内包する Graphviz などのバージョンを確認してここも更新する
+- EPL-1.0 は、オブジェクトコードとして別のライセンスで配布する場合に、ソースコードの入手方法を示すことを求める。Graphviz のソースの入手先 (12.1.2 のタグとリリースアーカイブ) を記載する
+- golang/freetype は FreeType License と GPLv2 のデュアルライセンスのため、FreeType License (ftl.txt) を選ぶ
+- CI で再生成して差分がないことを確認し、依存の更新時の更新漏れを防ぐ
+- ライセンスを表示するコマンド (`dbfolio licenses` など) は設けず、リリースのアーカイブに同梱する
 
 ---
 
