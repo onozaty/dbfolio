@@ -15,13 +15,22 @@ GitHub Release の作成は、タグの push をきっかけに GitHub Actions (
 
 4. Actions の Release ワークフローが完了したら、GitHub Release の内容 (変更履歴、アーカイブ) を確認する
 
+## Homebrew / Scoop
+
+リリース時に GoReleaser が [onozaty/homebrew-tap](https://github.com/onozaty/homebrew-tap) の Cask (`Casks/dbfolio.rb`) と [onozaty/scoop-bucket](https://github.com/onozaty/scoop-bucket) のマニフェスト (`dbfolio.json`) を更新する。書き込みには、それぞれのリポジトリに push できるトークンを dbfolio のリポジトリの Secrets に登録しておく。
+
+- `HOMEBREW_TAP_TOKEN`: onozaty/homebrew-tap に push できるトークン
+- `SCOOP_BUCKET_TOKEN`: onozaty/scoop-bucket に push できるトークン
+
+プレリリースやスナップショットでは更新しない (`skip_upload: auto`)。
+
 ## 配布物
 
 - 対象: linux / darwin / windows の amd64 / arm64
 - アーカイブ: tar.gz (Windows は zip)。バイナリと LICENSE、README.md、THIRD_PARTY_NOTICES を含む
 - checksums.txt
 
-変更履歴は GitHub の自動生成を使い、`docs:` / `test:` / `chore:` / `ci:` のコミットは除く。
+変更履歴は GitHub の自動生成を使い、`docs:` / `test:` / `chore:` / `ci:` のコミットとマージコミットは除く。
 
 ## ローカルでの確認
 
