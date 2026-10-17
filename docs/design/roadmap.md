@@ -139,9 +139,9 @@ dbfolio build schema.json [-o ./dbfolio-docs] [--force]
 
 - [x] THIRD_PARTY_NOTICES (go-graphviz: MIT、graphviz.wasm: EPL など依存ライセンスの整理。`scripts/notices` で生成し CI で確認)
 - [x] GoReleaser (`.goreleaser.yaml`、タグの push で `.github/workflows/release.yml` が実行。手順は [docs/release.md](../release.md))
-- [ ] GitHub Release
-- [ ] Homebrew Tap (macOS / Linux)
-- [ ] Scoop bucket (Windows)
+- [x] GitHub Release (v1.0.0、2026-10-17)
+- [ ] Homebrew Tap (macOS / Linux。onozaty/homebrew-tap の Cask)
+- [ ] Scoop bucket (Windows。onozaty/scoop-bucket)
 - [x] README (使い方、tbls との連携手順)
 - [ ] デモサイト (生成サンプルを GitHub Pages で公開するか検討)
 

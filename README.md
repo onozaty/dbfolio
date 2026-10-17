@@ -15,9 +15,26 @@ tbls reads your database; dbfolio turns its output into a small website you can 
 
 ## Install
 
-Download the archive for your platform from [GitHub Releases](https://github.com/onozaty/dbfolio/releases), extract it and put `dbfolio` on your `PATH`.
+### Homebrew (macOS / Linux)
 
-Or install with Go (1.27 or later):
+```bash
+brew install onozaty/tap/dbfolio
+```
+
+### Scoop (Windows)
+
+```bash
+scoop bucket add onozaty https://github.com/onozaty/scoop-bucket
+scoop install dbfolio
+```
+
+### Binary download
+
+Download the archive for your platform from [GitHub Releases](https://github.com/onozaty/dbfolio/releases/latest), extract it and put `dbfolio` on your `PATH`.
+
+### Go
+
+With Go 1.27 or later:
 
 ```bash
 go install github.com/onozaty/dbfolio/cmd/dbfolio@latest

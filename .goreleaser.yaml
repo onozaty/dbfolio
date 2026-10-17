@@ -50,3 +50,33 @@ changelog:
       - "^test:"
       - "^chore:"
       - "^ci:"
+      # Merge commits only repeat the PR; the commits inside are listed anyway.
+      - "^Merge pull request"
+      - "^Merge branch"
+      - "^Initial commit"
+
+# Same setup as the other onozaty tools: the tap and the bucket are separate
+# repositories, written with tokens that can push to them.
+homebrew_casks:
+  - name: dbfolio
+    binaries:
+      - dbfolio
+    repository:
+      owner: onozaty
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    description: "Generate browsable static HTML database documentation and ER diagrams from tbls schema.json"
+    homepage: "https://github.com/onozaty/dbfolio"
+    license: MIT
+    # Not on snapshots or prereleases.
+    skip_upload: auto
+
+scoops:
+  - repository:
+      owner: onozaty
+      name: scoop-bucket
+      token: "{{ .Env.SCOOP_BUCKET_TOKEN }}"
+    description: "Generate browsable static HTML database documentation and ER diagrams from tbls schema.json"
+    homepage: "https://github.com/onozaty/dbfolio"
+    license: MIT
+    skip_upload: auto
