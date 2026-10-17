@@ -219,3 +219,78 @@ CREATE TABLE billing.payments (
   paid_at    timestamptz NOT NULL DEFAULT now()
 );
 COMMENT ON TABLE billing.payments IS 'Payments received; an invoice can be paid in several payments';
+
+-- Column comments ----------------------------------------------------------------
+
+COMMENT ON COLUMN customers.id IS 'Customer ID';
+COMMENT ON COLUMN customers.name IS 'Full name';
+COMMENT ON COLUMN customers.created_at IS 'When the account was created';
+
+COMMENT ON COLUMN addresses.id IS 'Address ID';
+COMMENT ON COLUMN addresses.customer_id IS 'Owner of the address';
+COMMENT ON COLUMN addresses.line1 IS 'Street address';
+COMMENT ON COLUMN addresses.line2 IS 'Apartment, suite, etc.';
+COMMENT ON COLUMN addresses.city IS 'City';
+COMMENT ON COLUMN addresses.postal_code IS 'Postal or ZIP code';
+COMMENT ON COLUMN addresses.country IS 'ISO 3166-1 alpha-2 country code';
+
+COMMENT ON COLUMN staff.id IS 'Staff ID';
+COMMENT ON COLUMN staff.email IS 'Login ID for the back office';
+COMMENT ON COLUMN staff.name IS 'Full name';
+
+COMMENT ON COLUMN roles.id IS 'Role ID';
+COMMENT ON COLUMN roles.name IS 'Role name, e.g. admin or support';
+
+COMMENT ON COLUMN staff_roles.staff_id IS 'Staff member';
+COMMENT ON COLUMN staff_roles.role_id IS 'Granted role';
+
+COMMENT ON COLUMN categories.id IS 'Category ID';
+COMMENT ON COLUMN categories.name IS 'Display name';
+
+COMMENT ON COLUMN products.id IS 'Product ID';
+COMMENT ON COLUMN products.category_id IS 'Category the product is listed in';
+COMMENT ON COLUMN products.name IS 'Display name';
+COMMENT ON COLUMN products.description IS 'Product description shown in the store';
+
+COMMENT ON COLUMN inventory.product_id IS 'Product';
+COMMENT ON COLUMN inventory.quantity IS 'Units in stock';
+COMMENT ON COLUMN inventory.updated_at IS 'Last stock update';
+
+COMMENT ON COLUMN orders.id IS 'Order ID';
+COMMENT ON COLUMN orders.customer_id IS 'Customer who placed the order';
+COMMENT ON COLUMN orders.shipping_address_id IS 'Where the order is shipped';
+COMMENT ON COLUMN orders.status IS 'Order status';
+COMMENT ON COLUMN orders.ordered_at IS 'When the order was placed';
+
+COMMENT ON COLUMN order_items.order_id IS 'Order';
+COMMENT ON COLUMN order_items.line_no IS 'Line number within the order';
+COMMENT ON COLUMN order_items.product_id IS 'Ordered product';
+COMMENT ON COLUMN order_items.quantity IS 'Units ordered';
+
+COMMENT ON COLUMN shipments.id IS 'Shipment ID';
+COMMENT ON COLUMN shipments.order_id IS 'Order being shipped';
+COMMENT ON COLUMN shipments.carrier IS 'Delivery company';
+COMMENT ON COLUMN shipments.tracking_no IS 'Tracking number from the carrier';
+COMMENT ON COLUMN shipments.shipped_at IS 'When the parcel left the warehouse; null until shipped';
+
+COMMENT ON COLUMN shipment_items.shipment_id IS 'Parcel';
+COMMENT ON COLUMN shipment_items.order_id IS 'Order of the line';
+COMMENT ON COLUMN shipment_items.line_no IS 'Order line in the parcel';
+COMMENT ON COLUMN shipment_items.quantity IS 'Units of the line in the parcel';
+
+COMMENT ON COLUMN reviews.id IS 'Review ID';
+COMMENT ON COLUMN reviews.product_id IS 'Reviewed product';
+COMMENT ON COLUMN reviews.customer_id IS 'Reviewer';
+COMMENT ON COLUMN reviews.body IS 'Review text';
+COMMENT ON COLUMN reviews.created_at IS 'When the review was posted';
+
+COMMENT ON COLUMN billing.invoices.id IS 'Invoice ID';
+COMMENT ON COLUMN billing.invoices.order_id IS 'Invoiced order';
+COMMENT ON COLUMN billing.invoices.issued_at IS 'Issue date';
+COMMENT ON COLUMN billing.invoices.amount IS 'Amount to pay';
+
+COMMENT ON COLUMN billing.payments.id IS 'Payment ID';
+COMMENT ON COLUMN billing.payments.invoice_id IS 'Invoice paid';
+COMMENT ON COLUMN billing.payments.method IS 'How it was paid';
+COMMENT ON COLUMN billing.payments.amount IS 'Amount received';
+COMMENT ON COLUMN billing.payments.paid_at IS 'When the payment was received';

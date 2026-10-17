@@ -10,6 +10,10 @@ tbls reads your database; dbfolio turns its output into a small website you can 
 
 **Demo**: <https://onozaty.github.io/dbfolio/> (a sample online shop schema)
 
+| Table page | Relationships |
+|---|---|
+| [![Table page with columns, constraints and indexes](docs/images/table.png)](https://onozaty.github.io/dbfolio/tables/public.orders.html) | [![Whole-schema ER diagram](docs/images/relationships.png)](https://onozaty.github.io/dbfolio/relationships.html) |
+
 ## Features
 
 - **Table pages**: columns, constraints, indexes, triggers and view definitions, with the comments from your database (and from `.tbls.yml`)

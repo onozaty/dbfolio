@@ -26,4 +26,7 @@ comments:
     columnComments:
       staff_id: Staff member who did the action
       order_id: Order the action was about, if any
+      id: Log ID
+      action: What was done, e.g. order.cancel
       detail: Action-specific data
+      created_at: When the action was done
