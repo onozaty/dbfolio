@@ -18,6 +18,8 @@ jobs:
           go-version-file: go.mod
       - run: go vet ./...
       - run: go test -race ./...
+      # The demo site is built from demo/schema.json on release; keep it buildable.
+      - run: go run ./cmd/dbfolio build demo/schema.json -o "$RUNNER_TEMP/demo"
       - name: Check THIRD_PARTY_NOTICES is up to date
         run: |
           go run ./scripts/notices
