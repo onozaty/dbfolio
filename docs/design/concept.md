@@ -242,21 +242,20 @@ dbfolio ではコメントを重要情報として扱う。
 
 ### ページ構成
 
-メニューは Tables / Columns / Constraints / Relationships とする (Phase 5 で決定。SchemaSpy のメニュー構成を参考にした)。
+メニューは Tables / Relationships とし、関数や enum がある場合は Functions / Enums を加える (Phase 5 で決定)。
 
 | メニュー | ページ | 内容 |
 |---|---|---|
 | Tables | `index.html` | DB の説明 (あれば) とテーブル一覧 (名前 / 種別 / カラム数 / コメント) |
-| Columns | `columns.html` | 全テーブルのカラム (テーブル / 名前 / 型 / Nullable / Default / Key / コメント)。テーブルを横断してカラムを探す・比べる |
-| Constraints | `constraints.html` | DB に定義されている制約 (PK / FK / UNIQUE / CHECK など) |
 | Relationships | `relationships.html` | テーブル間の関係。全体 ER 図 (キーカラムのみ / 全カラム) と一覧をタブで切り替える |
 | Functions | `functions.html` | 関数・ストアドプロシージャ (名前 / 種別 / 引数 / 戻り値の型)。ある場合のみメニューに出す |
 | Enums | `enums.html` | enum 型 (名前 / 値)。ある場合のみメニューに出す |
 
 - 当初の Overview ページは Tables ページにまとめた。最初にしたいのは目的のテーブルを探すことで、件数はその補足になるため
 - 件数のサマリー (カード) は置かず、各ページの見出しの横に件数を添える (例: `Tables 9 tables, 1 view`、`Columns 34 columns`)。サマリーは下の一覧やメニューと重複し、場所を取るため
+- 一時期、SchemaSpy にならって全カラムの一覧 (Columns) と全制約の一覧 (Constraints) のページを置いたが、削除した。カラムを探す用途は検索で満たせ、制約名 (エラーメッセージに出る) から探す用途も検索の対象に制約名とインデックス名を加えて満たせるため。寄せる対象の tbls の Markdown にもなく、大規模 DB では巨大なページになる
 - 関係の一覧は Relationships に置く。テーブル間の関係は図で把握するのが自然で、一覧は図の補助になるため
-- Virtual Relation は DB に存在しない関係で制約ではないため、Constraints には含めず Relationships に置く。テーブル詳細も同じく、Constraints セクションは DB の制約のみ、Parents / Children は Virtual Relation を含む
+- Virtual Relation は DB に存在しない関係で制約ではない。テーブル詳細の Constraints セクションは DB の制約のみ、Relationships (Parents / Children) は Virtual Relation を含む
 - 現在のページはメニューに `aria-current="page"` で示す
 - スマートフォン向けの専用レイアウトは作らない。DB の仕様書は主に PC で見るもので、中身の大半が横に長い表と ER 図のため作り込みの効果が小さい。狭い画面では、ヘッダーの折り返しと表・図の横スクロールで崩れないようにする (幅 400px 程度で確認済み)
 - 関数と enum は tbls の README ではトップページに並ぶが、メニュー名 (Tables) と中身が合わなくなるため別ページにする。多くの DB は関数も enum も持たないため、ある場合だけメニューに出す
@@ -290,7 +289,7 @@ Relationships                      ← メニューの Relationships ページ�
 ```
 
 - Nullable は YES / NO で表記する (SQL 標準の information_schema や MySQL と同じ。tbls の true / false は JSON の真偽値をそのまま出したもので、仕様書として読む人には DB 側の表記が自然なため)
-- Indexes / Constraints / Triggers の Comment 列は、コメントが 1 つもなければ出さない (tbls と同様)。コメントは DB (PostgreSQL の `COMMENT ON INDEX` / `COMMENT ON CONSTRAINT` / `COMMENT ON TRIGGER`、MySQL のインデックスの `COMMENT`) や `.tbls.yml` の `indexComments` / `constraintComments` / `triggerComments` で付けられるが、付けている DB は少ない。Constraints ページも同様
+- Indexes / Constraints / Triggers の Comment 列は、コメントが 1 つもなければ出さない (tbls と同様)。コメントは DB (PostgreSQL の `COMMENT ON INDEX` / `COMMENT ON CONSTRAINT` / `COMMENT ON TRIGGER`、MySQL のインデックスの `COMMENT`) や `.tbls.yml` の `indexComments` / `constraintComments` / `triggerComments` で付けられるが、付けている DB は少ない。
 - 関係は Relationships セクションにまとめ、ER 図で全体像を見せてから Parents / Children の一覧を続ける (tbls は末尾に ER 図だけを「Relations」として置くが、サイトのメニュー名と構成にそろえる)。Relation のないテーブルではセクションを出さない
 - 親子関係は tbls のようにカラムごとの Children / Parents 列にはせず、Key 列の FK バッジと Parents / Children セクションで示す (子テーブルが多いと列が横に長くなるため)
 
@@ -870,6 +869,7 @@ window.DBFOLIO_SEARCH_INDEX = [ /* ... */ ];
 - テーブルコメント
 - カラム名
 - カラムコメント
+- 制約名・インデックス名 (エラーメッセージや実行計画に出る名前から、テーブルを探せるようにする)
 
 ブラウザー側で軽量な JavaScript (`assets/search.js`、依存ライブラリなし) により絞り込む。
 
@@ -877,8 +877,8 @@ Phase 5 で以下のように実装した。
 
 - 全ページのヘッダーに検索ボックスを置く。JavaScript が動くときだけ表示する。表示の切り替えは `visibility` で行い、最初から場所を確保しておく (`display` で切り替えると、表示された瞬間にヘッダーの高さが変わってちらつくため)
 - 部分一致 (大文字小文字を区別しない)。空白区切りは AND。カラムは `テーブル名.カラム名` でも一致する
-- 並び順: テーブル名の前方一致 → テーブル名の部分一致 → カラム名の前方一致 → カラム名の部分一致 → コメント。同順位は名前の短い順。前方一致はスキーマ名を除いた部分 (`public.users` の `users`) でも判定する。最大 20 件
-- 候補を選ぶとテーブル詳細へ移動する。カラムの場合はその行 (`#column-<番号>`) へ移動して強調表示する。カラム名には任意の文字が入りうるため、id には位置を使う
+- 並び順: テーブル名 → カラム名 → 制約名・インデックス名 → コメントの順。名前はそれぞれ前方一致を部分一致より上にする。同順位は名前の短い順。前方一致はスキーマ名を除いた部分 (`public.users` の `users`) でも判定する。最大 20 件
+- 候補を選ぶとテーブル詳細へ移動する。カラム・制約・インデックスの場合はその行 (`#column-<番号>` / `#constraint-<番号>` / `#index-<番号>`) へ移動して強調表示する。名前には任意の文字が入りうるため、id には位置を使う
 - ↑↓ / Enter / Esc で操作でき、`/` で検索ボックスへ移動する (GitHub と同様。検索ボックスの右端に `/` のキー表示を出す)。IME の変換中のキー (変換確定の Enter など) は操作として扱わない
 - combobox / listbox の ARIA (`aria-activedescendant`、`aria-selected`) を付け、件数は `aria-live` の領域で読み上げる
 - 索引は読み込み時に一度だけ小文字化し、入力ごとには比較だけを行う。2,000 テーブル × 25 カラム (52,000 件) で 1 回の検索は最大約 15ms (node、ほぼ全件が一致する短い語のとき)

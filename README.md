@@ -3,7 +3,7 @@
 Generate static HTML database documentation and ER diagrams from tbls schema.json.
 
 > [!NOTE]
-> dbfolio is under development. Currently table, column, constraint and relationship pages with ER diagrams are generated.
+> dbfolio is under development. Currently table, relationship, function and enum pages with ER diagrams and search are generated.
 
 ## Usage
 
