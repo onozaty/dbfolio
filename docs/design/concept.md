@@ -1,6 +1,6 @@
 # dbfolio プロジェクト設計メモ
 
-更新日: 2026-10-04
+更新日: 2026-10-17
 
 ## 1. プロジェクト概要
 
@@ -100,21 +100,23 @@ tbls out -t json -o schema.json
 
 ### 出力
 
-静的 HTML と生成済み SVG。
+静的 HTML。ER 図は生成時に SVG にして HTML に埋め込む (inline SVG)。
 
 ```text
 dbfolio-docs/
+├── .dbfolio              ← dbfolio が生成したことを示すマーカー (§13)
 ├── index.html            ← Tables (テーブル一覧)
-├── columns.html
-├── constraints.html
 ├── relationships.html    ← 全体 ER 図 (inline SVG) + 関係の一覧
+├── functions.html        ← 関数がある場合のみ
+├── enums.html            ← enum 型がある場合のみ
 ├── tables/
-│   ├── users.html        ← テーブル単位 ER 図 (inline SVG) を含む
-│   ├── orders.html
+│   ├── public.users.html ← テーブル詳細。テーブル単位 ER 図 (inline SVG) を含む
 │   └── ...
 └── assets/
     ├── app.css
-    └── app.js
+    ├── app.js            ← ER 図のドラッグ移動
+    ├── search.js         ← 検索
+    └── search-index.js   ← 検索用インデックス (生成時に作る)
 ```
 
 Web サーバーや JavaScript フレームワークを必須にせず、基本は静的ファイルだけで閲覧できる形を目指す。
@@ -152,15 +154,18 @@ dbfolio 側では、DB 固有の以下の処理を原則として持たない。
 
 ---
 
-## 6. schema.json から利用したい情報
+## 6. schema.json から利用している情報
 
-少なくとも以下を利用する。
+tbls の JSON Schema (`spec/tbls.schema.json_schema.json`) と照らし合わせて、以下を利用している。
 
 ### Database / Schema
 
-- DB 名
-- スキーマ情報
-- コメント / description
+- DB 名、説明 (`desc`)
+- 関数・ストアドプロシージャ (`functions`)
+- enum 型 (`enums`)
+- `driver.meta.search_paths` (enum 型の名前解決に使う)
+
+利用していないもの: `driver` の DB 名とバージョン (表示しない。§8)、`viewpoints` (表示方法を検討中。roadmap の未決事項)、`labels` (MVP 後の候補)
 
 ### Table
 
@@ -171,6 +176,8 @@ dbfolio 側では、DB 固有の以下の処理を原則として持たない。
 - Constraint
 - Trigger
 - View 等の種別情報
+- 定義 (`def`。View のクエリなど)
+- View の参照先テーブル (`referenced_tables`)
 
 ### Column
 
@@ -252,7 +259,7 @@ dbfolio ではコメントを重要情報として扱う。
 | Enums | `enums.html` | enum 型 (名前 / 値)。ある場合のみメニューに出す |
 
 - 当初の Overview ページは Tables ページにまとめた。最初にしたいのは目的のテーブルを探すことで、件数はその補足になるため
-- 件数のサマリー (カード) は置かず、各ページの見出しの横に件数を添える (例: `Tables 9 tables, 1 view`、`Columns 34 columns`)。サマリーは下の一覧やメニューと重複し、場所を取るため
+- 件数のサマリー (カード) は置かず、各ページの見出しの横に件数を添える (例: `Tables 9 tables, 1 view`、`Relationships 10 relationships`)。サマリーは下の一覧やメニューと重複し、場所を取るため
 - 一時期、SchemaSpy にならって全カラムの一覧 (Columns) と全制約の一覧 (Constraints) のページを置いたが、削除した。カラムを探す用途は検索で満たせ、制約名 (エラーメッセージに出る) から探す用途も検索の対象に制約名とインデックス名を加えて満たせるため。寄せる対象の tbls の Markdown にもなく、大規模 DB では巨大なページになる
 - 関係の一覧は Relationships に置く。テーブル間の関係は図で把握するのが自然で、一覧は図の補助になるため
 - Virtual Relation は DB に存在しない関係で制約ではない。テーブル詳細の Constraints セクションは DB の制約のみ、Relationships (Parents / Children) は Virtual Relation を含む
@@ -389,11 +396,10 @@ if err := g.Render(ctx, graph, graphviz.SVG, &buf); err != nil {
 ### DOT の表現方針 (PoC で確認済み)
 
 - テーブルは `shape=plaintext` + HTML ラベルの表形式で描き、`rankdir=LR` で子テーブルを左、親テーブルを右に配置する
-- カラム名セルに west 用、型セルに east 用の port を置き、Relation は `子:east -> 親:west` で接続する (1 つの port だと線が型セルの文字に重なる)
+- 各行の先頭のセルに west 用、末尾のセルに east 用の port を置き、Relation は `子:east -> 親:west` で接続する (1 つの port だと線が他のセルの文字に重なる)。セルの構成は「実装上の注意」を参照
 - カーディナリティは crow's foot (`teetee` / `teeodot` / `crowodot` / `crowtee`) で描く。Phase 4 で子側の端だけに描くことにした (SchemaSpy と同様)。同じ親カラムに多くの線が集まると親側の記号が重なって潰れるため。親側のカーディナリティ (FK が NULL を許すか) はテーブル詳細と Relationships 一覧で確認できる
 - Virtual Relation は破線にする
 - セルには背景色を指定する。背景のないセルはリンクのクリック対象にならず、文字の上でしか反応しない
-- WASM 版 Graphviz はフォントファイルを持たず、日本語の文字幅を小さく見積もる。セルは dbfolio 側で幅を見積もって `width` を指定し、左寄せにする
 - 複合 FK は先頭カラム同士の port にのみ接続し、全カラムの対応は線のツールチップに出す (Phase 4 で決定。構成カラムごとに線を引くと本数が増えて読みにくくなるため)
 
 ### 実装上の注意 (Phase 4)
@@ -559,12 +565,13 @@ dbfolio build schema.json -o ./docs
 - 生成ファイルは既存のエントリを削除してから作成する (シンボリックリンクを辿って外部のファイルを書き換えないため)
 - 入力の読み込みと検証は出力先に触れる前に行い、不正な入力で前回の出力を消さない
 
+コマンドは `build` と `version` (cobra の `completion` / `help` も使える)。
+
 将来候補:
 
 ```bash
 dbfolio serve schema.json
 dbfolio diff before.json after.json
-dbfolio version
 ```
 
 ただし `serve` は MVP には不要。
@@ -573,43 +580,33 @@ dbfolio version
 
 ---
 
-## 14. Go プロジェクト構成案
+## 14. Go プロジェクト構成
 
 ```text
 dbfolio/
-├── cmd/
-│   └── dbfolio/
-│       └── main.go
+├── cmd/dbfolio/main.go          ← エントリーポイント (バージョンは -ldflags で埋め込む)
 ├── internal/
-│   ├── input/
-│   │   └── tbls/            ← tbls schema.json の読み込みと内部モデルへの変換
-│   │       └── loader.go
-│   ├── schema/              ← 入力形式に依存しない内部モデル
-│   │   ├── model.go
-│   │   └── relation.go
-│   ├── diagram/
-│   │   ├── dot.go
-│   │   └── graphviz.go
-│   ├── render/
-│   │   ├── renderer.go      ← //go:embed を置く
-│   │   ├── viewmodel.go
-│   │   ├── templates/
-│   │   │   ├── layout.html
-│   │   │   ├── index.html
-│   │   │   ├── table.html
-│   │   │   └── relationships.html
-│   │   └── assets/
-│   │       ├── app.css
-│   │       └── app.js
-│   └── output/
-│       └── writer.go
-├── testdata/
-│   └── schema.json
+│   ├── cli/                     ← cobra のコマンド (build / version)
+│   ├── input/tbls/              ← tbls schema.json の読み込み・検証と内部モデルへの変換
+│   ├── schema/                  ← 入力形式に依存しない内部モデル、RelationIndex
+│   ├── diagram/                 ← DOT 生成 (dot.go) と go-graphviz による SVG 化 (graphviz.go)
+│   ├── render/                  ← ページの生成
+│   │   ├── renderer.go          ← //go:embed、Plan / RenderDiagrams / Write
+│   │   ├── viewmodel.go         ← テンプレート用のデータ
+│   │   ├── search.go            ← 検索インデックス
+│   │   ├── enums.go             ← enum 型の名前解決
+│   │   ├── templates/           ← layout / partials / index / table / relationships / functions / enums
+│   │   ├── assets/              ← app.css / app.js / search.js
+│   │   └── testdata/            ← search.js の node テスト
+│   └── output/                  ← 出力先ディレクトリの準備 (dir.go) とファイル名 (filename.go)
+├── scripts/notices/             ← THIRD_PARTY_NOTICES の生成
+├── third_party/graphviz-wasm/   ← graphviz.wasm に含まれるもののライセンス
+├── testdata/basic/              ← サンプルスキーマと Golden ファイル
 ├── docs/
-│   └── design/
-│       ├── concept.md
-│       └── roadmap.md
-├── go.mod
+│   ├── release.md               ← リリース手順
+│   └── design/                  ← concept.md / roadmap.md
+├── .goreleaser.yaml
+├── THIRD_PARTY_NOTICES
 └── README.md
 ```
 
@@ -647,16 +644,27 @@ dbfolio 内部モデルへ変換する層を設ける。
 - `Def` は入力が提供する場合のみ持つ (View の定義、MySQL では CREATE TABLE 文)
 
 ```go
+type Schema struct {
+    Name      string
+    Desc      string
+    Tables    []*Table
+    Relations []*Relation
+    Functions []*Function
+    Enums     []*Enum
+    Driver    *Driver   // search_paths のみ
+}
+
 type Table struct {
-    Name        string
-    Type        string
-    View        bool
-    Comment     string
-    Columns     []*Column
-    Indexes     []*Index
-    Constraints []*Constraint
-    Triggers    []*Trigger
-    Def         string
+    Name             string
+    Type             string
+    View             bool
+    Comment          string
+    Columns          []*Column
+    Indexes          []*Index
+    Constraints      []*Constraint
+    Triggers         []*Trigger
+    Def              string
+    ReferencedTables []string // View の参照先。スキーマ外のテーブルもありうるため名前で持つ
 }
 
 type Constraint struct {
@@ -671,16 +679,7 @@ type Constraint struct {
 }
 ```
 
-さらに HTML 用 ViewModel を分ける。
-
-```go
-type TablePage struct {
-    Table     Table
-    Parents   []Relation
-    Children  []Relation
-    Diagram   string
-}
-```
+さらに HTML 用 ViewModel (`internal/render/viewmodel.go`) を分ける。テーブル詳細の ViewModel は、カラム行 (Key バッジ付き)、Parents / Children、テーブル単位 ER 図の SVG、各セクションのコメント列の有無などを持つ。
 
 描画は Plan (ページのファイル名の決定と重複検出) と Write (ファイルの書き出し) に分ける。入力に起因するエラーはすべて Plan までに検出し、出力先ディレクトリを削除・変更する前に失敗させる (不正な入力で前回の出力を消さないため)。
 
@@ -749,32 +748,22 @@ roles ← user_roles ← users → orders → order_items
                     comments
 ```
 
-`distance` を導入し、BFS で対象 Relation を抽出できるようにする。
+`distance` を導入し、BFS で対象テーブルを抽出する (`RelationIndex.RelatedTables(t *Table, distance int) []*Table`。親・子の両方向にたどり、結果は Schema のテーブル順)。図にはそのテーブル間の Relation をすべて描く。
 
-概念 API:
-
-```go
-func RelatedTables(
-    schema *Schema,
-    table string,
-    distance int,
-) []string
-```
-
-MVP では distance=1 を基本とし、将来的に設定可能にする。
+MVP では distance=1 とし、将来的に設定可能にする (roadmap の MVP 後の候補)。
 
 ---
 
 ## 18. MVP
 
-まず以下に限定する。進捗は [roadmap.md](roadmap.md) で管理する。
+まず以下に限定する。進捗は [roadmap.md](roadmap.md) で管理する。以下はすべて実装済み (Phase 5 まで)。
 
 ### 必須
 
 - `schema.json` 読み込み
 - テーブル一覧
 - テーブル詳細
-- カラム一覧
+- カラム一覧 (テーブル詳細の Columns)
 - DB コメント
 - PK
 - FK
@@ -955,17 +944,21 @@ Phase 4 での計測 (合成スキーマ。各テーブル 4〜15 カラム、0�
 
 HTML や DOT の生成結果には Golden Test が有効。
 
-HTML は生成サイト全体を `testdata/<case>/expected/` と比較する。期待値は `go test ./internal/render -update` で更新する。
+HTML は生成サイト全体を `testdata/basic/expected/` と、ER 図の DOT は `testdata/basic/expected-dot/` と比較する。期待値は `go test ./internal/render ./internal/diagram -update` で更新する。
 
 ```text
-testdata/
-├── basic/
-│   ├── schema.json
-│   ├── expected/        ← 生成サイト全体 (index.html, tables/, assets/)
-│   └── expected.dot
-├── composite-fk/
-└── virtual-relation/
+testdata/basic/
+├── schema.sql / .tbls.yml   ← サンプルスキーマ (複合 PK / FK、Virtual Relation、自己参照、enum、View など)
+├── schema.json              ← tbls で生成
+├── expected/                ← 生成サイト全体
+└── expected-dot/            ← 全体 ER 図 (キーのみ / 全カラム) とテーブル単位 ER 図の DOT
 ```
+
+ケースは basic 1 つにまとめ、境界条件 (空のスキーマ、不正な Relation、エスケープなど) はユニットテストで確認する。
+
+### JavaScript のテスト
+
+検索ロジック (`assets/search.js` の `search` / `prepare`) は node でテストする (`internal/render/testdata/search_test.js` を Go のテストから実行。node がなければスキップ)。DOM 操作はブラウザーで確認する。
 
 ### Integration Test
 
@@ -1020,14 +1013,14 @@ Phase 構成・最初の PoC・進捗は [roadmap.md](roadmap.md) で管理す�
 
 ### tbls schema.json のバージョン互換性
 
-tbls の JSON を外部契約として利用するものの、将来の変更には備える。
+tbls の JSON を外部契約として利用するものの、将来の変更には備える。以下を実装している。
 
-候補:
+- 未知フィールドを許容する (新しい tbls の出力も読める)
+- 必須フィールドは `tables` と各テーブルの `name` のみとし、その他の不足は空として扱う (Relation は両端の解決に必要な項目を検証する)
+- parser を `internal/input/tbls` に隔離する
+- 動作確認した tbls のバージョンを README に明記する
 
-- 読み込み時に tbls version / schema version があれば記録
-- 未知フィールドを許容
-- 必須フィールドを最小限にする
-- parser を `internal/input/tbls` のように隔離する
+schema.json には tbls のバージョンが含まれないため、読み込み時の記録はしていない。
 
 将来的には:
 
