@@ -165,7 +165,7 @@ tbls の JSON Schema (`spec/tbls.schema.json_schema.json`) と照らし合わせ
 - enum 型 (`enums`)
 - `driver.meta.search_paths` (enum 型の名前解決に使う)
 
-利用していないもの: `driver` の DB 名とバージョン (表示しない。§8)、`viewpoints` (表示方法を検討中。roadmap の未決事項)、`labels` (MVP 後の候補)
+利用していないもの: `driver` の DB 名とバージョン (表示しない。§8)、`viewpoints` (表示方法を検討中。[#19](https://github.com/onozaty/dbfolio/issues/19))、`labels` (表示や絞り込みは予定しない。ビューポイントの対象指定に使う場合は #19 で扱う)
 
 ### Table
 
@@ -472,6 +472,8 @@ DOT → go-graphviz → SVG
 1. **go-graphviz を採用**
 2. ER 図の表現上の制約が明確になった場合に elk-go を再評価
 
+v1.0.0 時点では Graphviz で必要な表現ができているため、elk-go の再評価は予定しない ([#26](https://github.com/onozaty/dbfolio/issues/26) を not planned として閉じた)。
+
 ---
 
 ## 12. 既存ツールとの位置付け
@@ -571,10 +573,9 @@ dbfolio build schema.json -o ./docs
 
 ```bash
 dbfolio serve schema.json
-dbfolio diff before.json after.json
 ```
 
-ただし `serve` は MVP には不要。
+ただし `serve` は MVP には不要。スキーマの差分表示 (`dbfolio diff`) は予定しない (§19)。
 
 静的 HTML が `file://` でも十分閲覧できることを優先する。
 
@@ -605,7 +606,7 @@ dbfolio/
 ├── demo/                        ← デモサイト用の英語のサンプルスキーマ (GitHub Pages で公開)
 ├── docs/
 │   ├── release.md               ← リリース手順
-│   └── design/                  ← concept.md / roadmap.md
+│   └── design/                  ← concept.md (設計と判断)
 ├── .goreleaser.yaml
 ├── THIRD_PARTY_NOTICES
 └── README.md
@@ -751,13 +752,13 @@ roles ← user_roles ← users → orders → order_items
 
 `distance` を導入し、BFS で対象テーブルを抽出する (`RelationIndex.RelatedTables(t *Table, distance int) []*Table`。親・子の両方向にたどり、結果は Schema のテーブル順)。図にはそのテーブル間の Relation をすべて描く。
 
-MVP では distance=1 とし、将来的に設定可能にする (roadmap の MVP 後の候補)。
+MVP では distance=1 とし、将来的に設定可能にする ([#24](https://github.com/onozaty/dbfolio/issues/24))。
 
 ---
 
 ## 18. MVP
 
-まず以下に限定する。進捗は [roadmap.md](roadmap.md) で管理する。以下はすべて実装済み (Phase 5 まで)。
+まず以下に限定する。以下はすべて実装済みで、v1.0.0 としてリリースした。
 
 ### 必須
 
@@ -805,11 +806,11 @@ MVP では distance=1 とし、将来的に設定可能にする (roadmap の MV
 - 大量カラムを持つテーブル
 - Duplicate Relation
 
-ただし tbls 自体にも lint があるため、dbfolio で重複実装する価値を確認する。
+tbls 自体の lint (`tbls lint`) がより細かく担っているため、予定しない ([#22](https://github.com/onozaty/dbfolio/issues/22) を not planned として閉じた)。
 
 ### Diff
 
-将来的に非常に有力。
+当初は有力な候補と考えていたが、v1.0.0 のあとに予定しないことにした ([#21](https://github.com/onozaty/dbfolio/issues/21) を not planned として閉じた)。dbfolio はスキーマを閲覧するためのドキュメントに集中する。以下は当初の案。
 
 ```bash
 dbfolio diff before.json after.json
@@ -840,7 +841,7 @@ Prisma schema
 SQL DDL
 ```
 
-ただし MVP では tbls JSON に集中する。
+予定しない ([#25](https://github.com/onozaty/dbfolio/issues/25) を not planned として閉じた)。DB やスキーマ形式の解析は tbls に任せ、dbfolio は tbls の schema.json に集中する。他の形式は tbls などを経由して schema.json にできる。
 
 ---
 
@@ -919,7 +920,7 @@ Phase 4 での計測 (合成スキーマ。各テーブル 4〜15 カラム、0�
 
 生成時間は問題ない。全体 ER 図は数百テーブルで縦に長くなり、図全体を見渡す用途には向かない。テーブル単位 ER 図を基本の導線とする。
 
-全体 ER 図が巨大になる場合は、以下を検討する。
+全体 ER 図が巨大になる場合は、以下を検討する ([#20](https://github.com/onozaty/dbfolio/issues/20))。
 
 - Schema 単位に分割
 - Viewpoint
@@ -977,9 +978,9 @@ dbfolio-docs/
 
 ## 23. 実装計画
 
-Phase 構成・最初の PoC・進捗は [roadmap.md](roadmap.md) で管理する。
+最初から多機能を目指さず、**「1 テーブルを見やすく、DB 仕様書として読める形で表示できるか」**を最初のゴールにした。
 
-最初から多機能を目指さず、**「1 テーブルを見やすく、DB 仕様書として読める形で表示できるか」**を最初のゴールにする。
+PoC (Phase 0) から Release (Phase 6) までの段階に分けて進め、v1.0.0 (2026-10-17) をリリースした。各段階の計画とチェックリストは `docs/design/roadmap.md` に置いていたが、リリース後に廃止した (git の履歴に残っている)。今後の作業は [GitHub Issues](https://github.com/onozaty/dbfolio/issues) で管理する。
 
 ---
 
@@ -1023,16 +1024,7 @@ tbls の JSON を外部契約として利用するものの、将来の変更に
 
 schema.json には tbls のバージョンが含まれないため、読み込み時の記録はしていない。
 
-将来的には:
-
-```text
-internal/input/
-├── tbls/
-├── dbml/
-└── prisma/
-```
-
-という構成にできる。
+入力層を分離しているので、他の形式を読む構成 (`internal/input/dbml` など) にもできるが、入力形式の追加は予定しない (§19)。
 
 ### HTML の URL
 
