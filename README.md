@@ -86,6 +86,12 @@ Use `-o` to choose the output directory:
 dbfolio build dbdoc/schema.json -o ./site
 ```
 
+To run tbls and dbfolio in one command, for example in a script, pass `-` to read `schema.json` from standard input:
+
+```bash
+tbls out -t json | dbfolio build -
+```
+
 ### Publish to GitHub Pages
 
 If `dbdoc/schema.json` is committed (for example, kept up to date by `tbls doc` in CI), this workflow publishes the documentation whenever it changes. Set **Settings > Pages > Source** to **GitHub Actions** first.
@@ -144,7 +150,7 @@ dbfolio never deletes files it did not generate:
 ### Commands
 
 ```text
-dbfolio build <schema.json> [-o <dir>] [--force]   Generate the documentation
+dbfolio build <schema.json> [-o <dir>] [--force]   Generate the documentation (- reads standard input)
 dbfolio version                                    Print the version
 ```
 

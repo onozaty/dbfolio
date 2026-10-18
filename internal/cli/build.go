@@ -8,6 +8,7 @@ import (
 	"github.com/onozaty/dbfolio/internal/input/tbls"
 	"github.com/onozaty/dbfolio/internal/output"
 	"github.com/onozaty/dbfolio/internal/render"
+	"github.com/onozaty/dbfolio/internal/schema"
 )
 
 // DefaultOutputDir is tool-specific so that a project's own docs/ is never overwritten by accident.
@@ -20,7 +21,12 @@ func newBuildCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "build <schema.json>",
 		Short: "Generate HTML documentation from a tbls schema.json",
-		Args:  cobra.ExactArgs(1),
+		Long: `Generate HTML documentation from a tbls schema.json.
+
+Use - as <schema.json> to read it from standard input:
+
+  tbls out -t json | dbfolio build -`,
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runBuild(cmd, args[0], outDir, force)
 		},
@@ -32,7 +38,7 @@ func newBuildCmd() *cobra.Command {
 
 func runBuild(cmd *cobra.Command, schemaPath, outDir string, force bool) error {
 	// Load and plan before touching the output directory so that a bad input never cleans previous output.
-	s, err := tbls.Load(schemaPath)
+	s, err := loadSchema(cmd, schemaPath)
 	if err != nil {
 		return err
 	}
@@ -53,4 +59,12 @@ func runBuild(cmd *cobra.Command, schemaPath, outDir string, force bool) error {
 
 	_, err = fmt.Fprintf(cmd.OutOrStdout(), "Generated documentation for %d tables in %s\n", len(s.Tables), outDir)
 	return err
+}
+
+// loadSchema reads schema.json from the path, or from standard input for "-".
+func loadSchema(cmd *cobra.Command, path string) (*schema.Schema, error) {
+	if path == "-" {
+		return tbls.Read(cmd.InOrStdin(), "standard input")
+	}
+	return tbls.Load(path)
 }

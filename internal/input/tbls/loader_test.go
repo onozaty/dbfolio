@@ -191,6 +191,35 @@ func TestLoad_AcceptsEmptyTables(t *testing.T) {
 	}
 }
 
+func TestRead_ReadsSchema(t *testing.T) {
+	// Arrange
+	r := strings.NewReader(`{"name": "db", "tables": [{"name": "users"}]}`)
+
+	// Act
+	s, err := Read(r, "standard input")
+
+	// Assert
+	if err != nil {
+		t.Fatalf("Read() error = %v", err)
+	}
+	if s.Name != "db" || len(s.Tables) != 1 || s.Tables[0].Name != "users" {
+		t.Errorf("Read() = %+v, want db with table users", s)
+	}
+}
+
+func TestRead_NamesSourceInError(t *testing.T) {
+	// Arrange
+	r := strings.NewReader(`{"name": "db"}`)
+
+	// Act
+	_, err := Read(r, "standard input")
+
+	// Assert
+	if !errors.Is(err, ErrNotTblsSchema) || !strings.Contains(err.Error(), "parse standard input") {
+		t.Errorf("Read() error = %v, want ErrNotTblsSchema naming standard input", err)
+	}
+}
+
 func TestLoad_ReturnsErrorWhenFileDoesNotExist(t *testing.T) {
 	// Arrange
 	path := filepath.Join(t.TempDir(), "missing.json")
