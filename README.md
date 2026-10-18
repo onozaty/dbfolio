@@ -52,9 +52,11 @@ go install github.com/onozaty/dbfolio/cmd/dbfolio@latest
 
 ## Usage
 
-### 1. Generate schema.json with tbls
+### 1. Get schema.json from tbls
 
-Install [tbls](https://github.com/k1LoW/tbls) and export your database schema as JSON:
+If you already use `tbls doc`, you have it: `tbls doc` writes `schema.json` next to the Markdown, in `dbdoc/` by default. dbfolio needs nothing else, so you can build from the committed file without a database.
+
+Otherwise, install [tbls](https://github.com/k1LoW/tbls) and export your database schema as JSON:
 
 ```bash
 tbls out -t json -o schema.json "postgres://user:pass@localhost:5432/mydb?sslmode=disable"
@@ -71,15 +73,64 @@ Comments, virtual relations and other settings in `.tbls.yml` are included in `s
 ### 2. Build the documentation
 
 ```bash
-dbfolio build schema.json
+dbfolio build dbdoc/schema.json
 ```
+
+(Pass `schema.json` instead if you exported it with `tbls out`.)
 
 The site is written to `./dbfolio-docs`. Open `dbfolio-docs/index.html` in a browser, or publish the directory with any static hosting (GitHub Pages, S3, etc.).
 
 Use `-o` to choose the output directory:
 
 ```bash
-dbfolio build schema.json -o ./site
+dbfolio build dbdoc/schema.json -o ./site
+```
+
+### Publish to GitHub Pages
+
+If `dbdoc/schema.json` is committed (for example, kept up to date by `tbls doc` in CI), this workflow publishes the documentation whenever it changes. Set **Settings > Pages > Source** to **GitHub Actions** first.
+
+```yaml
+name: Database docs
+
+on:
+  push:
+    branches: [main]
+    paths: [dbdoc/schema.json]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install dbfolio
+        run: gh release download --repo onozaty/dbfolio --pattern 'dbfolio_*_linux_amd64.tar.gz' --output - | tar xz dbfolio
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - run: ./dbfolio build dbdoc/schema.json -o site
+      - uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5.0.1
 ```
 
 ### Output directory
