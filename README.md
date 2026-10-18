@@ -17,7 +17,7 @@ tbls reads your database; dbfolio turns its output into a small website you can 
 ## Features
 
 - **Table pages**: columns, constraints, indexes, triggers and view definitions, with the comments from your database (and from `.tbls.yml`)
-- **ER diagrams**: a whole-schema diagram (key columns only or all columns) and a diagram centered on each table, with links to the table pages
+- **ER diagrams**: a whole-schema diagram (key columns only or all columns) and a diagram centered on each table, with links to the table pages; zoom and drag to pan
 - **Relationships**: parents and children of each table, including virtual relations defined in `.tbls.yml`
 - **Search**: tables, columns, constraints and indexes by name or comment
 - **Functions and enums**, when the database has them
