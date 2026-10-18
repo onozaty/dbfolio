@@ -149,49 +149,21 @@ dbfolio never deletes files it did not generate:
 
 ### Customizing the look
 
-Use `--css` to add your own stylesheet. It is copied into the output and loaded on every page after the default styles, so its rules win:
+Use `--css` to add your own stylesheet, loaded on every page after the default styles:
 
 ```bash
 dbfolio build schema.json --css my-theme.css
 ```
 
-The easiest way is to change the colors through these CSS variables. They are kept across versions; class names and the HTML structure may change.
+Colors are set through CSS variables, which are kept across versions (class names and the HTML structure may change):
 
-| Variable | Used for |
-|---|---|
-| `--fg` / `--muted` | Text / secondary text |
-| `--bg` / `--bg-subtle` | Background / table headers and other subtle backgrounds |
-| `--border` | Borders |
-| `--link` | Links |
-| `--pk` / `--fk` | PK / FK marks in the column tables |
-| `--diagram-header` | Table name rows in ER diagrams |
-| `--diagram-focus` | The table a table diagram is centered on |
-| `--diagram-line` / `--diagram-border` | Relation lines / table borders in ER diagrams |
-
-Set them for dark mode too, since the site follows the system theme:
+`--fg`, `--muted`, `--bg`, `--bg-subtle`, `--border`, `--link`, `--pk`, `--fk`, `--diagram-header`, `--diagram-focus`, `--diagram-line`, `--diagram-border`
 
 ```css
-:root {
-  --link: #8250df;
-  --diagram-header: #f0e8ff;
-}
+:root { --link: #8250df; }
 @media (prefers-color-scheme: dark) {
-  :root {
-    --link: #c297ff;
-    --diagram-header: #2e2342;
-  }
+  :root { --link: #c297ff; }
 }
-```
-
-Other rules work as well, at your own risk across versions. For example, zebra stripes for tables:
-
-```css
-tbody tr:nth-child(even) td { background: #fafbfc; }
-@media (prefers-color-scheme: dark) {
-  tbody tr:nth-child(even) td { background: #0d1218; }
-}
-/* Keep the highlight of a row reached from search */
-tbody tr:target td { background: var(--bg-subtle); }
 ```
 
 ### Commands
