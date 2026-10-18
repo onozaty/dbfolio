@@ -548,6 +548,14 @@ dbfolio build schema.json
 dbfolio build schema.json -o ./docs
 ```
 
+標準入力から読む (`-` は CLI で一般的な標準入力の指定):
+
+```bash
+tbls out -t json | dbfolio build -
+```
+
+スクリプトで tbls と合わせて 1 コマンドで実行するため。dbfolio が tbls を呼び出す形や tbls の外部サブコマンド (`tbls-*`) にする形は採らない (前者は tbls のオプションを二重に扱うことになり、後者は tbls の README に記載のない仕組みのため)。エラーメッセージではファイル名の代わりに「standard input」と示す。
+
 ### 出力先
 
 - 既定の出力先は `./dbfolio-docs` とする

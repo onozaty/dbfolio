@@ -15,7 +15,14 @@ var sampleSchema = filepath.Join("..", "..", "testdata", "basic", "schema.json")
 
 func execute(t *testing.T, version string, args ...string) (string, error) {
 	t.Helper()
+	return executeWithInput(t, version, "", args...)
+}
+
+// executeWithInput runs the command with stdin as its standard input.
+func executeWithInput(t *testing.T, version, stdin string, args ...string) (string, error) {
+	t.Helper()
 	cmd := NewRootCmd(version)
+	cmd.SetIn(strings.NewReader(stdin))
 	var out bytes.Buffer
 	cmd.SetOut(&out)
 	cmd.SetErr(&out)
@@ -204,6 +211,46 @@ func TestBuild_DoesNotCleanUserFilesOnRebuildAfterForce(t *testing.T) {
 	_, userErr := os.Stat(userFile)
 	if !errors.Is(err, output.ErrNotEmpty) || userErr != nil {
 		t.Errorf("build error = %v, user file err = %v; want ErrNotEmpty and file kept", err, userErr)
+	}
+}
+
+func TestBuild_ReadsSchemaFromStdin(t *testing.T) {
+	// Arrange
+	content, err := os.ReadFile(sampleSchema)
+	if err != nil {
+		t.Fatal(err)
+	}
+	outDir := filepath.Join(t.TempDir(), "docs")
+
+	// Act
+	stdout, err := executeWithInput(t, "", string(content), "build", "-", "-o", outDir)
+
+	// Assert
+	if err != nil {
+		t.Fatalf("build error = %v\n%s", err, stdout)
+	}
+	index, err := os.ReadFile(filepath.Join(outDir, "index.html"))
+	if err != nil {
+		t.Fatalf("index.html not generated: %v", err)
+	}
+	if !strings.Contains(string(index), "public.users") {
+		t.Error("index.html does not list the sample tables")
+	}
+}
+
+func TestBuild_NamesStdinInParseError(t *testing.T) {
+	// Arrange
+	outDir := filepath.Join(t.TempDir(), "docs")
+
+	// Act
+	_, err := executeWithInput(t, "", "", "build", "-", "-o", outDir)
+
+	// Assert
+	if err == nil || !strings.Contains(err.Error(), "standard input") {
+		t.Errorf("build error = %v, want a parse error naming standard input", err)
+	}
+	if _, statErr := os.Stat(outDir); !errors.Is(statErr, os.ErrNotExist) {
+		t.Errorf("output directory created for invalid input: %v", statErr)
 	}
 }
 

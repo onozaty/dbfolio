@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -104,21 +105,36 @@ func Load(path string) (*schema.Schema, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read schema file: %w", err)
 	}
+	return parse(b, "schema file "+path)
+}
 
+// Read reads tbls schema.json from r (e.g. standard input, for
+// "tbls out -t json | dbfolio build -") and converts it into the internal model.
+// name describes r in error messages.
+func Read(r io.Reader, name string) (*schema.Schema, error) {
+	b, err := io.ReadAll(r)
+	if err != nil {
+		return nil, fmt.Errorf("read %s: %w", name, err)
+	}
+	return parse(b, name)
+}
+
+// parse converts schema.json content; source describes it in error messages.
+func parse(b []byte, source string) (*schema.Schema, error) {
 	var s tblsSchema
 	if err := json.Unmarshal(b, &s); err != nil {
-		return nil, fmt.Errorf("parse schema file %s: %w", path, err)
+		return nil, fmt.Errorf("parse %s: %w", source, err)
 	}
 
 	// tbls always emits "tables" (even when empty), so its absence means the
 	// file is valid JSON but not a tbls schema.json.
 	if s.Tables == nil {
-		return nil, fmt.Errorf("parse schema file %s: %w", path, ErrNotTblsSchema)
+		return nil, fmt.Errorf("parse %s: %w", source, ErrNotTblsSchema)
 	}
 	// Reject malformed input here so that rendering never fails after the
 	// previous output has already been cleaned.
 	if err := validate(&s); err != nil {
-		return nil, fmt.Errorf("parse schema file %s: %w", path, err)
+		return nil, fmt.Errorf("parse %s: %w", source, err)
 	}
 
 	return convert(&s), nil
