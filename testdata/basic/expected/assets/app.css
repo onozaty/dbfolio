@@ -1,4 +1,5 @@
-/* Minimal styles for readability. The full UX is designed in a later phase. */
+/* The variables below are documented in the README for customizing with
+   --css: keep their names and meanings. */
 :root {
   /* Form controls, scrollbars, etc. follow the theme too. */
   color-scheme: light dark;
