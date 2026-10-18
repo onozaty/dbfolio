@@ -61,8 +61,8 @@
 {{end}}{{if or .Diagram .Parents.Rows .Children.Rows}}
 <section>
 <h2>Relationships</h2>
-{{if .Diagram}}<div class="diagram">
-{{.Diagram}}</div>
+{{if .Diagram}}<div class="diagram-frame"><div class="diagram">
+{{.Diagram}}</div></div>
 {{end}}{{if .Parents.Rows}}<h3>Parents</h3>
 {{template "relations" .Parents}}
 {{end}}{{if .Children.Rows}}<h3>Children</h3>
