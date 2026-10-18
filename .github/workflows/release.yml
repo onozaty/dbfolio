@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write
+  # To start the Demo site workflow.
+  actions: write
 
 jobs:
   release:
@@ -28,3 +30,12 @@ jobs:
           # Tokens that can push to onozaty/homebrew-tap and onozaty/scoop-bucket.
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           SCOOP_BUCKET_TOKEN: ${{ secrets.SCOOP_BUCKET_TOKEN }}
+      # A release created with GITHUB_TOKEN starts no other workflow, except
+      # through workflow_dispatch. The Demo site workflow runs on main (the
+      # github-pages environment allows only main) and builds the released tag.
+      # Prereleases (v1.2.0-rc.1) leave the demo as it is.
+      - name: Rebuild the demo site
+        if: ${{ !contains(github.ref_name, '-') }}
+        run: gh workflow run pages.yml --ref main -f tag="$GITHUB_REF_NAME"
+        env:
+          GH_TOKEN: ${{ github.token }}
