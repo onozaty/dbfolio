@@ -26,7 +26,11 @@ GitHub Release の作成は、タグの push をきっかけに GitHub Actions (
 
 ## デモサイト
 
-GitHub Release を公開すると、`.github/workflows/pages.yml` が `demo/schema.json` からドキュメントを生成して GitHub Pages (https://onozaty.github.io/dbfolio/) に公開する。手動でも実行できる (Actions の Demo site ワークフロー)。サンプルの再生成方法は [demo/README.md](../demo/README.md) を参照。
+リリースすると、Release ワークフローの最後で `.github/workflows/pages.yml` を起動し、リリースしたタグのコードで `demo/schema.json` からドキュメントを生成して GitHub Pages (https://onozaty.github.io/dbfolio/) に公開する。プレリリース (`v1.2.0-rc.1` のようにハイフンを含むタグ) では更新しない。
+
+`release: published` で起動しないのは、`GITHUB_TOKEN` で作られた Release では他のワークフローが起動しないため (`workflow_dispatch` は例外)。ワークフロー自体は main で動かし (`github-pages` 環境は main からの公開だけを許可している)、ビルドするコードはタグで指定する。
+
+手動でも実行できる (Actions の Demo site ワークフロー、タグを省略すると main)。サンプルの再生成方法は [demo/README.md](../demo/README.md) を参照。
 
 ## 配布物
 

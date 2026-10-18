@@ -1,11 +1,14 @@
 name: Demo site
 
 # Publishes the documentation of demo/schema.json to GitHub Pages, built with
-# the released code so the demo matches the latest release.
+# the released code so the demo matches the latest release. The Release
+# workflow starts it with the released tag; it can also be run by hand.
 on:
-  release:
-    types: [published]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to build (main when empty)
+        required: false
 
 permissions:
   contents: read
@@ -21,6 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag }}
       - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
