@@ -62,6 +62,20 @@ type Site struct {
 	wholeKeys     []byte
 	wholeAll      []byte
 	tableDiagrams map[*schema.Table][]byte
+	// customCSS is the user's stylesheet, written as customCSSFile and loaded
+	// after app.css; hasCustomCSS tells an empty one from none.
+	customCSS    []byte
+	hasCustomCSS bool
+}
+
+// customCSSFile is the user's stylesheet in the assets directory.
+const customCSSFile = "custom.css"
+
+// SetCustomCSS adds the user's stylesheet to every page, after the default
+// one so that it overrides it.
+func (site *Site) SetCustomCSS(css []byte) {
+	site.customCSS = css
+	site.hasCustomCSS = true
 }
 
 // Plan decides the page file names, failing if two tables map to the same file.
@@ -182,6 +196,14 @@ func (site *Site) Write(dir string) error {
 	}
 	if err := writeFile(filepath.Join(dir, assetsDir, searchIndexFile), site.writeSearchIndex); err != nil {
 		return err
+	}
+	if site.hasCustomCSS {
+		if err := writeFile(filepath.Join(dir, assetsDir, customCSSFile), func(w io.Writer) error {
+			_, err := w.Write(site.customCSS)
+			return err
+		}); err != nil {
+			return err
+		}
 	}
 	for _, p := range []struct {
 		file string

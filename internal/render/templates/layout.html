@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{.Title}}</title>
 <link rel="stylesheet" href="{{.Root}}assets/app.css">
-<script src="{{.Root}}assets/app.js" defer></script>
+{{if .CustomCSS}}<link rel="stylesheet" href="{{.Root}}assets/custom.css">
+{{end}}<script src="{{.Root}}assets/app.js" defer></script>
 <script src="{{.Root}}assets/search-index.js" defer></script>
 <script src="{{.Root}}assets/search.js" defer></script>
 </head>

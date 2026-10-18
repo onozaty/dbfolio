@@ -27,6 +27,8 @@ type page struct {
 	// have neither.
 	HasFunctions bool
 	HasEnums     bool
+	// CustomCSS loads the user's stylesheet (--css) after app.css.
+	CustomCSS bool
 }
 
 // Menu items, as compared in layout.html.
@@ -391,6 +393,7 @@ func (site *Site) newPage(root, heading, current string) page {
 		Current:      current,
 		HasFunctions: site.hasFunctions(),
 		HasEnums:     site.hasEnums(),
+		CustomCSS:    site.hasCustomCSS,
 	}
 	return p
 }

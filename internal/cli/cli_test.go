@@ -254,6 +254,83 @@ func TestBuild_NamesStdinInParseError(t *testing.T) {
 	}
 }
 
+func TestBuild_AddsCustomCSS(t *testing.T) {
+	// Arrange
+	outDir := filepath.Join(t.TempDir(), "docs")
+	css := filepath.Join(t.TempDir(), "theme.css")
+	if err := os.WriteFile(css, []byte(":root { --link: #8250df; }\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Act
+	_, err := execute(t, "", "build", sampleSchema, "-o", outDir, "--css", css)
+
+	// Assert
+	if err != nil {
+		t.Fatalf("build error = %v", err)
+	}
+	got, err := os.ReadFile(filepath.Join(outDir, "assets", "custom.css"))
+	if err != nil || string(got) != ":root { --link: #8250df; }\n" {
+		t.Errorf("assets/custom.css = %q, %v; want the given CSS", got, err)
+	}
+	// Loaded after app.css so that it overrides it, with paths relative to each page.
+	for name, link := range map[string]string{
+		"index.html":               `<link rel="stylesheet" href="assets/app.css">` + "\n" + `<link rel="stylesheet" href="assets/custom.css">`,
+		"tables/public.users.html": `<link rel="stylesheet" href="../assets/app.css">` + "\n" + `<link rel="stylesheet" href="../assets/custom.css">`,
+	} {
+		page, err := os.ReadFile(filepath.Join(outDir, name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(string(page), link) {
+			t.Errorf("%s does not load custom.css after app.css", name)
+		}
+	}
+}
+
+func TestBuild_OmitsCustomCSSByDefault(t *testing.T) {
+	// Arrange
+	outDir := filepath.Join(t.TempDir(), "docs")
+
+	// Act
+	_, err := execute(t, "", "build", sampleSchema, "-o", outDir)
+
+	// Assert
+	if err != nil {
+		t.Fatalf("build error = %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(outDir, "assets", "custom.css")); !errors.Is(err, os.ErrNotExist) {
+		t.Errorf("assets/custom.css exists without --css: %v", err)
+	}
+	index, err := os.ReadFile(filepath.Join(outDir, "index.html"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(index), "custom.css") {
+		t.Error("index.html loads custom.css without --css")
+	}
+}
+
+func TestBuild_KeepsPreviousOutputWhenCSSIsMissing(t *testing.T) {
+	// Arrange
+	outDir := t.TempDir()
+	if _, err := execute(t, "", "build", sampleSchema, "-o", outDir); err != nil {
+		t.Fatal(err)
+	}
+	missing := filepath.Join(t.TempDir(), "missing.css")
+
+	// Act
+	_, err := execute(t, "", "build", sampleSchema, "-o", outDir, "--css", missing)
+
+	// Assert
+	if !errors.Is(err, os.ErrNotExist) {
+		t.Errorf("build error = %v, want os.ErrNotExist", err)
+	}
+	if _, statErr := os.Stat(filepath.Join(outDir, "index.html")); statErr != nil {
+		t.Errorf("previous output was removed: %v", statErr)
+	}
+}
+
 func TestBuild_RequiresSchemaArgument(t *testing.T) {
 	// Act
 	_, err := execute(t, "", "build")
